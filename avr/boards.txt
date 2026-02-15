@@ -35,7 +35,8 @@ x5.build.variant=tinyX5
 x5.build.board=AVR_ATTINYX5
 x5.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings}
 x5.build.pllsettings=
-x5.build.millis= #-DDISABLEMILLIS
+x5.build.millis=
+#-DDISABLEMILLIS
 
 # Upload port select / Bootloader
 x5.menu.bootloader.no_bootloader=No bootloader
