@@ -40,61 +40,51 @@ x5.build.millis=
 
 # Upload port select / Bootloader
 x5.menu.bootloader.no_bootloader=No bootloader
-x5.menu.bootloader.no_bootloader.upload.maximum_size={upload.maximum_size_no_bootloader}
 x5.menu.bootloader.no_bootloader.build.export_merged_output=false
 x5.menu.bootloader.no_bootloader.bootloader.str=
 x5.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
 
 x5.menu.bootloader.urboot=Yes
-x5.menu.bootloader.urboot.upload.maximum_size={upload.maximum_size_bootloader}
 x5.menu.bootloader.urboot.build.export_merged_output=true
 x5.menu.bootloader.urboot.bootloader.str=-Uurboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
 x5.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
-x5.menu.bootloader.urboot_-125.upload.maximum_size={upload.maximum_size_bootloader}
 x5.menu.bootloader.urboot_-125.build.export_merged_output=true
 x5.menu.bootloader.urboot_-125.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
 x5.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
-x5.menu.bootloader.urboot_-250.upload.maximum_size={upload.maximum_size_bootloader}
 x5.menu.bootloader.urboot_-250.build.export_merged_output=true
 x5.menu.bootloader.urboot_-250.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
 x5.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
-x5.menu.bootloader.urboot_-375.upload.maximum_size={upload.maximum_size_bootloader}
 x5.menu.bootloader.urboot_-375.build.export_merged_output=true
 x5.menu.bootloader.urboot_-375.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
 x5.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
-x5.menu.bootloader.urboot_-500.upload.maximum_size={upload.maximum_size_bootloader}
 x5.menu.bootloader.urboot_-500.build.export_merged_output=true
 x5.menu.bootloader.urboot_-500.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
 x5.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
-x5.menu.bootloader.urboot_+125.upload.maximum_size={upload.maximum_size_bootloader}
 x5.menu.bootloader.urboot_+125.build.export_merged_output=true
 x5.menu.bootloader.urboot_+125.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
 x5.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
-x5.menu.bootloader.urboot_+250.upload.maximum_size={upload.maximum_size_bootloader}
 x5.menu.bootloader.urboot_+250.build.export_merged_output=true
 x5.menu.bootloader.urboot_+250.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
 x5.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
-x5.menu.bootloader.urboot_+375.upload.maximum_size={upload.maximum_size_bootloader}
 x5.menu.bootloader.urboot_+375.build.export_merged_output=true
 x5.menu.bootloader.urboot_+375.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
 x5.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
-x5.menu.bootloader.urboot_+500.upload.maximum_size={upload.maximum_size_bootloader}
 x5.menu.bootloader.urboot_+500.build.export_merged_output=true
 x5.menu.bootloader.urboot_+500.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
 x5.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
@@ -108,20 +98,17 @@ x5.menu.eeprom.erase.bootloader.eesave_bit=1
 # Chip variants
 x5.menu.chip.85=ATtiny85
 x5.menu.chip.85.build.mcu=attiny85
-x5.menu.chip.85.upload.maximum_size_no_bootloader=8192
-x5.menu.chip.85.upload.maximum_size_bootloader=7936
+x5.menu.chip.85.upload.maximum_size=8192
 x5.menu.chip.85.upload.maximum_data_size=512
 
 x5.menu.chip.45=ATtiny45
 x5.menu.chip.45.build.mcu=attiny45
-x5.menu.chip.45.upload.maximum_size_no_bootloader=4096
-x5.menu.chip.45.upload.maximum_size_bootloader=3840
+x5.menu.chip.45.upload.maximum_size=4096
 x5.menu.chip.45.upload.maximum_data_size=256
 
 x5.menu.chip.25=ATtiny25
 x5.menu.chip.25.build.mcu=attiny25
-x5.menu.chip.25.upload.maximum_size_no_bootloader=2048
-x5.menu.chip.25.upload.maximum_size_bootloader=1792
+x5.menu.chip.25.upload.maximum_size=2048
 x5.menu.chip.25.upload.maximum_data_size=128
 
 # Brown out detection
