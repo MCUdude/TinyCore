@@ -33,9 +33,8 @@ x5.bootloader.pins=rxb1_txb0
 x5.build.core=tiny
 x5.build.variant=tinyX5
 x5.build.board=AVR_ATTINYX5
-x5.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings}
+x5.build.extra_flags= -DNEOPIXELPORT=PORTB {build.pllsettings}
 x5.build.pllsettings=
-x5.build.millis=
 
 # Upload port select / Bootloader
 x5.menu.bootloader.no_bootloader=No bootloader
@@ -119,19 +118,6 @@ x5.menu.bod.1v8=BOD 1.8V
 x5.menu.bod.1v8.bootloader.bod_bits=110
 x5.menu.bod.disable=BOD disabled
 x5.menu.bod.disable.bootloader.bod_bits=111
-
-# Compiler link time optimization
-x5.menu.lto.Os_flto=LTO enabled
-x5.menu.lto.Os_flto.compiler.c.extra_flags=-Wextra -flto -g
-x5.menu.lto.Os_flto.compiler.c.elf.extra_flags=-w -flto -g
-x5.menu.lto.Os_flto.compiler.cpp.extra_flags=-Wextra -flto -g
-x5.menu.lto.Os_flto.ltoarcmd=avr-gcc-ar
-
-x5.menu.lto.Os=LTO disabled
-x5.menu.lto.Os.compiler.c.extra_flags=
-x5.menu.lto.Os.compiler.c.elf.extra_flags=
-x5.menu.lto.Os.compiler.cpp.extra_flags=
-x5.menu.lto.Os.ltoarcmd=avr-ar
 
 # Clock frequencies
 x5.menu.clock.8MHz_internal=8 MHz internal osc.
