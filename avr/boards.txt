@@ -33,7 +33,7 @@ x5.bootloader.pins=rxb1_txb0
 x5.build.core=tiny
 x5.build.variant=tinyX5
 x5.build.board=AVR_ATTINYX5
-x5.build.extra_flags= -DNEOPIXELPORT=PORTB {build.pllsettings}
+x5.build.extra_flags={build.pllsettings}
 x5.build.pllsettings=
 
 # Upload port select / Bootloader
@@ -273,7 +273,7 @@ x4.bootloader.pins=rxa2_txa1
 x4.build.core=tiny
 x4.build.variant=tinyX4
 x4.build.board=AVR_ATTINYX4
-x4.build.extra_flags= -DNEOPIXELPORT=PORTA {build.pllsettings}
+x4.build.extra_flags={build.pllsettings}
 x4.build.pllsettings=
 
 # Upload port select / Bootloader
