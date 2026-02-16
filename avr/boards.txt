@@ -11,10 +11,10 @@
 menu.clock=Clock
 menu.bod=BOD
 menu.eeprom=EEPROM
-menu.lto=Compiler LTO
 menu.chip=Chip
 menu.bootloader=Bootloader
 menu.baudrate=Baud rate
+menu.wiremode=Wire mode
 
 
 ########################
@@ -803,6 +803,201 @@ x8.menu.clock.8MHz_external.bootloader.low_fuses=0xec
 x8.menu.clock.8MHz_external.bootloader.baudrate=38400
 x8.menu.clock.8MHz_external.build.clocksource=2
 x8.menu.clock.8MHz_external.build.f_cpu=8000000L
+
+
+#######################
+#### ATtiny441/841 ####
+#######################
+
+# General
+x41.name=ATtiny441/841
+x41.upload.tool=avrdude
+x41.upload.speed={bootloader.baudrate}
+x41.bootloader.tool=avrdude
+x41.bootloader.unlock_bits=0xff
+x41.bootloader.lock_bits=0xff
+x41.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
+x41.bootloader.extended_fuses=0b{bootloader.ulp_bits}{bootloader.bodpd_bits}{bootloader.bodact_bits}{bootloader.spm_bit}
+x41.build.core=tinymodern
+x41.build.board=AVR_ATTINYX41
+x41.build.extra_flags={build.wiremode} {build.speedfix}
+
+# Upload port select / Bootloader
+x41.menu.bootloader.no_bootloader=No bootloader
+x41.menu.bootloader.no_bootloader.build.export_merged_output=false
+x41.menu.bootloader.no_bootloader.bootloader.str=
+x41.menu.bootloader.no_bootloader.bootloader.spm_bit=1
+
+x41.menu.bootloader.urboot_uart0=Yes (UART0)
+x41.menu.bootloader.urboot_uart0.build.export_merged_output=true
+x41.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:2s_autobaud_noled_uart0
+x41.menu.bootloader.urboot_uart0.bootloader.spm_bit=0
+
+x41.menu.bootloader.urboot_uart1=Yes (UART1)
+x41.menu.bootloader.urboot_uart1.build.export_merged_output=true
+x41.menu.bootloader.urboot_uart1.bootloader.str=-Uurboot:2s_autobaud_noled_uart1
+x41.menu.bootloader.urboot_uart1.bootloader.spm_bit=0
+
+# EEPROM
+x41.menu.eeprom.keep=EEPROM retained
+x41.menu.eeprom.keep.bootloader.eesave_bit=0
+x41.menu.eeprom.erase=EEPROM not retained
+x41.menu.eeprom.erase.bootloader.eesave_bit=1
+
+# Chip variants
+x41.menu.chip.841=ATtiny841
+x41.menu.chip.841.build.mcu=attiny841
+x41.menu.chip.841.upload.maximum_size=8192
+x41.menu.chip.841.upload.maximum_data_size=512
+
+x41.menu.chip.441=ATtiny441
+x41.menu.chip.441.build.mcu=attiny441
+x41.menu.chip.441.upload.maximum_size=4096
+x41.menu.chip.441.upload.maximum_data_size=256
+
+# Brown out detection
+x41.menu.bod.2v7=BOD 2.7V
+x41.menu.bod.2v7.bootloader.bod_bits=101
+x41.menu.bod.2v7.bootloader.bodact_bits=10
+x41.menu.bod.2v7.bootloader.bodpd_bits=10
+x41.menu.bod.4v3=BOD 4.3V
+x41.menu.bod.4v3.bootloader.bod_bits=100
+x41.menu.bod.4v3.bootloader.bodact_bits=10
+x41.menu.bod.4v3.bootloader.bodpd_bits=10
+x41.menu.bod.1v8=BOD 1.8V
+x41.menu.bod.1v8.bootloader.bod_bits=110
+x41.menu.bod.1v8.bootloader.bodact_bits=10
+x41.menu.bod.1v8.bootloader.bodpd_bits=10
+x41.menu.bod.disable=BOD disabled
+x41.menu.bod.disable.bootloader.bod_bits=101
+x41.menu.bod.disable.bootloader.bodact_bits=11
+x41.menu.bod.disable.bootloader.bodpd_bits=11
+
+# Clock frequencies
+x41.menu.clock.8MHz_internal_5v=8 MHz internal osc. (Vcc > 4.5V)
+x41.menu.clock.8MHz_internal_5v.bootloader.low_fuses=0xe2
+x41.menu.clock.8MHz_internal_5v.bootloader.ulp_bits=111
+x41.menu.clock.8MHz_internal_5v.bootloader.baudrate=38400
+x41.menu.clock.8MHz_internal_5v.build.clocksource=0
+x41.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL
+x41.menu.clock.8MHz_internal_5v.build.f_cpu=8000000L
+
+x41.menu.clock.8MHz_internal=8 MHz internal osc. (Vcc < 4.5V)
+x41.menu.clock.8MHz_internal.bootloader.low_fuses=0xe2
+x41.menu.clock.8MHz_internal.bootloader.ulp_bits=111
+x41.menu.clock.8MHz_internal.bootloader.baudrate=38400
+x41.menu.clock.8MHz_internal.build.clocksource=0
+x41.menu.clock.8MHz_internal.build.speedfix=
+x41.menu.clock.8MHz_internal.build.f_cpu=8000000L
+
+x41.menu.clock.4MHz_internal_5v=4 MHz internal osc. (Vcc > 4.5V)
+x41.menu.clock.4MHz_internal_5v.bootloader.low_fuses=0x62
+x41.menu.clock.4MHz_internal_5v.bootloader.ulp_bits=111
+x41.menu.clock.4MHz_internal_5v.bootloader.baudrate=9600
+x41.menu.clock.4MHz_internal_5v.build.clocksource=0
+x41.menu.clock.4MHz_internal_5v.build.speedfix=-DLOWERCAL
+x41.menu.clock.4MHz_internal_5v.build.f_cpu=4000000L
+
+x41.menu.clock.4MHz_internal=4 MHz internal osc. (Vcc < 4.5V)
+x41.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
+x41.menu.clock.4MHz_internal.bootloader.ulp_bits=111
+x41.menu.clock.4MHz_internal.bootloader.baudrate=9600
+x41.menu.clock.4MHz_internal.build.clocksource=0
+x41.menu.clock.4MHz_internal.build.speedfix=
+x41.menu.clock.4MHz_internal.build.f_cpu=4000000L
+
+x41.menu.clock.1MHz_internal_5v=1 MHz internal osc. (Vcc > 4.5V)
+x41.menu.clock.1MHz_internal_5v.bootloader.low_fuses=0x62
+x41.menu.clock.1MHz_internal_5v.bootloader.ulp_bits=111
+x41.menu.clock.1MHz_internal_5v.bootloader.baudrate=9600
+x41.menu.clock.1MHz_internal_5v.build.clocksource=0
+x41.menu.clock.1MHz_internal_5v.build.speedfix=-DLOWERCAL
+x41.menu.clock.1MHz_internal_5v.build.f_cpu=1000000L
+
+x41.menu.clock.1MHz_internal=1 MHz internal osc. (Vcc < 4.5V)
+x41.menu.clock.1MHz_internal.bootloader.low_fuses=0x62
+x41.menu.clock.1MHz_internal.bootloader.ulp_bits=111
+x41.menu.clock.1MHz_internal.bootloader.baudrate=9600
+x41.menu.clock.1MHz_internal.build.clocksource=0
+x41.menu.clock.1MHz_internal.build.speedfix=
+x41.menu.clock.1MHz_internal.build.f_cpu=1000000L
+
+x41.menu.clock.16MHz_external=16 MHz external osc.
+x41.menu.clock.16MHz_external.bootloader.low_fuses=0xee
+x41.menu.clock.16MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.16MHz_external.bootloader.baudrate=115200
+x41.menu.clock.16MHz_external.build.clocksource=1
+x41.menu.clock.16MHz_external.build.f_cpu=16000000L
+
+x41.menu.clock.14_7456MHz_external=14.7456 MHz external osc.
+x41.menu.clock.14_7456MHz_external.bootloader.low_fuses=0xee
+x41.menu.clock.14_7456MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.14_7456MHz_external.bootloader.baudrate=115200
+x41.menu.clock.14_7456MHz_external.build.clocksource=1
+x41.menu.clock.14_7456MHz_external.build.f_cpu=14745600L
+
+x41.menu.clock.12MHz_external=12 MHz external osc.
+x41.menu.clock.12MHz_external.bootloader.low_fuses=0xee
+x41.menu.clock.12MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.12MHz_external.bootloader.baudrate=115200
+x41.menu.clock.12MHz_external.build.clocksource=1
+x41.menu.clock.12MHz_external.build.f_cpu=12000000L
+
+x41.menu.clock.11_0592MHz_external=11.7456 MHz external osc.
+x41.menu.clock.11_0592MHz_external.bootloader.low_fuses=0xee
+x41.menu.clock.11_0592MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.11_0592MHz_external.bootloader.baudrate=115200
+x41.menu.clock.11_0592MHz_external.build.clocksource=1
+x41.menu.clock.11_0592MHz_external.build.f_cpu=11059200L
+
+x41.menu.clock.9_216MHz_external=9.216 MHz external osc.
+x41.menu.clock.9_216MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.9_216MHz_external.bootloader.low_fuses=0xee
+x41.menu.clock.9_216MHz_external.bootloader.baudrate=115200
+x41.menu.clock.9_216MHz_external.build.clocksource=1
+x41.menu.clock.9_216MHz_external.build.f_cpu=9216000L
+
+x41.menu.clock.8MHz_external=8 MHz external osc.
+x41.menu.clock.8MHz_external.bootloader.low_fuses=0xee
+x41.menu.clock.8MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.8MHz_external.bootloader.baudrate=38400
+x41.menu.clock.8MHz_external.build.clocksource=1
+x41.menu.clock.8MHz_external.build.f_cpu=8000000L
+
+x41.menu.clock.7_372MHz_external=7.372 MHz external osc.
+x41.menu.clock.7_372MHz_external.bootloader.low_fuses=0xed
+x41.menu.clock.7_372MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.7_372MHz_external.bootloader.baudrate=115200
+x41.menu.clock.7_372MHz_external.build.clocksource=1
+x41.menu.clock.7_372MHz_external.build.f_cpu=7372000L
+
+x41.menu.clock.6MHz_external=6 MHz external osc.
+x41.menu.clock.6MHz_external.bootloader.low_fuses=0xed
+x41.menu.clock.6MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.6MHz_external.bootloader.baudrate=57600
+x41.menu.clock.6MHz_external.build.clocksource=1
+x41.menu.clock.6MHz_external.build.f_cpu=6000000L
+
+x41.menu.clock.4MHz_external=4 MHz external osc.
+x41.menu.clock.4MHz_external.bootloader.low_fuses=0xed
+x41.menu.clock.4MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.4MHz_external.bootloader.baudrate=57600
+x41.menu.clock.4MHz_external.build.clocksource=1
+x41.menu.clock.4MHz_external.build.f_cpu=4000000L
+
+x41.menu.clock.1MHz_external=1 MHz external osc.
+x41.menu.clock.1MHz_external.bootloader.low_fuses=0xed
+x41.menu.clock.1MHz_external.bootloader.ulp_bits=111
+x41.menu.clock.1MHz_external.bootloader.baudrate=9600
+x41.menu.clock.1MHz_external.build.clocksource=1
+x41.menu.clock.1MHz_external.build.f_cpu=1000000L
+
+x41.menu.wiremode.amaster=Master Only
+x41.menu.wiremode.amaster.build.wiremode=-DWIRE_MASTER_ONLY
+x41.menu.wiremode.slave=Slave Only
+x41.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
+x41.menu.wiremode.both=Master and slave
+x41.menu.wiremode.both.build.wiremode=-DWIRE_BOTH
 
 
 ###########################

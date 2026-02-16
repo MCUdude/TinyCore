@@ -86,35 +86,6 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define PORT_A_ID 1
 #define PORT_B_ID 2
 
-#ifdef OLD_PINOUT
-
-#define SS      3
-#define MISO    5
-#define MOSI    4
-#define SCK     6
-#define MOSI_REMAP 9
-#define MISO_REMAP 10
-#define SCK_REMAP 7
-#define SS_REMAP 8
-
-
-#define ADC_TEMPERATURE 12
-
-// use ternaries for this to save space.
-#define digitalPinToPort(P) (P==11?2:(P<3?2:1))
-#define portOutputRegister(P) (P==1?&PORTA:(P?&PORTB:NOT_A_PORT))
-#define portInputRegister(P)  (P==1?&PINA:(P?&PINB:NOT_A_PORT ))
-#define portModeRegister(P)   (P==1?&DDRA:(P?&DDRB:NOT_A_PORT ))
-#define portPcMaskRegister(P) (P==1?&PCMSK0:(P?&PCMSK2:NOT_A_PORT ))
-#define portPullupRegister(P) (P==1?&PUEA:(P?&PUEB:NOT_A_PORT ))
-
-#define analogInputToDigitalPin(p)  ((p < 9) ? 10 -(p): (p==9)?11:(11-(p)))
-
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) <= 2) ? PCIE1 : PCIE0)
-#define digitalPinToPCMSK(p)    (((p) <= 2) ? (&PCMSK1) : (((p) <= 10) ? (&PCMSK0) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) (((p) <= 2) ? (p) : (10 - (p)))
-#else //New pinout
 #define SS      7
 #define MISO    5
 #define MOSI    6
@@ -141,7 +112,6 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define digitalPinToPCICRbit(p) (((p) > 7) ? PCIE1 : PCIE0)
 #define digitalPinToPCMSK(p)    (((p)  < 8) ? (&PCMSK0) : (((p) <= 11) ? (&PCMSK0) : ((uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p) (((p) <8 ) ? (p) : ((p==8?2:(p==11?3:(p==9?1:0)))))
-#endif
 
 #endif
 

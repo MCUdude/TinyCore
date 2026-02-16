@@ -160,107 +160,6 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 
 #if defined( __AVR_ATtinyX41__ )
 
-#ifdef OLD_PINOUT
-
-// ATMEL ATTINY841 / ARDUINO
-//
-//                                 +-\/-+
-//                           VCC  1|    |14  GND
-//  ADC11            (D  0)  PB0  2|    |13  AREF (D 10)              ADC0
-//  ADC10      _____ (D  1)  PB1  3|    |12  PA1  (D  9)  TX0         ADC1
-//  ADC9       RESET (D 11)  PB3  4|    |11  PA2  (D  8)  RX0         ADC2
-//  ADC8  PWM  INT0  (D  2)  PB2  5|    |10  PA3  (D  7)        PWM   ADC3
-//  ADC7  PWM        (D  3)  PA7  6|    |9   PA4  (D  6)  RX1   PWM   ADC4
-//  ADC6  PWM        (D  4)  PA6  7|    |8   PA5  (D  5)  TX1   PWM   ADC5
-//                                 +----+
-//
-// these arrays map port names (e.g. port B) to the
-// appropriate addresses for various functions (e.g. reading
-// and writing)
-/*
-const uint8_t PROGMEM port_to_mode_PGM[] =
-{
-  NOT_A_PORT,
-  &DDRA,
-  &DDRB,
-};
-
-const uint8_t PROGMEM port_to_output_PGM[] =
-{
-  NOT_A_PORT,
-  &PORTA,
-  &PORTB,
-};
-
-const uint8_t PROGMEM port_to_input_PGM[] =
-{
-  NOT_A_PORT,
-  &PINA,
-  &PINB,
-};
-
-const uint8_t PROGMEM port_to_pullup_PGM[] =
-{
- NOT_A_PORT,
- &PUEA,
- &PUEB,
-};
-
-const uint8_t PROGMEM port_to_pcmask_PGM[] =
-{
-  NOT_A_PORT,
-  &PCMSK0,
-  &PCMSK1,
-};
-
-const uint8_t PROGMEM digital_pin_to_port_PGM[] =
-{
-  PORT_B_ID, //0
-  PORT_B_ID,
-  PORT_B_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID, //8
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_B_ID,
-};
-*/
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
-{
-  _BV(0), /* 0, port B */
-  _BV(1),
-  _BV(2),
-  _BV(7), /* 3 port A */
-  _BV(6),
-  _BV(5),
-  _BV(4),
-  _BV(3),
-  _BV(2),
-  _BV(1),
-  _BV(0),
-  _BV(3), //reset
-};
-
-//const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-//{
-//  NOT_ON_TIMER,
-//  NOT_ON_TIMER,
-//  TIMER2A, /* TOCC7 */
-//  TIMER2B, /* TOCC6 */
-//  TIMER1A, /* TOCC5 */
-//  TIMER0B, /* TOCC4 - this is shared with serial 1*/
-//  TIMER0A, /* TOCC3 - this is shared with serial 1 so let's give it the least desirable timer */
-//  TIMER1B, /* TOCC2 */
-//  NOT_ON_TIMER, //This could have pwm, but it's serial 0, and we only get PWM on 6 of the 8 pins at once.
-//  NOT_ON_TIMER, //see above.
-//  NOT_ON_TIMER,
-//  NOT_ON_TIMER,
-//};
-#else //new pinout
 // ATMEL ATTINY841 / ARDUINO
 //
 //                                 +-\/-+
@@ -291,7 +190,6 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(0),
   _BV(3), //reset
 };
-#endif
 #endif
 
 
