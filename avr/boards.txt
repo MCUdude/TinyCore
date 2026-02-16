@@ -152,13 +152,13 @@ x5.menu.clock.1MHz_internal.bootloader.baudrate=9600
 x5.menu.clock.1MHz_internal.build.clocksource=0
 x5.menu.clock.1MHz_internal.build.f_cpu=1000000L
 
-x5.menu.clock.128kHz_external=128 kHz internal osc.
-x5.menu.clock.128kHz_external.bootloader.clock=128kHz
-x5.menu.clock.128kHz_external.bootloader.osc=i
-x5.menu.clock.128kHz_external.bootloader.low_fuses=0xe4
-x5.menu.clock.128kHz_external.bootloader.baudrate=1200
-x5.menu.clock.128kHz_external.build.clocksource=3
-x5.menu.clock.128kHz_external.build.f_cpu=128000L
+x5.menu.clock.128kHz_internal=128 kHz internal osc.
+x5.menu.clock.128kHz_internal.bootloader.clock=128kHz
+x5.menu.clock.128kHz_internal.bootloader.osc=i
+x5.menu.clock.128kHz_internal.bootloader.low_fuses=0xe4
+x5.menu.clock.128kHz_internal.bootloader.baudrate=1200
+x5.menu.clock.128kHz_internal.build.clocksource=3
+x5.menu.clock.128kHz_internal.build.f_cpu=128000L
 
 x5.menu.clock.20MHz_external=20 MHz external osc.
 x5.menu.clock.20MHz_external.bootloader.clock=20MHz
@@ -392,13 +392,13 @@ x4.menu.clock.1MHz_internal.bootloader.baudrate=9600
 x4.menu.clock.1MHz_internal.build.clocksource=0
 x4.menu.clock.1MHz_internal.build.f_cpu=1000000L
 
-x4.menu.clock.128kHz_external=128 kHz internal osc.
-x4.menu.clock.128kHz_external.bootloader.clock=128kHz
-x4.menu.clock.128kHz_external.bootloader.osc=i
-x4.menu.clock.128kHz_external.bootloader.low_fuses=0xe4
-x4.menu.clock.128kHz_external.bootloader.baudrate=1200
-x4.menu.clock.128kHz_external.build.clocksource=3
-x4.menu.clock.128kHz_external.build.f_cpu=128000L
+x4.menu.clock.128kHz_internal=128 kHz internal osc.
+x4.menu.clock.128kHz_internal.bootloader.clock=128kHz
+x4.menu.clock.128kHz_internal.bootloader.osc=i
+x4.menu.clock.128kHz_internal.bootloader.low_fuses=0xe4
+x4.menu.clock.128kHz_internal.bootloader.baudrate=1200
+x4.menu.clock.128kHz_internal.build.clocksource=3
+x4.menu.clock.128kHz_internal.build.f_cpu=128000L
 
 x4.menu.clock.20MHz_external=20 MHz external osc.
 x4.menu.clock.20MHz_external.bootloader.clock=20MHz
@@ -573,11 +573,11 @@ x313.menu.clock.1MHz_internal.bootloader.baudrate=9600
 x313.menu.clock.1MHz_internal.build.clocksource=0
 x313.menu.clock.1MHz_internal.build.f_cpu=1000000L
 
-x313.menu.clock.128kHz_external=128 kHz internal osc.
-x313.menu.clock.128kHz_external.bootloader.low_fuses=0xc5
-x313.menu.clock.128kHz_external.bootloader.baudrate=1200
-x313.menu.clock.128kHz_external.build.clocksource=3
-x313.menu.clock.128kHz_external.build.f_cpu=128000L
+x313.menu.clock.128kHz_internal=128 kHz internal osc.
+x313.menu.clock.128kHz_internal.bootloader.low_fuses=0xc5
+x313.menu.clock.128kHz_internal.bootloader.baudrate=1200
+x313.menu.clock.128kHz_internal.build.clocksource=3
+x313.menu.clock.128kHz_internal.build.f_cpu=128000L
 
 x313.menu.clock.20MHz_external=20 MHz external osc.
 x313.menu.clock.20MHz_external.bootloader.low_fuses=0xff
@@ -773,13 +773,13 @@ x8.menu.clock.1MHz_internal.bootloader.baudrate=9600
 x8.menu.clock.1MHz_internal.build.clocksource=0
 x8.menu.clock.1MHz_internal.build.f_cpu=1000000L
 
-x8.menu.clock.128kHz_external=128 kHz internal osc.
-x8.menu.clock.128kHz_external.bootloader.clock=128kHz
-x8.menu.clock.128kHz_external.bootloader.osc=i
-x8.menu.clock.128kHz_external.bootloader.low_fuses=0xef
-x8.menu.clock.128kHz_external.bootloader.baudrate=1200
-x8.menu.clock.128kHz_external.build.clocksource=3
-x8.menu.clock.128kHz_external.build.f_cpu=128000L
+x8.menu.clock.128kHz_internal=128 kHz internal osc.
+x8.menu.clock.128kHz_internal.bootloader.clock=128kHz
+x8.menu.clock.128kHz_internal.bootloader.osc=i
+x8.menu.clock.128kHz_internal.bootloader.low_fuses=0xef
+x8.menu.clock.128kHz_internal.bootloader.baudrate=1200
+x8.menu.clock.128kHz_internal.build.clocksource=3
+x8.menu.clock.128kHz_internal.build.f_cpu=128000L
 
 x8.menu.clock.16MHz_external=16 MHz external CLOCK (overclock)
 x8.menu.clock.16MHz_external.bootloader.clock=16MHz
@@ -881,11 +881,11 @@ x7.menu.clock.1MHz_internal.bootloader.baudrate=9600
 x7.menu.clock.1MHz_internal.build.clocksource=0
 x7.menu.clock.1MHz_internal.build.f_cpu=1000000L
 
-x7.menu.clock.128kHz_external=128 kHz internal osc.
-x7.menu.clock.128kHz_external.bootloader.low_fuses=0xe3
-x7.menu.clock.128kHz_external.bootloader.baudrate=1200
-x7.menu.clock.128kHz_external.build.clocksource=3
-x7.menu.clock.128kHz_external.build.f_cpu=128000L
+x7.menu.clock.128kHz_internal=128 kHz internal osc.
+x7.menu.clock.128kHz_internal.bootloader.low_fuses=0xe3
+x7.menu.clock.128kHz_internal.bootloader.baudrate=1200
+x7.menu.clock.128kHz_internal.build.clocksource=3
+x7.menu.clock.128kHz_internal.build.f_cpu=128000L
 
 x7.menu.clock.20MHz_external=20 MHz external osc.
 x7.menu.clock.20MHz_external.bootloader.low_fuses=0xff
@@ -1095,13 +1095,13 @@ x61.menu.clock.1MHz_internal.bootloader.baudrate=9600
 x61.menu.clock.1MHz_internal.build.clocksource=0
 x61.menu.clock.1MHz_internal.build.f_cpu=1000000L
 
-x61.menu.clock.128kHz_external=128 kHz internal osc.
-x61.menu.clock.128kHz_external.bootloader.clock=128kHz
-x61.menu.clock.128kHz_external.bootloader.osc=i
-x61.menu.clock.128kHz_external.bootloader.low_fuses=0xe3
-x61.menu.clock.128kHz_external.bootloader.baudrate=1200
-x61.menu.clock.128kHz_external.build.clocksource=3
-x61.menu.clock.128kHz_external.build.f_cpu=128000L
+x61.menu.clock.128kHz_internal=128 kHz internal osc.
+x61.menu.clock.128kHz_internal.bootloader.clock=128kHz
+x61.menu.clock.128kHz_internal.bootloader.osc=i
+x61.menu.clock.128kHz_internal.bootloader.low_fuses=0xe3
+x61.menu.clock.128kHz_internal.bootloader.baudrate=1200
+x61.menu.clock.128kHz_internal.build.clocksource=3
+x61.menu.clock.128kHz_internal.build.f_cpu=128000L
 
 x61.menu.clock.20MHz_external=20 MHz external osc.
 x61.menu.clock.20MHz_external.bootloader.clock=20MHz
