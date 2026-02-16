@@ -33,22 +33,23 @@
 
 #define NUM_DIGITAL_PINS            16
 #define NUM_ANALOG_INPUTS           11
-#define analogInputToDigitalPin(p)  ((p < 8) ? 10 -(p): -1)
+#define analogInputToDigitalPin(p)  (p<8?p:p+5)
+
 #define ADC_TEMPERATURE 11
 
-#define digitalPinHasPWM(p)         ((p) == 2 || (p) == 7 || (p) == 12)
+#define digitalPinHasPWM(p)         ((p) == 2 || (p) == 11 || (p) == 14)
 
-#define SS   10
-#define MOSI 11
-#define MISO 12
-#define SCK  13
+#define SS   6
+#define MOSI 4
+#define MISO 2
+#define SCK  5
+
+
 #define USI_DDR_PORT DDRB
 #define USI_SCK_PORT DDRB
 #define USCK_DD_PIN DDA2
 #define DO_DD_PIN DDA1
 #define DI_DD_PIN DDA0
-#define SDA 13
-#define SCL 11
 
 
 #  define DDR_USI DDRB
@@ -67,6 +68,9 @@
 #  define USI_START_COND_INT USISIF
 #endif
 
+#define SDA 4
+#define SCL 5
+
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
 static const uint8_t A0 = 0x80 | 0;
 static const uint8_t A1 = 0x80 | 1;
@@ -79,27 +83,47 @@ static const uint8_t A7 = 0x80 | 7;
 static const uint8_t A8 = 0x80 | 8;
 static const uint8_t A9 = 0x80 | 9;
 static const uint8_t A10 = 0x80 | 10;
-#define LED_BUILTIN (4)
+#define LED_BUILTIN (3)
+
 
 
 #define PIN_PA0  ( 0)
 #define PIN_PA1  ( 1)
-#define PIN_PB6  ( 2)
+#define PIN_PA2  ( 2)
 #define PIN_PA3  ( 3)
-#define PIN_PB0  ( 4)
-#define PIN_PB1  ( 5)
-#define PIN_PB2  ( 6)
-#define PIN_PB3  ( 7)
-#define PIN_PB4  ( 8)
-#define PIN_PB5  ( 9)
-#define PIN_PA6  ( 10)
-#define PIN_PA4  ( 11)
-#define PIN_PA2  ( 12)
-#define PIN_PA5  ( 13)
-#define PIN_PA7  ( 14)
+#define PIN_PA4  ( 4)
+#define PIN_PA5  ( 5)
+#define PIN_PA6  ( 6)
+#define PIN_PA7  ( 7)
+#define PIN_PB0  ( 8)
+#define PIN_PB1  ( 9)
+#define PIN_PB2  ( 10)
+#define PIN_PB3  ( 11)
+#define PIN_PB4  ( 12)
+#define PIN_PB5  ( 13)
+#define PIN_PB6  ( 14)
 #define PIN_PB7  ( 15)
 
-#define PINMAPPING_OLD
+
+//Legacy
+#define PIN_A0  ( 0)
+#define PIN_A1  ( 1)
+#define PIN_A2  ( 2)
+#define PIN_A3  ( 3)
+#define PIN_A4  ( 4)
+#define PIN_A5  ( 5)
+#define PIN_A6  ( 6)
+#define PIN_A7  ( 7)
+#define PIN_B0  ( 8)
+#define PIN_B1  ( 9)
+#define PIN_B2  ( 10)
+#define PIN_B3  ( 11)
+#define PIN_B4  ( 12)
+#define PIN_B5  ( 13)
+#define PIN_B6  ( 14)
+#define PIN_B7  ( 15)
+
+#define PINMAPPING_NEW
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -112,6 +136,7 @@ static const uint8_t A10 = 0x80 | 10;
 #define INITIALIZE_SECONDARY_TIMERS               1
 
 #define TIMER_TO_USE_FOR_MILLIS                   0
+
 
 // This is commented out. The only place where HAVE_BOOTLOADER is checked is in wiring.c, where it wastes precious bytes of flash resetting timer-related registers out of fear that the bootloader has scribbled on them.
 // However, Optiboot does a WDR before jumping straight to app to start after running.
@@ -151,14 +176,12 @@ static const uint8_t A10 = 0x80 | 10;
 
 
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&PCICR) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) >= 3 && (p) <= 10) ? 4 : 5)
-#define digitalPinToPCMSK(p)    (((p) >= 3 && (p) <= 10) ? (&PCMSK0) : (((p) >= 0 && (p) <= 2) ? (&PCMSK1) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (p))
+#define digitalPinToPCICR(p)    (&PCICR)
+#define digitalPinToPCICRbit(p) ((p) >= 8 ? 1 : 0)
+#define digitalPinToPCMSK(p)    ((p) >= 8 ?(&PCMSK1) : (&PCMSK0))
+#define digitalPinToPCMSKbit(p) (p&15)
 
-
-#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p)==11?1: NOT_AN_INTERRUPT))
-
+#define digitalPinToInterrupt(p)  ((p) == PIN_PB6 ? 0 : ((p)==PIN_PA3?1: NOT_AN_INTERRUPT))
 #ifdef ARDUINO_MAIN
 
 // On the Arduino board, digital pins are also used
@@ -168,16 +191,16 @@ static const uint8_t A10 = 0x80 | 10;
 // ATMEL ATTINY167
 //
 //                   +-\/-+
-// RX   (D  0) PA0  1|    |20  PB0 (D  4)
-// TX   (D  1) PA1  2|    |19  PB1 (D  5)
-//     *(D 12) PA2  3|    |18  PB2 (D  6)
-//      (D  3) PA3  4|    |17  PB3 (D  7)*
+// RX   (D  0) PA0  1|    |20  PB0 (D  8)
+// TX   (D  1) PA1  2|    |19  PB1 (D  9)
+//     *(D  2) PA2  3|    |18  PB2 (D 10)
+// INT1 (D  3) PA3  4|    |17  PB3 (D 11)*
 //            AVCC  5|    |16  GND
 //            AGND  6|    |15  VCC
-// INT1 (D 11) PA4  7|    |14  PB4 (D  8)
-//      (D 13) PA5  8|    |13  PB5 (D  9)
-//      (D 10) PA6  9|    |12  PB6 (D  2)* INT0
-//      (D 14) PA7 10|    |11  PB7 (D 15)
+//      (D  4) PA4  7|    |14  PB4 (D 12)
+//      (D  5) PA5  8|    |13  PB5 (D 13)
+//      (D  6) PA6  9|    |12  PB6 (D 14)* INT0
+//      (D  7) PA7 10|    |11  PB7 (D 15)
 //                   +----+
 //
 // * indicates PWM pin.
@@ -210,19 +233,19 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
   PA, /* 0 */
   PA,
-  PB, /* 2 */
+  PA, /* 2 */
   PA, /* 3 */
-  PB, /* 4 */
-  PB,
-  PB,
-  PB,
-  PB,
-  PB,
-  PA, /* 10 */
+  PA, /* 4 */
   PA,
   PA,
   PA,
-  PA,
+  PB,
+  PB,
+  PB, /* 10 */
+  PB,
+  PB,
+  PB,
+  PB,
   PB, /* 15 */
 };
 
@@ -230,19 +253,19 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
   _BV(0), /* 0 */
   _BV(1),
-  _BV(6), /* 2 */
+  _BV(2), /* 2 */
   _BV(3), /* 3 */
-  _BV(0), /* 4 */
+  _BV(4), /* 4 */
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(0),
   _BV(1),
-  _BV(2),
+  _BV(2), /* 10 */
   _BV(3),
   _BV(4),
   _BV(5),
-  _BV(6), /* 10 */
-  _BV(4),
-  _BV(2),
-  _BV(5),
-  _BV(7),
+  _BV(6),
   _BV(7), /* 15 */
 };
 
@@ -250,7 +273,11 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIM1AX,
+  TIMER0A,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
   NOT_ON_TIMER,
   TIM1AU,
   TIM1BU,
@@ -258,20 +285,13 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   TIM1BV,
   TIM1AW,
   TIM1BW,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  TIMER0A,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  TIM1BX,
+  TIM1AX,
+  TIM1BX
 };
 
-
 #endif
 
 #endif
-
-
 
 
 //Old code, just here for temporary backup until I decide it is not needed.
