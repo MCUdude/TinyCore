@@ -60,7 +60,6 @@ unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout)
  * ATTENTION:
  * this function relies on micros() so cannot be used in noInterrupt() context
  */
-#ifndef DISABLEMILLIS
 
 unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout)
 {
@@ -93,4 +92,3 @@ unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout)
     }
     return micros() - start;
 }
-#endif

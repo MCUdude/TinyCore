@@ -103,6 +103,7 @@ typedef unsigned int word;
 typedef uint8_t boolean;
 typedef uint8_t byte;
 
+__attribute__((section(".init9"))) int main();
 void initToneTimer(void);
 void init(void);
 
@@ -113,16 +114,12 @@ int analogRead(uint8_t);
 void analogReference(uint8_t mode);
 void analogWrite(uint8_t, int);
 
-#ifndef DISABLEMILLIS
 unsigned long millis(void);
 unsigned long micros(void);
-#endif
 void delay(unsigned long);
 void delayMicroseconds(unsigned int us);
 unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);
-#ifndef DISABLEMILLIS
 unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout);
-#endif
 
 void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val);
 uint8_t shiftIn(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder);
@@ -326,6 +323,233 @@ long map(long, long, long, long, long);
 #if defined( TIM2_OVF_vect ) && ! defined( TIMER2_OVF_vect )
 #define TIMER2_OVF_vect TIM2_OVF_vect
 #endif
+
+/*=============================================================================
+  millis(), micros() and timer related macros
+=============================================================================*/
+
+#if F_CPU >= 3000000L
+
+  #if defined(__AVR_ATtiny167__) || defined(__AVR_ATtiny87__)
+    #if F_CPU < 8000000L // 4 and 6 MHz get PWM within the target range of 500-1kHz now on the one pin that is driven by timer0.
+      #define timer0Prescaler (0b011)
+      #define timer0_Prescale_Value  (32)
+    #else
+      #define timer0Prescaler (0b100)
+      #define timer0_Prescale_Value  (64)
+    #endif
+  #else
+    #define timer0Prescaler (0b011)
+    #define timer0_Prescale_Value  (64)
+  #endif
+  #if (defined(TCCR1) || defined(TCCR1E)) // x5 and x61
+    #if F_CPU < 8000000L // 4 and 6 MHz get PWM within the target range of 500-1kHz now on 2 pins of t85, and all PWM pins of the x61, since it's weirdo timer0 has "output" compare that just fires an ISR...
+      #define timer1Prescaler (0b0110)
+      #define timer1_Prescale_Value  (32)
+    #else
+      #define timer1Prescaler (0b0111)
+      #define timer1_Prescale_Value  (64)
+    #endif
+  #else
+    #define timer1Prescaler (0b011)
+    #define timer1_Prescale_Value  (64)
+  #endif
+#else // 1 or 2 MHz system clock
+  #define timer0Prescaler (0b010)
+  #if (defined(TCCR1) || defined(TCCR1E))
+    #define timer1Prescaler (0b0100)
+  #else
+    #define timer1Prescaler (0b010)
+  #endif
+  #define timer0_Prescale_Value    (8)
+  #define timer1_Prescale_Value    (8)
+#endif
+
+#if (TIMER_TO_USE_FOR_MILLIS == 0)
+  #define MillisTimer_Prescale_Value  (timer0_Prescale_Value)
+  #define ToneTimer_Prescale_Value    (timer1_Prescale_Value)
+  #define MillisTimer_Prescale_Index  (timer0Prescaler)
+  #define ToneTimer_Prescale_Index    (timer1Prescaler)
+#else
+  #warning "WARNING: Use of Timer1 for millis has been configured - this option is untested and unsupported!"
+  #define MillisTimer_Prescale_Value  (timer1_Prescale_Value)
+  #define ToneTimer_Prescale_Value    (timer0_Prescale_Value)
+  #define MillisTimer_Prescale_Index  (timer1Prescaler)
+  #define ToneTimer_Prescale_Index    (timer0Prescaler)
+#endif
+
+// the prescaler is set so that the millis timer ticks every MillisTimer_Prescale_Value (64) clock cycles, and the
+// the overflow handler is called every 256 ticks.
+#if 0 // generally valid scaling formula follows below in the #else branch
+#if (F_CPU==12800000)
+//#define MICROSECONDS_PER_MILLIS_OVERFLOW (clockCyclesToMicroseconds(MillisTimer_Prescale_Value * 256))
+//#define MICROSECONDS_PER_MILLIS_OVERFLOW ((64 * 256)/12.8) = 256*(64/12.8) = 256*5 = 1280
+#define MICROSECONDS_PER_MILLIS_OVERFLOW (1280)
+#elif (F_CPU==16500000)
+#define MICROSECONDS_PER_MILLIS_OVERFLOW (992)
+#else
+#define MICROSECONDS_PER_MILLIS_OVERFLOW (clockCyclesToMicroseconds(MillisTimer_Prescale_Value * 256))
+#endif
+#else
+/* The key is never to compute (F_CPU / 1000000L), which may lose precision.
+   The formula below is correct for all F_CPU times that evenly divide by 10,
+   at least for prescaler values up and including 64 as used in this file. */
+#if MillisTimer_Prescale_Value <= 64
+#define MICROSECONDS_PER_MILLIS_OVERFLOW \
+  (MillisTimer_Prescale_Value * 256UL * 1000UL * 100UL / ((F_CPU + 5UL) / 10UL))
+#else
+/* It may be sufficient to swap the 100L and 10L in the above formula, but
+   please double-check EXACT_NUMERATOR and EXACT_DENOMINATOR below as well
+   and make sure it does not roll over. */
+#define MICROSECONDS_PER_MILLIS_OVERFLOW 0
+#error "Please adjust MICROSECONDS_PER_MILLIS_OVERFLOW formula"
+#endif
+#endif
+
+/* Correct millis to zero long term drift
+   --------------------------------------
+
+   When MICROSECONDS_PER_MILLIS_OVERFLOW >> 3 is exact, we do nothing.
+   In this case, millis() has zero long-term drift, that is,
+   it precisely follows the oscillator used for timing.
+
+   When it has a fractional part that leads to an error when ignored,
+   we apply a correction.  This correction yields a drift of 30 ppm or less:
+   1e6 / (512 * (minimum_MICROSECONDS_PER_MILLIS_OVERFLOW >> 3)) <= 30.
+
+   The mathematics of the correction are coded in the preprocessor and
+   produce compile-time constants that do not affect size or run time.
+ */
+
+/* We cancel a factor of 10 in the ratio MICROSECONDS_PER_MILLIS_OVERFLOW
+   and divide the numerator by 8.  The calculation fits into a long int
+   and produces the same right shift by 3 as the original code.
+ */
+#define EXACT_NUMERATOR (MillisTimer_Prescale_Value * 256UL * 12500UL)
+#define EXACT_DENOMINATOR ((F_CPU + 5UL) / 10UL)
+
+/* The remainder is an integer in the range [0, EXACT_DENOMINATOR). */
+#define EXACT_REMAINDER \
+  (EXACT_NUMERATOR - (EXACT_NUMERATOR / EXACT_DENOMINATOR) * EXACT_DENOMINATOR)
+
+/* If the remainder is zero, MICROSECONDS_PER_MILLIS_OVERFLOW is exact.
+
+   Otherwise we compute the fractional part and approximate it by the closest
+   rational number n / 256.  Effectively, we increase millis accuracy by 512x.
+
+   We compute n by scaling down the remainder to the range [0, 256].
+   The two extreme cases 0 and 256 require only trivial correction.
+   All others are handled by an unsigned char counter in millis().
+ */
+#define CORRECT_FRACT_PLUSONE // possibly needed for high/cheap corner case
+#if EXACT_REMAINDER > 0
+#define CORRECT_EXACT_MILLIS // enable zero drift correction in millis()
+#define CORRECT_EXACT_MICROS // enable zero drift correction in micros()
+#define CORRECT_EXACT_MANY \
+  ((2U * 256U * EXACT_REMAINDER + EXACT_DENOMINATOR) / (2U * EXACT_DENOMINATOR))
+#if CORRECT_EXACT_MANY < 0 || CORRECT_EXACT_MANY > 256
+#error "Miscalculation in millis() exactness correction"
+#endif
+#if CORRECT_EXACT_MANY == 0 // low/cheap corner case
+#undef CORRECT_EXACT_MILLIS // go back to nothing for millis only
+#elif CORRECT_EXACT_MANY == 256 // high/cheap corner case
+#undef CORRECT_EXACT_MILLIS // go back to nothing for millis only
+#undef CORRECT_FRACT_PLUSONE // but use this macro...
+#define CORRECT_FRACT_PLUSONE + 1 // ...to add 1 more to fract every time
+#endif // cheap corner cases
+#endif // EXACT_REMAINDER > 0
+/* End of preparations for exact millis() with oddball frequencies */
+
+/* More preparations to optimize calculation of exact micros().
+   The idea is to reduce microseconds per overflow to unsigned char.
+   Then we find the leading one-bits to add, avoiding multiplication.
+
+   This way of calculating micros is currently enabled whenever
+   *both* the millis() exactness correction is enabled
+   *and* MICROSECONDS_PER_MILLIS_OVERFLOW < 65536.
+   Otherwise we fall back to the existing micros().
+ */
+#ifdef CORRECT_EXACT_MICROS
+#if MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 16)
+#undef CORRECT_EXACT_MICROS // disable correction for such long intervals
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 15)
+#define CORRECT_BITS 8
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 14)
+#define CORRECT_BITS 7
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 13)
+#define CORRECT_BITS 6
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 12)
+#define CORRECT_BITS 5
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 11)
+#define CORRECT_BITS 4
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 10)
+#define CORRECT_BITS 3
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 9)
+#define CORRECT_BITS 2
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 8)
+#define CORRECT_BITS 1
+#else
+#define CORRECT_BITS 0
+#endif
+#ifdef CORRECT_BITS // microsecs per overflow in the expected range of values
+#define CORRECT_BIT7S (0)
+#define CORRECT_BIT6
+#define CORRECT_BIT5
+#define CORRECT_BIT4
+#define CORRECT_BIT3
+#define CORRECT_BIT2
+#define CORRECT_BIT1
+#define CORRECT_BIT0
+#define CORRECT_UINT ((unsigned int) t)
+#define CORRECT_BYTE (MICROSECONDS_PER_MILLIS_OVERFLOW >> CORRECT_BITS)
+#if CORRECT_BYTE >= (1 << 8)
+#error "Miscalculation in micros() exactness correction"
+#endif
+#if (CORRECT_BYTE & (1 << 7))
+#undef  CORRECT_BIT7S
+#define CORRECT_BIT7S (CORRECT_UINT << 1)
+#endif
+#if (CORRECT_BYTE & (1 << 6))
+#undef  CORRECT_BIT6
+#define CORRECT_BIT6 + CORRECT_UINT
+#endif
+#if (CORRECT_BYTE & (1 << 5))
+#undef  CORRECT_BIT5
+#define CORRECT_BIT5 + CORRECT_UINT
+#endif
+#if (CORRECT_BYTE & (1 << 4))
+#undef  CORRECT_BIT4
+#define CORRECT_BIT4 + CORRECT_UINT
+#endif
+#if (CORRECT_BYTE & (1 << 3))
+#undef  CORRECT_BIT3
+#define CORRECT_BIT3 + CORRECT_UINT
+#endif
+#if (CORRECT_BYTE & (1 << 2))
+#undef  CORRECT_BIT2
+#define CORRECT_BIT2 + CORRECT_UINT
+#endif
+#if (CORRECT_BYTE & (1 << 1))
+#undef  CORRECT_BIT1
+#define CORRECT_BIT1 + CORRECT_UINT
+#endif
+#if (CORRECT_BYTE & (1 << 0))
+#undef  CORRECT_BIT0
+#define CORRECT_BIT0 + CORRECT_UINT
+#endif
+#endif // CORRECT_BITS
+#endif // CORRECT_EXACT_MICROS
+
+// the whole number of milliseconds per millis timer overflow
+#define MILLIS_INC (MICROSECONDS_PER_MILLIS_OVERFLOW / 1000U)
+
+// the fractional number of milliseconds per millis timer overflow. we shift right
+// by three to fit these numbers into a byte. (for the clock speeds we care
+// about - 8 and 16 MHz - this doesn't lose precision.)
+#define FRACT_INC (((MICROSECONDS_PER_MILLIS_OVERFLOW % 1000U) >> 3) \
+                   CORRECT_FRACT_PLUSONE)
+#define FRACT_MAX (1000U >> 3)
+
 
 
 #endif

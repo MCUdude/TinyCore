@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+__attribute__((section(".init9")))
 int main(void)
 {
   init();
