@@ -155,7 +155,7 @@ x5.menu.clock.1MHz_internal.build.f_cpu=1000000L
 x5.menu.clock.128kHz_external=128 kHz internal osc.
 x5.menu.clock.128kHz_external.bootloader.clock=128kHz
 x5.menu.clock.128kHz_external.bootloader.osc=i
-x5.menu.clock.128kHz_external.bootloader.low_fuses=0xc4
+x5.menu.clock.128kHz_external.bootloader.low_fuses=0xe4
 x5.menu.clock.128kHz_external.bootloader.baudrate=1200
 x5.menu.clock.128kHz_external.build.clocksource=3
 x5.menu.clock.128kHz_external.build.f_cpu=128000L
@@ -345,7 +345,7 @@ x4.menu.chip.44.upload.maximum_size=4096
 x4.menu.chip.44.upload.maximum_data_size=256
 
 x4.menu.chip.24=ATtiny24
-x4.menu.chip.24.build.mcu=attiny25
+x4.menu.chip.24.build.mcu=attiny24
 x4.menu.chip.24.upload.maximum_size=2048
 x4.menu.chip.24.upload.maximum_data_size=128
 
@@ -395,7 +395,7 @@ x4.menu.clock.1MHz_internal.build.f_cpu=1000000L
 x4.menu.clock.128kHz_external=128 kHz internal osc.
 x4.menu.clock.128kHz_external.bootloader.clock=128kHz
 x4.menu.clock.128kHz_external.bootloader.osc=i
-x4.menu.clock.128kHz_external.bootloader.low_fuses=0xc4
+x4.menu.clock.128kHz_external.bootloader.low_fuses=0xe4
 x4.menu.clock.128kHz_external.bootloader.baudrate=1200
 x4.menu.clock.128kHz_external.build.clocksource=3
 x4.menu.clock.128kHz_external.build.f_cpu=128000L
@@ -958,3 +958,243 @@ x7.menu.clock.1MHz_external.bootloader.low_fuses=0xfd
 x7.menu.clock.1MHz_external.bootloader.baudrate=9600
 x7.menu.clock.1MHz_external.build.clocksource=1
 x7.menu.clock.1MHz_external.build.f_cpu=1000000L
+
+
+###########################
+#### ATtiny261/461/861 ####
+###########################
+
+# General
+x61.name=ATtiny261/461/861
+x61.upload.tool=avrdude
+x61.upload.speed={bootloader.baudrate}
+x61.bootloader.tool=avrdude
+x61.bootloader.unlock_bits=0xff
+x61.bootloader.lock_bits=0xff
+x61.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
+x61.bootloader.pins=swio_rxa7_txa6
+x61.build.core=tiny
+x61.build.variant=tinyX61
+x61.build.board=AVR_ATTINYX61
+x61.build.extra_flags={build.pllsettings}
+x61.build.pllsettings=
+
+# Upload port select / Bootloader
+x61.menu.bootloader.no_bootloader=No bootloader
+x61.menu.bootloader.no_bootloader.build.export_merged_output=false
+x61.menu.bootloader.no_bootloader.bootloader.str=
+x61.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
+
+x61.menu.bootloader.urboot=Yes
+x61.menu.bootloader.urboot.build.export_merged_output=true
+x61.menu.bootloader.urboot.bootloader.str=-Uurboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
+x61.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
+
+x61.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
+x61.menu.bootloader.urboot_-125.build.export_merged_output=true
+x61.menu.bootloader.urboot_-125.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
+x61.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
+
+x61.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
+x61.menu.bootloader.urboot_-250.build.export_merged_output=true
+x61.menu.bootloader.urboot_-250.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
+x61.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
+
+x61.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
+x61.menu.bootloader.urboot_-375.build.export_merged_output=true
+x61.menu.bootloader.urboot_-375.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
+x61.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
+
+x61.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
+x61.menu.bootloader.urboot_-500.build.export_merged_output=true
+x61.menu.bootloader.urboot_-500.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
+x61.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
+
+x61.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
+x61.menu.bootloader.urboot_+125.build.export_merged_output=true
+x61.menu.bootloader.urboot_+125.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
+x61.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
+
+x61.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
+x61.menu.bootloader.urboot_+250.build.export_merged_output=true
+x61.menu.bootloader.urboot_+250.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
+x61.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
+
+x61.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
+x61.menu.bootloader.urboot_+375.build.export_merged_output=true
+x61.menu.bootloader.urboot_+375.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
+x61.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
+
+x61.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
+x61.menu.bootloader.urboot_+500.build.export_merged_output=true
+x61.menu.bootloader.urboot_+500.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
+x61.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
+
+# EEPROM
+x61.menu.eeprom.keep=EEPROM retained
+x61.menu.eeprom.keep.bootloader.eesave_bit=0
+x61.menu.eeprom.erase=EEPROM not retained
+x61.menu.eeprom.erase.bootloader.eesave_bit=1
+
+# Chip variants
+x61.menu.chip.84=ATtiny861
+x61.menu.chip.84.build.mcu=attiny861
+x61.menu.chip.84.upload.maximum_size=8192
+x61.menu.chip.84.upload.maximum_data_size=512
+
+x61.menu.chip.44=ATtiny461
+x61.menu.chip.44.build.mcu=attiny461
+x61.menu.chip.44.upload.maximum_size=4096
+x61.menu.chip.44.upload.maximum_data_size=256
+
+x61.menu.chip.24=ATtiny261
+x61.menu.chip.24.build.mcu=attiny261
+x61.menu.chip.24.upload.maximum_size=2048
+x61.menu.chip.24.upload.maximum_data_size=128
+
+# Brown out detection
+x61.menu.bod.2v7=BOD 2.7V
+x61.menu.bod.2v7.bootloader.bod_bits=101
+x61.menu.bod.4v3=BOD 4.3V
+x61.menu.bod.4v3.bootloader.bod_bits=100
+x61.menu.bod.1v8=BOD 1.8V
+x61.menu.bod.1v8.bootloader.bod_bits=110
+x61.menu.bod.disable=BOD disabled
+x61.menu.bod.disable.bootloader.bod_bits=111
+
+# Clock frequencies
+x61.menu.clock.8MHz_internal=8 MHz internal osc.
+x61.menu.clock.8MHz_internal.bootloader.clock=8MHz
+x61.menu.clock.8MHz_internal.bootloader.osc=i
+x61.menu.clock.8MHz_internal.bootloader.low_fuses=0xe2
+x61.menu.clock.8MHz_internal.bootloader.baudrate=38400
+x61.menu.clock.8MHz_internal.build.clocksource=0
+x61.menu.clock.8MHz_internal.build.f_cpu=8000000L
+
+x61.menu.clock.16MHz_internal_PLL=16 MHz internal PLL osc.
+x61.menu.clock.16MHz_internal_PLL.bootloader.clock=16MHz
+x61.menu.clock.16MHz_internal_PLL.bootloader.osc=i
+x61.menu.clock.16MHz_internal_PLL.bootloader.low_fuses=0xf1
+x61.menu.clock.16MHz_internal_PLL.bootloader.baudrate=57600
+x61.menu.clock.16MHz_internal_PLL.build.clocksource=6
+x61.menu.clock.16MHz_internal_PLL.build.f_cpu=16000000L
+
+x61.menu.clock.4MHz_internal=4 MHz internal osc.
+x61.menu.clock.4MHz_internal.bootloader.clock=4MHz
+x61.menu.clock.4MHz_internal.bootloader.osc=i
+x61.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
+x61.menu.clock.4MHz_internal.bootloader.baudrate=9600
+x61.menu.clock.4MHz_internal.build.clocksource=0
+x61.menu.clock.4MHz_internal.build.f_cpu=4000000L
+
+x61.menu.clock.1MHz_internal=1 MHz internal osc.
+x61.menu.clock.1MHz_internal.bootloader.clock=1MHz
+x61.menu.clock.1MHz_internal.bootloader.osc=i
+x61.menu.clock.1MHz_internal.bootloader.low_fuses=0x62
+x61.menu.clock.1MHz_internal.bootloader.baudrate=9600
+x61.menu.clock.1MHz_internal.build.clocksource=0
+x61.menu.clock.1MHz_internal.build.f_cpu=1000000L
+
+x61.menu.clock.128kHz_external=128 kHz internal osc.
+x61.menu.clock.128kHz_external.bootloader.clock=128kHz
+x61.menu.clock.128kHz_external.bootloader.osc=i
+x61.menu.clock.128kHz_external.bootloader.low_fuses=0xe3
+x61.menu.clock.128kHz_external.bootloader.baudrate=1200
+x61.menu.clock.128kHz_external.build.clocksource=3
+x61.menu.clock.128kHz_external.build.f_cpu=128000L
+
+x61.menu.clock.20MHz_external=20 MHz external osc.
+x61.menu.clock.20MHz_external.bootloader.clock=20MHz
+x61.menu.clock.20MHz_external.bootloader.osc=x
+x61.menu.clock.20MHz_external.bootloader.low_fuses=0xff
+x61.menu.clock.20MHz_external.bootloader.baudrate=115200
+x61.menu.clock.20MHz_external.build.clocksource=1
+x61.menu.clock.20MHz_external.build.f_cpu=20000000L
+
+x61.menu.clock.18_432MHz_external=18.432 MHz external osc.
+x61.menu.clock.18_432MHz_external.bootloader.clock=18.432MHz
+x61.menu.clock.18_432MHz_external.bootloader.osc=x
+x61.menu.clock.18_432MHz_external.bootloader.low_fuses=0xff
+x61.menu.clock.18_432MHz_external.bootloader.baudrate=115200
+x61.menu.clock.18_432MHz_external.build.clocksource=1
+x61.menu.clock.18_432MHz_external.build.f_cpu=18432000L
+
+x61.menu.clock.16MHz_external=16 MHz external osc.
+x61.menu.clock.16MHz_external.bootloader.clock=16MHz
+x61.menu.clock.16MHz_external.bootloader.osc=x
+x61.menu.clock.16MHz_external.bootloader.low_fuses=0xff
+x61.menu.clock.16MHz_external.bootloader.baudrate=115200
+x61.menu.clock.16MHz_external.build.clocksource=1
+x61.menu.clock.16MHz_external.build.f_cpu=16000000L
+
+x61.menu.clock.14_7456MHz_external=14.7456 MHz external osc.
+x61.menu.clock.14_7456MHz_external.bootloader.clock=14.7456MHz
+x61.menu.clock.14_7456MHz_external.bootloader.osc=x
+x61.menu.clock.14_7456MHz_external.bootloader.low_fuses=0xff
+x61.menu.clock.14_7456MHz_external.bootloader.baudrate=115200
+x61.menu.clock.14_7456MHz_external.build.clocksource=1
+x61.menu.clock.14_7456MHz_external.build.f_cpu=14745600L
+
+x61.menu.clock.12MHz_external=12 MHz external osc.
+x61.menu.clock.12MHz_external.bootloader.clock=12MHz
+x61.menu.clock.12MHz_external.bootloader.osc=x
+x61.menu.clock.12MHz_external.bootloader.low_fuses=0xff
+x61.menu.clock.12MHz_external.bootloader.baudrate=115200
+x61.menu.clock.12MHz_external.build.clocksource=1
+x61.menu.clock.12MHz_external.build.f_cpu=12000000L
+
+x61.menu.clock.11_0592MHz_external=11.7456 MHz external osc.
+x61.menu.clock.11_0592MHz_external.bootloader.clock=11.0592MHz
+x61.menu.clock.11_0592MHz_external.bootloader.osc=x
+x61.menu.clock.11_0592MHz_external.bootloader.low_fuses=0xff
+x61.menu.clock.11_0592MHz_external.bootloader.baudrate=115200
+x61.menu.clock.11_0592MHz_external.build.clocksource=1
+x61.menu.clock.11_0592MHz_external.build.f_cpu=11059200L
+
+x61.menu.clock.9_216MHz_external=9.216 MHz external osc.
+x61.menu.clock.9_216MHz_external.bootloader.clock=9.216MHz
+x61.menu.clock.9_216MHz_external.bootloader.osc=x
+x61.menu.clock.9_216MHz_external.bootloader.low_fuses=0xff
+x61.menu.clock.9_216MHz_external.bootloader.baudrate=115200
+x61.menu.clock.9_216MHz_external.build.clocksource=1
+x61.menu.clock.9_216MHz_external.build.f_cpu=9216000L
+
+x61.menu.clock.8MHz_external=8 MHz external osc.
+x61.menu.clock.8MHz_external.bootloader.clock=8MHz
+x61.menu.clock.8MHz_external.bootloader.osc=x
+x61.menu.clock.8MHz_external.bootloader.low_fuses=0xff
+x61.menu.clock.8MHz_external.bootloader.baudrate=38400
+x61.menu.clock.8MHz_external.build.clocksource=1
+x61.menu.clock.8MHz_external.build.f_cpu=8000000L
+
+x61.menu.clock.7_372MHz_external=7.372 MHz external osc.
+x61.menu.clock.7_372MHz_external.bootloader.clock=7.372MHz
+x61.menu.clock.7_372MHz_external.bootloader.osc=x
+x61.menu.clock.7_372MHz_external.bootloader.low_fuses=0xfd
+x61.menu.clock.7_372MHz_external.bootloader.baudrate=115200
+x61.menu.clock.7_372MHz_external.build.clocksource=1
+x61.menu.clock.7_372MHz_external.build.f_cpu=7372000L
+
+x61.menu.clock.6MHz_external=6 MHz external osc.
+x61.menu.clock.6MHz_external.bootloader.clock=6MHz
+x61.menu.clock.6MHz_external.bootloader.osc=x
+x61.menu.clock.6MHz_external.bootloader.low_fuses=0xfd
+x61.menu.clock.6MHz_external.bootloader.baudrate=57600
+x61.menu.clock.6MHz_external.build.clocksource=1
+x61.menu.clock.6MHz_external.build.f_cpu=6000000L
+
+x61.menu.clock.4MHz_external=4 MHz external osc.
+x61.menu.clock.4MHz_external.bootloader.clock=4MHz
+x61.menu.clock.4MHz_external.bootloader.osc=x
+x61.menu.clock.4MHz_external.bootloader.low_fuses=0xfd
+x61.menu.clock.4MHz_external.bootloader.baudrate=57600
+x61.menu.clock.4MHz_external.build.clocksource=1
+x61.menu.clock.4MHz_external.build.f_cpu=4000000L
+
+x61.menu.clock.1MHz_external=1 MHz external osc.
+x61.menu.clock.1MHz_external.bootloader.clock=1MHz
+x61.menu.clock.1MHz_external.bootloader.osc=x
+x61.menu.clock.1MHz_external.bootloader.low_fuses=0xfd
+x61.menu.clock.1MHz_external.bootloader.baudrate=9600
+x61.menu.clock.1MHz_external.build.clocksource=1
+x61.menu.clock.1MHz_external.build.f_cpu=1000000L
