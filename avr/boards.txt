@@ -729,12 +729,12 @@ x8.menu.eeprom.erase.bootloader.eesave_bit=1
 
 # Chip variants
 x8.menu.chip.85=ATtiny88
-x8.menu.chip.85.build.mcu=attiny84
+x8.menu.chip.85.build.mcu=attiny88
 x8.menu.chip.85.upload.maximum_size=8192
 x8.menu.chip.85.upload.maximum_data_size=512
 
 x8.menu.chip.45=ATtiny48
-x8.menu.chip.45.build.mcu=attiny44
+x8.menu.chip.45.build.mcu=attiny48
 x8.menu.chip.45.upload.maximum_size=4096
 x8.menu.chip.45.upload.maximum_data_size=256
 
