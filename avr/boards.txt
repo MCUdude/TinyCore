@@ -29,7 +29,7 @@ x5.bootloader.tool=avrdude
 x5.bootloader.unlock_bits=0xff
 x5.bootloader.lock_bits=0xff
 x5.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
-x5.bootloader.pins=rxb1_txb0
+x5.bootloader.pins=swio_rxb1_txb0
 x5.build.core=tiny
 x5.build.variant=tinyX5
 x5.build.board=AVR_ATTINYX5
@@ -44,47 +44,47 @@ x5.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
 
 x5.menu.bootloader.urboot=Yes
 x5.menu.bootloader.urboot.build.export_merged_output=true
-x5.menu.bootloader.urboot.bootloader.str=-Uurboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
+x5.menu.bootloader.urboot.bootloader.str=-Uurboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
 x5.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
 x5.menu.bootloader.urboot_-125.build.export_merged_output=true
-x5.menu.bootloader.urboot_-125.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
+x5.menu.bootloader.urboot_-125.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
 x5.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
 x5.menu.bootloader.urboot_-250.build.export_merged_output=true
-x5.menu.bootloader.urboot_-250.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
+x5.menu.bootloader.urboot_-250.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
 x5.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
 x5.menu.bootloader.urboot_-375.build.export_merged_output=true
-x5.menu.bootloader.urboot_-375.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
+x5.menu.bootloader.urboot_-375.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
 x5.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
 x5.menu.bootloader.urboot_-500.build.export_merged_output=true
-x5.menu.bootloader.urboot_-500.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
+x5.menu.bootloader.urboot_-500.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
 x5.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
 x5.menu.bootloader.urboot_+125.build.export_merged_output=true
-x5.menu.bootloader.urboot_+125.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
+x5.menu.bootloader.urboot_+125.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
 x5.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
 x5.menu.bootloader.urboot_+250.build.export_merged_output=true
-x5.menu.bootloader.urboot_+250.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
+x5.menu.bootloader.urboot_+250.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
 x5.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
 x5.menu.bootloader.urboot_+375.build.export_merged_output=true
-x5.menu.bootloader.urboot_+375.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
+x5.menu.bootloader.urboot_+375.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
 x5.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
 
 x5.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
 x5.menu.bootloader.urboot_+500.build.export_merged_output=true
-x5.menu.bootloader.urboot_+500.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
+x5.menu.bootloader.urboot_+500.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
 x5.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
 
 # EEPROM
@@ -124,7 +124,7 @@ x5.menu.clock.8MHz_internal=8 MHz internal osc.
 x5.menu.clock.8MHz_internal.bootloader.clock=8MHz
 x5.menu.clock.8MHz_internal.bootloader.osc=i
 x5.menu.clock.8MHz_internal.bootloader.low_fuses=0xe2
-x5.menu.clock.8MHz_internal.bootloader.baudrate=57600
+x5.menu.clock.8MHz_internal.bootloader.baudrate=38400
 x5.menu.clock.8MHz_internal.build.clocksource=0
 x5.menu.clock.8MHz_internal.build.f_cpu=8000000L
 
@@ -220,7 +220,7 @@ x5.menu.clock.8MHz_external=8 MHz external osc.
 x5.menu.clock.8MHz_external.bootloader.clock=8MHz
 x5.menu.clock.8MHz_external.bootloader.osc=x
 x5.menu.clock.8MHz_external.bootloader.low_fuses=0xff
-x5.menu.clock.8MHz_external.bootloader.baudrate=57600
+x5.menu.clock.8MHz_external.bootloader.baudrate=38400
 x5.menu.clock.8MHz_external.build.clocksource=1
 x5.menu.clock.8MHz_external.build.f_cpu=8000000L
 
@@ -252,7 +252,7 @@ x5.menu.clock.1MHz_external=1 MHz external osc.
 x5.menu.clock.1MHz_external.bootloader.clock=1MHz
 x5.menu.clock.1MHz_external.bootloader.osc=x
 x5.menu.clock.1MHz_external.bootloader.low_fuses=0xff
-x5.menu.clock.1MHz_external.bootloader.baudrate=57600
+x5.menu.clock.1MHz_external.bootloader.baudrate=9600
 x5.menu.clock.1MHz_external.build.clocksource=1
 x5.menu.clock.1MHz_external.build.f_cpu=1000000L
 
@@ -269,7 +269,7 @@ x4.bootloader.tool=avrdude
 x4.bootloader.unlock_bits=0xff
 x4.bootloader.lock_bits=0xff
 x4.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
-x4.bootloader.pins=rxa2_txa1
+x4.bootloader.pins=swio_rxa2_txa1
 x4.build.core=tiny
 x4.build.variant=tinyX4
 x4.build.board=AVR_ATTINYX4
@@ -284,47 +284,47 @@ x4.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
 
 x4.menu.bootloader.urboot=Yes
 x4.menu.bootloader.urboot.build.export_merged_output=true
-x4.menu.bootloader.urboot.bootloader.str=-Uurboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
+x4.menu.bootloader.urboot.bootloader.str=-Uurboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
 x4.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
 
 x4.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
 x4.menu.bootloader.urboot_-125.build.export_merged_output=true
-x4.menu.bootloader.urboot_-125.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
+x4.menu.bootloader.urboot_-125.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
 x4.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
 
 x4.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
 x4.menu.bootloader.urboot_-250.build.export_merged_output=true
-x4.menu.bootloader.urboot_-250.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
+x4.menu.bootloader.urboot_-250.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
 x4.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
 
 x4.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
 x4.menu.bootloader.urboot_-375.build.export_merged_output=true
-x4.menu.bootloader.urboot_-375.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
+x4.menu.bootloader.urboot_-375.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
 x4.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
 
 x4.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
 x4.menu.bootloader.urboot_-500.build.export_merged_output=true
-x4.menu.bootloader.urboot_-500.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
+x4.menu.bootloader.urboot_-500.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
 x4.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
 
 x4.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
 x4.menu.bootloader.urboot_+125.build.export_merged_output=true
-x4.menu.bootloader.urboot_+125.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
+x4.menu.bootloader.urboot_+125.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
 x4.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
 
 x4.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
 x4.menu.bootloader.urboot_+250.build.export_merged_output=true
-x4.menu.bootloader.urboot_+250.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
+x4.menu.bootloader.urboot_+250.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
 x4.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
 
 x4.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
 x4.menu.bootloader.urboot_+375.build.export_merged_output=true
-x4.menu.bootloader.urboot_+375.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
+x4.menu.bootloader.urboot_+375.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
 x4.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
 
 x4.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
 x4.menu.bootloader.urboot_+500.build.export_merged_output=true
-x4.menu.bootloader.urboot_+500.bootloader.str=-U urboot:2s_swio_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
+x4.menu.bootloader.urboot_+500.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
 x4.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
 
 # EEPROM
@@ -364,7 +364,7 @@ x4.menu.clock.8MHz_internal=8 MHz internal osc.
 x4.menu.clock.8MHz_internal.bootloader.clock=8MHz
 x4.menu.clock.8MHz_internal.bootloader.osc=i
 x4.menu.clock.8MHz_internal.bootloader.low_fuses=0xe2
-x4.menu.clock.8MHz_internal.bootloader.baudrate=57600
+x4.menu.clock.8MHz_internal.bootloader.baudrate=38400
 x4.menu.clock.8MHz_internal.build.clocksource=0
 x4.menu.clock.8MHz_internal.build.f_cpu=8000000L
 
@@ -460,7 +460,7 @@ x4.menu.clock.8MHz_external=8 MHz external osc.
 x4.menu.clock.8MHz_external.bootloader.clock=8MHz
 x4.menu.clock.8MHz_external.bootloader.osc=x
 x4.menu.clock.8MHz_external.bootloader.low_fuses=0xff
-x4.menu.clock.8MHz_external.bootloader.baudrate=57600
+x4.menu.clock.8MHz_external.bootloader.baudrate=38400
 x4.menu.clock.8MHz_external.build.clocksource=1
 x4.menu.clock.8MHz_external.build.f_cpu=8000000L
 
@@ -492,6 +492,161 @@ x4.menu.clock.1MHz_external=1 MHz external osc.
 x4.menu.clock.1MHz_external.bootloader.clock=1MHz
 x4.menu.clock.1MHz_external.bootloader.osc=x
 x4.menu.clock.1MHz_external.bootloader.low_fuses=0xff
-x4.menu.clock.1MHz_external.bootloader.baudrate=57600
+x4.menu.clock.1MHz_external.bootloader.baudrate=9600
 x4.menu.clock.1MHz_external.build.clocksource=1
 x4.menu.clock.1MHz_external.build.f_cpu=1000000L
+
+
+#########################
+#### ATtiny2313/4313 ####
+#########################
+
+# General
+x313.name=ATtiny2313/4313
+x313.upload.tool=avrdude
+x313.upload.speed={bootloader.baudrate}
+x313.bootloader.tool=avrdude
+x313.bootloader.unlock_bits=0xff
+x313.bootloader.lock_bits=0xff
+x313.bootloader.high_fuses=0b1{bootloader.eesave_bit}01{bootloader.bod_bits}1
+x313.bootloader.pins=uart0
+x313.build.core=tiny
+x313.build.variant=tinyX313
+x313.build.board=AVR_ATTINYX313
+x313.build.extra_flags=
+
+
+# Upload port select / Bootloader
+x313.menu.bootloader.no_bootloader=No bootloader
+x313.menu.bootloader.no_bootloader.build.export_merged_output=false
+x313.menu.bootloader.no_bootloader.bootloader.str=
+x313.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
+
+x313.menu.bootloader.urboot=Yes (UART0)
+x313.menu.bootloader.urboot.build.export_merged_output=true
+x313.menu.bootloader.urboot.bootloader.str=-Uurboot:2s_autobaud_noled_ce_{bootloader.pins}
+x313.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
+
+# EEPROM
+x313.menu.eeprom.keep=EEPROM retained
+x313.menu.eeprom.keep.bootloader.eesave_bit=0
+x313.menu.eeprom.erase=EEPROM not retained
+x313.menu.eeprom.erase.bootloader.eesave_bit=1
+
+# Chip variants
+x313.menu.chip.4313=ATtiny4313
+x313.menu.chip.4313.build.mcu=attiny4313
+x313.menu.chip.4313.upload.maximum_size=4096
+x313.menu.chip.4313.upload.maximum_data_size=256
+
+x313.menu.chip.2313=ATtiny2313
+x313.menu.chip.2313.build.mcu=attiny2313
+x313.menu.chip.2313.upload.maximum_size=2048
+x313.menu.chip.2313.upload.maximum_data_size=128
+
+# Brown out detection
+x313.menu.bod.2v7=BOD 2.7V
+x313.menu.bod.2v7.bootloader.bod_bits=101
+x313.menu.bod.4v3=BOD 4.3V
+x313.menu.bod.4v3.bootloader.bod_bits=100
+x313.menu.bod.1v8=BOD 1.8V
+x313.menu.bod.1v8.bootloader.bod_bits=110
+x313.menu.bod.disable=BOD disabled
+x313.menu.bod.disable.bootloader.bod_bits=111
+
+# Clock frequencies
+x313.menu.clock.8MHz_internal=8 MHz internal osc.
+x313.menu.clock.8MHz_internal.bootloader.low_fuses=0xe4
+x313.menu.clock.8MHz_internal.bootloader.baudrate=38400
+x313.menu.clock.8MHz_internal.build.clocksource=0
+x313.menu.clock.8MHz_internal.build.f_cpu=8000000L
+
+x313.menu.clock.4MHz_internal=4 MHz internal osc.
+x313.menu.clock.4MHz_internal.bootloader.low_fuses=0xe2
+x313.menu.clock.4MHz_internal.bootloader.baudrate=9600
+x313.menu.clock.4MHz_internal.build.clocksource=0
+x313.menu.clock.4MHz_internal.build.f_cpu=4000000L
+
+x313.menu.clock.1MHz_internal=1 MHz internal osc.
+x313.menu.clock.1MHz_internal.bootloader.low_fuses=0x64
+x313.menu.clock.1MHz_internal.bootloader.baudrate=9600
+x313.menu.clock.1MHz_internal.build.clocksource=0
+x313.menu.clock.1MHz_internal.build.f_cpu=1000000L
+
+x313.menu.clock.128kHz_external=128 kHz internal osc.
+x313.menu.clock.128kHz_external.bootloader.low_fuses=0xc5
+x313.menu.clock.128kHz_external.bootloader.baudrate=1200
+x313.menu.clock.128kHz_external.build.clocksource=3
+x313.menu.clock.128kHz_external.build.f_cpu=128000L
+
+x313.menu.clock.20MHz_external=20 MHz external osc.
+x313.menu.clock.20MHz_external.bootloader.low_fuses=0xff
+x313.menu.clock.20MHz_external.bootloader.baudrate=115200
+x313.menu.clock.20MHz_external.build.clocksource=1
+x313.menu.clock.20MHz_external.build.f_cpu=20000000L
+
+x313.menu.clock.16MHz_external=16 MHz external osc.
+x313.menu.clock.16MHz_external.bootloader.low_fuses=0xff
+x313.menu.clock.16MHz_external.bootloader.baudrate=115200
+x313.menu.clock.16MHz_external.build.clocksource=1
+x313.menu.clock.16MHz_external.build.f_cpu=16000000L
+
+x313.menu.clock.18_432MHz_external=18.432 MHz external osc.
+x313.menu.clock.18_432MHz_external.bootloader.low_fuses=0xff
+x313.menu.clock.18_432MHz_external.bootloader.baudrate=115200
+x313.menu.clock.18_432MHz_external.build.clocksource=1
+x313.menu.clock.18_432MHz_external.build.f_cpu=18432000L
+
+x313.menu.clock.14_7456MHz_external=14.7456 MHz external osc.
+x313.menu.clock.14_7456MHz_external.bootloader.low_fuses=0xff
+x313.menu.clock.14_7456MHz_external.bootloader.baudrate=115200
+x313.menu.clock.14_7456MHz_external.build.clocksource=1
+x313.menu.clock.14_7456MHz_external.build.f_cpu=14745600L
+
+x313.menu.clock.11_0592MHz_external=11.7456 MHz external osc.
+x313.menu.clock.11_0592MHz_external.bootloader.low_fuses=0xff
+x313.menu.clock.11_0592MHz_external.bootloader.baudrate=115200
+x313.menu.clock.11_0592MHz_external.build.clocksource=1
+x313.menu.clock.11_0592MHz_external.build.f_cpu=11059200L
+
+x313.menu.clock.12MHz_external=12 MHz external osc.
+x313.menu.clock.12MHz_external.bootloader.low_fuses=0xff
+x313.menu.clock.12MHz_external.bootloader.baudrate=115200
+x313.menu.clock.12MHz_external.build.clocksource=1
+x313.menu.clock.12MHz_external.build.f_cpu=16000000L
+
+x313.menu.clock.9_216MHz_external=9.216 MHz external osc.
+x313.menu.clock.9_216MHz_external.bootloader.low_fuses=0xff
+x313.menu.clock.9_216MHz_external.bootloader.baudrate=115200
+x313.menu.clock.9_216MHz_external.build.clocksource=1
+x313.menu.clock.9_216MHz_external.build.f_cpu=9216000L
+
+x313.menu.clock.8MHz_external=8 MHz external osc.
+x313.menu.clock.8MHz_external.bootloader.low_fuses=0xff
+x313.menu.clock.8MHz_external.bootloader.baudrate=38400
+x313.menu.clock.8MHz_external.build.clocksource=1
+x313.menu.clock.8MHz_external.build.f_cpu=8000000L
+
+x313.menu.clock.7_372MHz_external=7.372 MHz external osc.
+x313.menu.clock.7_372MHz_external.bootloader.low_fuses=0xfd
+x313.menu.clock.7_372MHz_external.bootloader.baudrate=115200
+x313.menu.clock.7_372MHz_external.build.clocksource=1
+x313.menu.clock.7_372MHz_external.build.f_cpu=9216000L
+
+x313.menu.clock.6MHz_external=6 MHz external osc.
+x313.menu.clock.6MHz_external.bootloader.low_fuses=0xfd
+x313.menu.clock.6MHz_external.bootloader.baudrate=57600
+x313.menu.clock.6MHz_external.build.clocksource=1
+x313.menu.clock.6MHz_external.build.f_cpu=6000000L
+
+x313.menu.clock.4MHz_external=4 MHz external osc.
+x313.menu.clock.4MHz_external.bootloader.low_fuses=0xfd
+x313.menu.clock.4MHz_external.bootloader.baudrate=57600
+x313.menu.clock.4MHz_external.build.clocksource=1
+x313.menu.clock.4MHz_external.build.f_cpu=4000000L
+
+x313.menu.clock.1MHz_external=1 MHz external osc.
+x313.menu.clock.1MHz_external.bootloader.low_fuses=0xfb
+x313.menu.clock.1MHz_external.bootloader.baudrate=9600
+x313.menu.clock.1MHz_external.build.clocksource=1
+x313.menu.clock.1MHz_external.build.f_cpu=1000000L
