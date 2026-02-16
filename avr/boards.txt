@@ -1198,3 +1198,133 @@ x61.menu.clock.1MHz_external.bootloader.low_fuses=0xfd
 x61.menu.clock.1MHz_external.bootloader.baudrate=9600
 x61.menu.clock.1MHz_external.build.clocksource=1
 x61.menu.clock.1MHz_external.build.f_cpu=1000000L
+
+
+##################
+#### ATtiny43 ####
+##################
+
+# General
+43.name=ATtiny43U
+43.build.mcu=attiny43u
+43.upload.maximum_size=4096
+43.upload.maximum_data_size=256
+43.upload.tool=avrdude
+43.upload.speed={bootloader.baudrate}
+43.bootloader.tool=avrdude
+43.bootloader.unlock_bits=0xff
+43.bootloader.lock_bits=0xff
+43.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
+43.bootloader.pins=swio_rxa5_txa4
+43.build.core=tiny
+43.build.variant=tiny43
+43.build.board=AVR_ATTINY43
+43.build.extra_flags=
+
+# Upload port select / Bootloader
+43.menu.bootloader.no_bootloader=No bootloader
+43.menu.bootloader.no_bootloader.build.export_merged_output=false
+43.menu.bootloader.no_bootloader.bootloader.str=
+43.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
+
+43.menu.bootloader.urboot=Yes
+43.menu.bootloader.urboot.build.export_merged_output=true
+43.menu.bootloader.urboot.bootloader.str=-Uurboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
+43.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
+
+43.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
+43.menu.bootloader.urboot_-125.build.export_merged_output=true
+43.menu.bootloader.urboot_-125.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
+43.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
+
+43.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
+43.menu.bootloader.urboot_-250.build.export_merged_output=true
+43.menu.bootloader.urboot_-250.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
+43.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
+
+43.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
+43.menu.bootloader.urboot_-375.build.export_merged_output=true
+43.menu.bootloader.urboot_-375.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
+43.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
+
+43.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
+43.menu.bootloader.urboot_-500.build.export_merged_output=true
+43.menu.bootloader.urboot_-500.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
+43.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
+
+43.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
+43.menu.bootloader.urboot_+125.build.export_merged_output=true
+43.menu.bootloader.urboot_+125.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
+43.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
+
+43.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
+43.menu.bootloader.urboot_+250.build.export_merged_output=true
+43.menu.bootloader.urboot_+250.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
+43.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
+
+43.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
+43.menu.bootloader.urboot_+375.build.export_merged_output=true
+43.menu.bootloader.urboot_+375.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
+43.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
+
+43.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
+43.menu.bootloader.urboot_+500.build.export_merged_output=true
+43.menu.bootloader.urboot_+500.bootloader.str=-U urboot:2s_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
+43.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
+
+# EEPROM
+43.menu.eeprom.keep=EEPROM retained
+43.menu.eeprom.keep.bootloader.eesave_bit=0
+43.menu.eeprom.erase=EEPROM not retained
+43.menu.eeprom.erase.bootloader.eesave_bit=1
+
+# Brown out detection
+43.menu.bod.2v7=BOD 2.7V
+43.menu.bod.2v7.bootloader.bod_bits=101
+43.menu.bod.4v3=BOD 4.3V
+43.menu.bod.4v3.bootloader.bod_bits=100
+43.menu.bod.2v3=BOD 2.3V
+43.menu.bod.2v3.bootloader.bod_bits=011
+43.menu.bod.2v2=BOD 2.2V
+43.menu.bod.2v2.bootloader.bod_bits=010
+43.menu.bod.2v0=BOD 2.0V
+43.menu.bod.2v0.bootloader.bod_bits=000
+43.menu.bod.1v9=BOD 1.9V
+43.menu.bod.1v9.bootloader.bod_bits=001
+43.menu.bod.1v8=BOD 1.8V
+43.menu.bod.1v8.bootloader.bod_bits=110
+43.menu.bod.disable=BOD disabled
+43.menu.bod.disable.bootloader.bod_bits=111
+
+# Clock frequencies
+43.menu.clock.8MHz_internal=8 MHz internal osc.
+43.menu.clock.8MHz_internal.bootloader.clock=8MHz
+43.menu.clock.8MHz_internal.bootloader.osc=i
+43.menu.clock.8MHz_internal.bootloader.low_fuses=0xe2
+43.menu.clock.8MHz_internal.bootloader.baudrate=38400
+43.menu.clock.8MHz_internal.build.clocksource=0
+43.menu.clock.8MHz_internal.build.f_cpu=8000000L
+
+43.menu.clock.4MHz_internal=4 MHz internal osc.
+43.menu.clock.4MHz_internal.bootloader.clock=4MHz
+43.menu.clock.4MHz_internal.bootloader.osc=i
+43.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
+43.menu.clock.4MHz_internal.bootloader.baudrate=9600
+43.menu.clock.4MHz_internal.build.clocksource=0
+43.menu.clock.4MHz_internal.build.f_cpu=4000000L
+
+43.menu.clock.1MHz_internal=1 MHz internal osc.
+43.menu.clock.1MHz_internal.bootloader.clock=1MHz
+43.menu.clock.1MHz_internal.bootloader.osc=i
+43.menu.clock.1MHz_internal.bootloader.low_fuses=0x62
+43.menu.clock.1MHz_internal.bootloader.baudrate=9600
+43.menu.clock.1MHz_internal.build.clocksource=0
+43.menu.clock.1MHz_internal.build.f_cpu=1000000L
+
+43.menu.clock.128kHz_internal=128 kHz internal osc.
+43.menu.clock.128kHz_internal.bootloader.clock=128kHz
+43.menu.clock.128kHz_internal.bootloader.osc=i
+43.menu.clock.128kHz_internal.bootloader.low_fuses=0xe3
+43.menu.clock.128kHz_internal.bootloader.baudrate=1200
+43.menu.clock.128kHz_internal.build.clocksource=3
+43.menu.clock.128kHz_internal.build.f_cpu=128000L
