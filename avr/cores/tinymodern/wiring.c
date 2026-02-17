@@ -31,6 +31,7 @@
   #define _NOP() do { __asm__ volatile ("nop"); } while (0)
 #endif
 
+#include "Arduino.h"
 #include "core_build_options.h"
 #include "core_adc.h"
 #include "core_timers.h"
@@ -38,209 +39,7 @@
 #include "ToneTimer.h"
 #include <avr/boot.h>
 
-#define millistimer_(t)                           TIMER_PASTE_A( timer, TIMER_TO_USE_FOR_MILLIS, t )
-#define MillisTimer_(f)                           TIMER_PASTE_A( Timer, TIMER_TO_USE_FOR_MILLIS, f )
-#define MILLISTIMER_(c)                           TIMER_PASTE_A( TIMER, TIMER_TO_USE_FOR_MILLIS, c )
 
-#define MillisTimer_SetToPowerup                  MillisTimer_(SetToPowerup)
-#define MillisTimer_SetWaveformGenerationMode     MillisTimer_(SetWaveformGenerationMode)
-#define MillisTimer_GetCount                      MillisTimer_(GetCount)
-#define MillisTimer_IsOverflowSet                 MillisTimer_(IsOverflowSet)
-#define MillisTimer_ClockSelect                   MillisTimer_(ClockSelect)
-#define MillisTimer_EnableOverflowInterrupt       MillisTimer_(EnableOverflowInterrupt)
-#define MILLISTIMER_OVF_vect                      MILLISTIMER_(OVF_vect)
-
-
-#if F_CPU >= 3000000L
-  #define MillisTimer_Prescale_Index  MillisTimer_(Prescale_Value_64)
-  #define MillisTimer_Prescale_Value  (64)
-  #define ToneTimer_Prescale_Index    ToneTimer_(Prescale_Value_64)
-  #define ToneTimer_Prescale_Value    (64)
-#else
-  #define MillisTimer_Prescale_Index  MillisTimer_(Prescale_Value_8)
-  #define MillisTimer_Prescale_Value  (8)
-  #define ToneTimer_Prescale_Index    ToneTimer_(Prescale_Value_8)
-  #define ToneTimer_Prescale_Value    (8)
-#endif
-
-// the prescaler is set so that the millis timer ticks every MillisTimer_Prescale_Value (64) clock cycles, and the
-// the overflow handler is called every 256 ticks.
-#define MICROSECONDS_PER_MILLIS_OVERFLOW (clockCyclesToMicroseconds(MillisTimer_Prescale_Value * 256))
-
-// the whole number of milliseconds per millis timer overflow
-#define MILLIS_INC (MICROSECONDS_PER_MILLIS_OVERFLOW / 1000)
-
-// the fractional number of milliseconds per millis timer overflow. we shift right
-// by three to fit these numbers into a byte. (for the clock speeds we care
-// about - 8 and 16 MHz - this doesn't lose precision.)
-#define FRACT_INC ((MICROSECONDS_PER_MILLIS_OVERFLOW % 1000) >> 3)
-#define FRACT_MAX (1000 >> 3)
-
-#ifndef DISABLEMILLIS
-
-volatile unsigned long millis_timer_overflow_count = 0;
-volatile unsigned long millis_timer_millis = 0;
-static unsigned char millis_timer_fract = 0;
-
-ISR(MILLISTIMER_OVF_vect)
-{
-  // copy these to local variables so they can be stored in registers
-  // (volatile variables must be read from memory on every access)
-  unsigned long m = millis_timer_millis;
-  unsigned char f = millis_timer_fract;
-
-/* rmv: The code below generates considerably less code (empty Sketch is 326 versus 304)...
-
-  m += MILLIS_INC;
-  f += FRACT_INC;
-  if (f >= FRACT_MAX) {
-    f -= FRACT_MAX;
-    m += 1;
-  }
-...rmv */
-
-  f += FRACT_INC;
-
-  if (f >= FRACT_MAX)
-  {
-    f -= FRACT_MAX;
-    m = m + MILLIS_INC + 1;
-  }
-  else
-  {
-    m += MILLIS_INC;
-  }
-
-  millis_timer_fract = f;
-  millis_timer_millis = m;
-  millis_timer_overflow_count++;
-}
-
-unsigned long millis()
-{
-  unsigned long m;
-  uint8_t oldSREG = SREG;
-
-  // disable interrupts while we read millis_timer_millis or we might get an
-  // inconsistent value (e.g. in the middle of a write to millis_timer_millis)
-  cli();
-  m = millis_timer_millis;
-  SREG = oldSREG;
-  return m;
-}
-unsigned long micros()
-{
-  unsigned long m;
-  uint8_t oldSREG = SREG, t;
-
-  cli();
-  m = millis_timer_overflow_count;
-#if defined(TCNT0) && (TIMER_TO_USE_FOR_MILLIS == 0) && !defined(TCW0)
-  t = TCNT0;
-#elif defined(TCNT0L) && (TIMER_TO_USE_FOR_MILLIS == 0)
-  t = TCNT0L;
-#elif defined(TCNT1) && (TIMER_TO_USE_FOR_MILLIS == 1)
-  t = TCNT1;
-#elif defined(TCNT1L) && (TIMER_TO_USE_FOR_MILLIS == 1)
-  t = TCNT1L;
-#else
-  #error Millis()/Micros() timer not defined
-#endif
-
-#if defined(TIFR0) && (TIMER_TO_USE_FOR_MILLIS == 0)
-  if ((TIFR0 & _BV(TOV0)) && (t < 255))
-    m++;
-#elif defined(TIFR) && (TIMER_TO_USE_FOR_MILLIS == 0)
-  if ((TIFR & _BV(TOV0)) && (t < 255))
-    m++;
-#elif defined(TIFR1) && (TIMER_TO_USE_FOR_MILLIS == 1)
-  if ((TIFR1 & _BV(TOV1)) && (t < 255))
-    m++;
-#elif defined(TIFR) && (TIMER_TO_USE_FOR_MILLIS == 1)
-  if ((TIFR & _BV(TOV1)) && (t < 255))
-    m++;
-#endif
-
-  SREG = oldSREG;
-
-
-#if F_CPU < 1000000L
-  return ((m << 8) + t) * MillisTimer_Prescale_Value * (1000000L/F_CPU);
-#else
-#if (MillisTimer_Prescale_Value % clockCyclesPerMicrosecond() == 0 ) // Can we just do it the naive way? If so great!
-  return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
-  // Otherwise we do clock-specific calculations
-#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 12800000L)  //64/12.8=5, but the compiler wouldn't realize it because of integer math - this is a supported speed for Micronucleus.
-  return ((m << 8) + t) * 5;
-  // Otherwise we do clock-specific calculations
-#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 24000000L) // 2.6875 vs real value 2.67
-  m = (m << 8) + t;
-  return (m<<1) + (m >> 1) + (m >> 3) + (m >> 4); // multiply by 2.6875
-#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 20) // 3.187 vs real value 3.2
-  m=(m << 8) + t;
-  return m+(m<<1)+(m>>2)-(m>>4);
-#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 18432000L) // 3.5 vs real value 3.47
-  m=(m << 8) + t;
-  return m+(m<<1)+(m>>1);
-#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 14745600L) //4.375  vs real value 4.34
-  m=(m << 8) + t;
-  return (m<<2)+(m>>1)-(m>>3);
-#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 14) //4.5 - actual 4.57 for 14.0mhz, 4.47 for the 14.3 crystals scrappable from everything
-  m=(m << 8) + t;
-  return (m<<2)+(m>>1);
-#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 12) // 5.3125 vs real value 5.333
-  m=(m << 8) + t;
-  return m+(m<<2)+(m>>2)+(m>>4);
-#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 11) // 5.75 vs real value 5.818 (11mhz) 5.78 (11.059)
-  m=(m << 8) + t;
-  return m+(m<<2)+(m>>1)+(m>>2);
-#elif (MillisTimer_Prescale_Value == 64 && F_CPU==7372800L) // 8.625, vs real value 8.68
-  m=(m << 8) + t;
-  return (m<<3)+(m>>2)+(m>>3);
-#elif (MillisTimer_Prescale_Value == 64 && F_CPU==6000000L) // 10.625, vs real value 10.67
-  m=(m << 8) + t;
-  return (m<<3)+(m<<1)+(m>>2)+(m>>3);
-#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 9) // For 9mhz, this is a little off, but for 9.21, it's very close!
-  return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
-#else
-  //return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
-  //return ((m << 8) + t) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond();
-  //Integer division precludes the above technique.
-  //so we have to get a bit more creative.
-  //We can't just remove the parens, because then it will overflow (MillisTimer_Prescale_Value) times more often than unsigned longs should, so overflows would break everything.
-  //So what we do here is:
-  //the high part gets divided by cCPuS then multiplied by the prescaler. Then take the low 8 bits plus the high part modulo-cCPuS to correct for the division, then multiply that by the prescaler value first before dividing by cCPuS, and finally add the two together.
-  //return ((m << 8 )/clockCyclesPerMicrosecond()* MillisTimer_Prescale_Value) + ((t+(((m<<8)%clockCyclesPerMicrosecond())) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond()));
-  return ((m << 8 )/clockCyclesPerMicrosecond()* MillisTimer_Prescale_Value) + (t * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
-#endif
-#endif
-}
-
-static void __empty() {
-  // Empty
-}
-void yield(void) __attribute__ ((weak, alias("__empty")));
-
-void delay(unsigned long ms)
-{
-  #if (F_CPU>=1000000L)
-  uint16_t start = (uint16_t)micros();
-
-  while (ms > 0) {
-    yield();
-    while (((uint16_t)micros() - start) >= 1000 && ms) {
-      ms--;
-      start += 1000;
-    }
-  }
-  #else
-  uint32_t start = millis();
-  while((millis() - start) < ms)  /* NOP */yield();
-  return;
-  #endif
-}
-
-#else
 
 static void __empty() {
   // Empty
@@ -251,10 +50,9 @@ void delay(unsigned long ms) //non-millis-timer-dependent delay()
 {
   while(ms--){
     yield();
-    delayMicroseconds(1000);
+    delayMicroseconds(999);
   }
 }
-#endif
 
 /* Delay for the given number of microseconds.  Assumes a 1,8,12,16,20 or 24 MHz clock. */
 void delayMicroseconds(unsigned int us)
@@ -499,63 +297,9 @@ void initToneTimer(void)
 #endif
 
 
-#if ((defined(__AVR_ATtinyX41__) && F_CPU==16000000) && CLOCK_SOURCE==0 )
-  //functions related to the 16 MHz internal option on ATtiny841/441.
-  // 174 CALBOOST was empirically determined from a few parts I had lying around.
-  #define CALBOOST 174
-  #define MAXINITCAL (255-CALBOOST)
-  static uint8_t saveTCNT=0;
-  void oscBoost() {
-    OSCCAL0=(origOSC>MAXINITCAL?255:(origOSC+CALBOOST));
-    _NOP();
-  }
-
-  void oscSafeNVM() { //called immediately prior to writing to EEPROM.
-    TIMSK0&=~(_BV(TOIE0)); //turn off millis interrupt - let PWM keep running (Though at half frequency, of course!)
-    saveTCNT=TCNT0;
-    if (TIFR0&_BV(TOV0)) { // might have just missed interrupt - recording as 255 is good enough (this may or may not have been what we recorded, but if it was still set, interrupt didn't fire)
-      saveTCNT=255;
-    }
-    oscSlow(origOSC);
-  }
-  void oscDoneNVM(uint8_t bytes_written) { // number of bytes of eeprom written.
-    // EEPROM does it one at a time, but user code could call these two methods when doing block writes (up to 64 bytes). Just be sure to do the eeprom_busy_wait(); at the end, as in EEPROM.h.
-    // 3.3ms is good approximation of the duration of writing a byte - it'll be about 3~4% faaster since we're running around 5V at default call - hence, we're picking 3.3ms - the oscillator
-    // adjustment loops and these calculations should be fast enough that the time they dont take long enough to worry about...
-    // Srelies on assumptions from implementation above of millis on this part at 16MHz!
-    //millis interrupt was disabled when oscSaveNVM() was called - so we don't need to do anything fancy to access the volatile variables related to it.
-    //1 millis interrupt fires every 1.024ms, so we want 3.3/1.024= 3.223 overflows; there are 256 timer ticksin an overflow, so 57 timer ticks...
-    oscBoost();
-    uint8_t m = 3*bytes_written; //the 3 whole overflows
-    uint16_t tickcount=57*bytes_written+saveTCNT;
-    m+=(tickcount>>8); //overflows from theose extra /0.223's
-    millis_timer_overflow_count+=m; //done with actual overflows, so record that.
-    uint16_t f = FRACT_INC*m+millis_timer_fract; //(m could be up to 207)
-    while(f>FRACT_MAX){ //at most 621+124=745
-      f-=FRACT_MAX;
-      m++; // now we're adding up the contributions to millis from the 0.024 part...
-    }
-    // save the results
-    millis_timer_fract=f;
-    millis_timer_millis+=m;
-    TCNT0=0;
-    TIFR0|=_BV(TOV0); //clear overflow flag
-    TIMSK0|=_BV(TOIE0); //enable overflow interrupt
-    TCNT0=tickcount; //restore new tick count
-    // wonder if it was worth all that just to write to the EEPROM while running at 16MHz off internal oscillator without screwing up millis and micros...
-  }
-#endif
-
-
-
 void init(void)
 {
-  // We should take some precaution against accidentally applying the same changes if the sketch restarts without a clean reset - so we base what we change to on the original value, not whatever it happens to be set to.
-  #if (defined(__AVR_ATtinyX41__) && CLOCK_SOURCE==0 && F_CPU==16000000L)
-    // jumping up about 174 from the factory cal gives us ~16 MHz at 4.5~5.25V - not always perfect, but should generally be close enough.
-    origOSC=read_factory_calibration();
-    oscBoost();
-  #elif (CLOCK_SOURCE==0 && defined(LOWERCAL))
+  #if (CLOCK_SOURCE==0 && defined(LOWERCAL))
     origOSC=read_factory_calibration();
     oscSlow(origOSC-LOWERCAL);
   #endif
@@ -570,25 +314,6 @@ void init(void)
   CLKPR=1; //prescale by 2 for 4MHz
   #endif
   sei();
-
-
-  /*
-  // In case the bootloader left our millis timer in a bad way
-  // but none of the supported bootloaders do this - so this can be commented out entirely
-  #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
-    MillisTimer_SetToPowerup();
-  #endif
-  */
-  // Use the Millis Timer for fast PWM
-  MillisTimer_SetWaveformGenerationMode( MillisTimer_(Fast_PWM_FF) );
-
-  // Millis timer is always processor clock divided by MillisTimer_Prescale_Value (64)
-  MillisTimer_ClockSelect( MillisTimer_Prescale_Index );
-
-  // Enable the overflow interrupt (this is the basic system tic-toc for millis)
-  #ifndef DISABLEMILLIS
-  MillisTimer_EnableOverflowInterrupt();
-  #endif
 
   // Initialize the timer used for Tone
   #if defined( INITIALIZE_SECONDARY_TIMERS ) && INITIALIZE_SECONDARY_TIMERS

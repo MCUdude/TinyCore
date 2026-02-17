@@ -186,11 +186,8 @@ int analogRead(int8_t);
 void analogReference(uint8_t mode);
 void analogWrite(uint8_t, int);
 
-#ifndef DISABLEMILLIS
 unsigned long millis(void);
 unsigned long micros(void);
-#endif
-
 
 #if ((F_CPU==16000000 || defined(LOWERCAL)) && CLOCK_SOURCE==0 )
   uint8_t read_factory_calibration(void);
