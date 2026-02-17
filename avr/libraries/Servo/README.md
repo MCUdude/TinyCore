@@ -1,13 +1,12 @@
-= Servo Library for Arduino =
+# Servo Library for Arduino
 
 This library allows an Arduino board to control RC (hobby) servo motors.
 
-This library has been modified to add support for additional ATtiny processors.
+This library has been modified to add support for additional ATtiny processors. If you've already installed Servo normally, the IDE may use that version (which doesn't work with these parts) instead. In that case, simply include `Servo_megaTinyCore.h` instead of `Servo.h` - that copy is identical but for the name of the header file.
 
-For more information about this library please visit us at
-http://www.arduino.cc/en/Reference/Servo
-
-== License ==
+For more information about this library please view the official documentation
+[http://www.arduino.cc/en/Reference/Servo](http://www.arduino.cc/en/Reference/Servo)
+## License
 
 Copyright (c) 2017 Spence Konde.
 Copyright (c) 2013 Arduino LLC. All right reserved.
