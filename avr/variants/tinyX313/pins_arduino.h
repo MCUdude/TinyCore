@@ -26,6 +26,11 @@
 #define DDAR1 DDA1
 #define DDAR2 DDA2
 #endif
+#ifdef PCMSK1
+  #ifndef PCMSK0
+    #define PCMSK0 PCMSK
+  #endif
+#endif
 #ifndef EEPROM_Ready_vect
 #define EEPROM_Ready_vect EEPROM_READY_vect
 #define EEPROM_Ready_vect_num EEPROM_READY_vect_num
