@@ -35,7 +35,7 @@
 #define NUM_ANALOG_INPUTS           8
 #define analogInputToDigitalPin(p)  ((p < 8) ? 10 -(p): -1)
 
-#define ADC_TEMPERATURE 34
+#define ADC_TEMPERATURE (0x80 | 7)
 
 #define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5)
 
