@@ -272,7 +272,17 @@ long map(long, long, long, long, long);
 =============================================================================*/
 
 #ifndef SIGRD
-#define SIGRD 5
+  #ifndef RSIG
+    #define SIGRD 5
+    #define RSIG 5
+  #else
+    #define SIGRD RSIG
+  #endif
+#else
+  #ifndef RSIG
+  #define RSIG SIGRD
+    #define RSIG SIGRD
+  #endif
 #endif
 
 
