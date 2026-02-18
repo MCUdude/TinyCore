@@ -374,11 +374,12 @@ size_t HardwareSerial::write(uint8_t c)
   sbi(*_ucsrb, _udrie);
   #else
   if(!(LINENIR & _BV(LENTXOK))){
-    //The buffer was previously empty, so enable TX Complete interrupt and load first byte.
-    sbi(LINENIR,LENTXOK);
+    // The buffer was previously empty, so load the first byte, then enable
+    // the TX Complete interrupt
     unsigned char c = tx_buffer.buffer[tx_buffer.tail];
     tx_buffer.tail = (tx_buffer.tail + 1) % SERIAL_BUFFER_SIZE;
     LINDAT = c;
+    LINENIR = _BV(LENTXOK) | _BV(LENRXOK);
   }
   #endif
 
