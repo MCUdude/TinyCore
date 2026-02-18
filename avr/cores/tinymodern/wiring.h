@@ -29,6 +29,7 @@
 #define Wiring_h
 
 #include <avr/io.h>
+#include <util/delay.h>
 #include <stdlib.h>
 
 #include "binary.h"
@@ -200,8 +201,8 @@ unsigned long micros(void);
   void oscDoneNVM(uint8_t bytes_written);
 #endif
 
-void delay(unsigned long);
-void delayMicroseconds(unsigned int us);
+void delay(unsigned int ms);
+static inline void delayMicroseconds(unsigned int us);
 unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);
 
 void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val);
@@ -212,6 +213,28 @@ void detachInterrupt(uint8_t);
 
 void setup(void);
 void loop(void);
+
+// Implemenatation from https://github.com/nerdralph/picoCore
+__attribute((always_inline))
+static inline void delayMicroseconds(unsigned int us)
+{
+    // if us is a compile-time constant result is accurate to 1 cycle
+    if (__builtin_constant_p(us)) {
+        _delay_us(us);
+        return;
+    }
+
+    // when us is not known at compile time, delay is accurate to +/- 2us
+    // plus an overhead of 3 CPU cycles
+    const float fMHz = (F_CPU/1000000.0);
+    // subtract two for rounding before dividing by 4
+    us -= 2;
+    delay4us:
+        // delay 4us per loop, less 4 cycles for overhead
+        _delay_us(4.0 - (4.0 / fMHz));
+        asm volatile ("sbiw %[us], 4" : [us]"+w"(us));
+    asm goto( "brpl %l[delay4us]" :::: delay4us);
+}
 
 #ifdef __cplusplus
 } // extern "C"
