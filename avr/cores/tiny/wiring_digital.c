@@ -77,7 +77,7 @@ static void turnOffPWM(uint8_t timer)
   #endif
   #ifdef __AVR_ATtinyX7__
     // Timer1 on x7
-    if (timer&0x10) {
+    if (timer&0x08) {
       TCCR1D&=(~(1<<(timer&0x07)));
     }
   #elif defined(TCCR1E)
