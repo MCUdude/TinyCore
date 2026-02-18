@@ -37,8 +37,8 @@
 
 #define NUM_DIGITAL_PINS            28
 #define NUM_ANALOG_INPUTS           8
-#define analogInputToDigitalPin(p)  ((p < 8) ? (p) + 17 : -1)
-
+#define analogInputToDigitalPin(p)  (((p) < 8) ? (p) + 17 : -1)
+#define digitalPinToAnalogInput(p)  ((p) >= 16 && (p) <= 22) ? ((p)-17) : NOT_A_PIN;
 #define digitalPinHasPWM(p)         ((p) == 9 || (p) == 10)
 
 
