@@ -1,12 +1,12 @@
 {
   "packages": [
     {
-      "name": "DummyPackager",
-      "maintainer": "Dummy Maintainer",
-      "websiteURL": "https://example.com",
-      "email": "dummy@example.com",
+      "name": "TinyCore",
+      "maintainer": "MCUdude",
+      "websiteURL": "https://github.com/MCUdude/TinyCore",
+      "email": "",
       "help": {
-        "online": "https://example.com/help"
+        "online": "https://github.com/MCUdude/TinyCore"
       },
       "platforms": [
         {
