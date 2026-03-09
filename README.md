@@ -1,16 +1,14 @@
 # TinyCore
 
-An Arduino core for classic ATtiny chips, with the option of running the [Urboot](https://github.com/stefanrueger/urboot) bootloader.
+An Arduino core for classic ATtiny chips, with the option of running the [Urboot](https://github.com/stefanrueger/urboot) bootloader.  
 Arduino IDE v1.8 and v2.x supported!
 
-TinyCore is a fork of the [ATTinyCore 2.0.0 branch](https://github.com/SpenceKonde/ATTinyCore). TinyCore focuses on improving the overall user experience and other quality-of-life improvements. Here are some key differences between ATtinyCore and TinyCore.  
-TinyCore has:  
+TinyCore is a fork of the [ATTinyCore 2.0.0 branch](https://github.com/SpenceKonde/ATTinyCore). It focuses on improving the overall user experience and other quality-of-life improvements. Compared to ATtinyCore, TinyCore has:  
 * Less clutter and confusing options in the Arduino IDE Tools menu
 * Rock-solid bootloader support using [Urboot](https://github.com/stefanrueger/urboot) in favour of Optiboot
 * Hardware debugging support using [PyAvrOCD](https://pyavrocd.io)
 * No Digispark (Micronucleus) support due to [USB timing costraints and the poor user experience caused by this](https://github.com/SpenceKonde/ATTinyCore?tab=readme-ov-file#vusb-is-not-supported-for-usb-functionality-within-the-sketch)
-* A simplified README that should get you started quickly
-
+* A simplified README
 
 # Table of contents
 * [Supported microcontrollers](#supported-microcontrollers)
@@ -27,14 +25,11 @@ TinyCore has:
   - [Manual Installation](#manual-installation)
   - [Arduino CLI Installation](#arduino-cli-installation)
   - [PlatformIO](#platformio)
-* **[Getting started with MegaCore](#getting-started-with-TinyCore)**
+* **[Getting started with TinyCore](#getting-started-with-TinyCore)**
 
 
 ## Supported microcontrollers
-Each chip family has **different pinouts, peripherals, and capabilities**.  
-Some differences are obvious, while others are subtle and can affect how features behave.
-**Please read the provided for the specific chip family you are using by clocking the links below**.
-Here you'll find pin mappings, specs, and other important core-related details.
+Each chip family has different pinouts, peripherals, and capabilities. Some differences are obvious, while others are subtle and can affect how features behave. Please read the provided for the specific chip family you are using by clocking the links below. Here you'll find pin mappings, specs, and other important core-related details.
 
 * [ATtiny25/45/85](/avr/extras/ATtiny_x5.md)
 * [ATtiny24/44/84](/avr/extras/ATtiny_x4.md)
@@ -46,6 +41,8 @@ Here you'll find pin mappings, specs, and other important core-related details.
 * [ATtiny828](/avr/extras/ATtiny_828.md)
 * [ATtiny43](/avr/extras/ATtiny_43.md)
 * [ATtiny26](/avr/extras/ATtiny_26.md)
+
+Can't decide what microcontroller to choose? Have a look at the specification table below:
 
 | **ATtiny**        | 25/45/85     | 24/44/84     | 441/841  | 261/461/861  | 87/167  | 48/88    | 1634  | 828  | 43   | 26   |
 |-------------------|--------------|--------------|----------|--------------|-------- |----------|-------|------|------|------|
@@ -183,6 +180,15 @@ arduino-cli core install TinyCore:avr --additional-urls https://mcudude.github.i
 [PlatformIO](http://platformio.org) is an open-source ecosystem for IoT and embedded systems. PlatformIO support is not ready just yet.
 
 
+## Getting started with TinyCore
+Ok, so you have downloaded and installed MicroCore, but how do you get the wheels spinning? Here's a quick start guide:
+* Hook up your microcontroller as shown in the minimal setup schematic for the target you have selected.
+* Open the **Tools > Board > TinyCore** menu item, and select the chip or chip family, e.g ATtiny25/45/85.
+* Select your preferred BOD option. Read more about BOD [here](#bod-option).
+* Select your preferred clock frequency. The **8 MHz internal oscillator** is the default setting.
+* Select what kind of programmer you're using under the **Programmers** menu. Use one of the **slow** programmers if you're using the 128 kHz oscillator option, e.g., **USBasp slow**.
+* Hit **Burn Bootloader** to set the fuses.
+* Now that the correct fuse settings are set you can upload your code by using your programmer tool. Simply hit *Upload*, and the code will be uploaded to the microcontroller.
 
 # TODO
 
