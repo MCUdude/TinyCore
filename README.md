@@ -59,11 +59,11 @@ Can't decide what microcontroller to choose? Have a look at the specification ta
 | *HW serial ports* | 0            | 0            | 2        | 0            | 1       | 0        | 1         | 2     | 1    | 0    | 0    |
 
 ## Supported clock frequencies
-TinyCore supports a variety of different clock frequencies. Select the microcontroller in the boards menu, then select the clock frequency. *You will have to hit "Burn bootloader" in order to set the correct fuses and upload the correct bootloader. This also has to be done if you want to change any of the fuse settings (BOD and EEPROM settings) regardless if a bootloader is installed or not*.
+TinyCore supports a variety of different clock frequencies. Select the microcontroller in the boards menu, then select the clock frequency. *You will have to hit "Burn bootloader" in order to set the correct fuses and upload the correct bootloader. This also has to be done if you want to change any of the fuse settings (BOD and EEPROM settings) regardless if a bootloader is installed or not. Make sure you connect an ISP programmer, and select the correct one in the "Programmers" menu.* 
 
-Make sure you connect an ISP programmer, and select the correct one in the "Programmers" menu. For time-critical operations, an external crystal/oscillator is recommended. Urboot bootloader has automatic baud rate detection on devices that has a *hardware serial port*. This lets you change the default upload baud rate in the Tools menu. Note that not all baud rates will work with all clock frequency options, due to [UART baud rate error](https://wormfood.net/avrbaudcalc.php) being too high.
+For time-critical operations, an external crystal/oscillator is recommended. Urboot bootloader has automatic baud rate detection on devices that have a *hardware serial port*. You can change the default upload baud rate in the Tools menu. Note that not all baud rates will work with all clock frequency options, due to [UART baud rate error](https://wormfood.net/avrbaudcalc.php) being too high.
 
-Note that the ATtiny48/88 and ATtiny828 requires an external clock signal and is not able to drive a resonator circuit itself. You may use a dedicated quartz crystal oscillator or a crystal driver.
+Note that the ATtiny48/88 and ATtiny828 require an external clock signal and are not able to drive a resonator circuit themselves. You may use a dedicated quartz crystal oscillator or a crystal driver.
 
 | Frequency   | Oscillator type       | Urboot upload speed | Note                                              |
 |-------------|-----------------------|---------------------|---------------------------------------------------|
@@ -89,7 +89,7 @@ Note that the ATtiny48/88 and ATtiny828 requires an external clock signal and is
 
 
 ## Bootloader
-TinyCore supports the ultra-light-weight and efficient [Urboot](https://github.com/stefanrueger/urboot) bootloader, written by [Stefan Rueger](https://github.com/stefanrueger). The bootloader makes it trivial to upload sketches using a USB-to-serial adapter, just like with a traditional AVR-based Arduino board. But unlike other bootloaders, Urboot only occupies 256 bytes of flash and protects its patched reset vector, which means that, unlike Optiboot, it's practically impossible to mess up the reset vector and "brick" the chip. Give the bootloader option a try, and you'll be amazed at how well it works!
+TinyCore supports the ultra-lightweight and efficient [Urboot](https://github.com/stefanrueger/urboot) bootloader, written by [Stefan Rueger](https://github.com/stefanrueger). The bootloader makes it trivial to upload sketches using a USB-to-serial adapter, just like with a traditional AVR-based Arduino board. But unlike other bootloaders, Urboot only occupies 256 bytes of flash and protects its patched reset vector, which means that, unlike Optiboot, it's practically impossible to mess up the reset vector and "brick" the chip. Give the bootloader option a try, and you'll be amazed at how well it works!
 
 The internal oscillator on the most ATtinys is usually slower than it should be according to the spec. Try burning the slower and faster ones (-1.25%, +1.25%, etc.) if the  "Bootloader: _Yes_" option doesn't work.
 
@@ -112,9 +112,9 @@ Brown-out detection, or BOD for short lets the microcontroller sense the input v
 
 
 ## EEPROM option
-If you want the EEPROM to be erased every time you burn the bootloader or upload using a programmer, you can turn off this option. You'll have to connect an ISP programmer and hit "Burn bootloader" to enable or disable EEPROM retain. Note that when uploading using a bootloader, the EEPROM will always be retained.
+If you want the EEPROM to be erased every time you burn the bootloader or upload using a programmer, you can turn off this option. You'll have to connect an ISP programmer and hit "Burn bootloader" to enable or disable "EEPROM retain". Note that when uploading using a bootloader, the EEPROM will always be retained.
 
-Note that if you're using an ISP programmer, data specified in the user program using the `EEMEM` attribute will be uploaded to EEPROM when you upload your program in Arduino IDE. 
+If you're using an ISP programmer, data specified in the user program using the `EEMEM` attribute will be uploaded to EEPROM when you upload your program in the Arduino IDE. 
 
 ```cpp
 #include <avr/eeprom.h>
@@ -130,7 +130,7 @@ void loop() {
 
 
 ## Printf support
-Unlike the official Arduino cores, TinyCore (And ATTinyCore for that matter) has printf support out of the box. If you're not familiar with printf you should probably [read this first](https://www.tutorialspoint.com/c_standard_library/c_function_printf.htm). It's added to the Print class and will work with all libraries that inherit Print. Printf is a standard C function that lets you format text much easier than using Arduino's built-in print and println. Note that this implementation of printf will NOT print floats or doubles. This is disabled by default to save space but can be enabled using a build flag if using PlatformIO.
+Unlike the official Arduino cores, TinyCore (and ATTinyCore for that matter) has printf support out of the box. If you're not familiar with printf, you should probably [read this first](https://www.tutorialspoint.com/c_standard_library/c_function_printf.htm). It's added to the Print class and will work with all libraries that inherit Print. Printf is a standard C function that lets you format text much easier than using Arduino's built-in print and println. Note that this implementation of printf will NOT print floats or doubles. This is disabled by default to save space, but can be enabled using a build flag if using PlatformIO.
 
 If you're using a serial port, simply use `Serial.printf("Milliseconds since start: %ld\n", millis());`. You can also use the `F()` macro if you need to store the string in flash. Other libraries that inherit the Print class (and thus support printf) are the LiquidCrystal LCD library and the U8G2 graphical LCD library.
 
@@ -151,12 +151,12 @@ digitalWrite(0, HIGH);
 ## Write to own flash
 TinyCore uses the excellent Urboot bootloader, written by [Stefan Rueger](https://github.com/stefanrueger). Urboot supports flash writing within the running application, meaning that content from e.g. a sensor can be stored in the flash memory directly without needing external memory. Flash memory is much faster than EEPROM, and can handle at least 10,000 write cycles before wear becomes an issue.
 For more information on how it works and how you can use this in your own application, check out the [Serial_read_write](avr/libraries/Flash/examples/Serial_read_write/Serial_read_write.ino) for a simple proof-of-concept demo, and
-[Flash_put_get](avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) + [Flash_iterate](/avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) for useful examples on how you can store strings, structs, and variables to flash and retrieve then afterward.
+[Flash_put_get](avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) + [Flash_iterate](/avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) for useful examples on how you can store strings, structs, and variables to flash and retrieve them afterward.
 
 
 ## Programmers
 Select your microcontroller in the boards menu, then select the clock frequency. You'll have to hit "Burn bootloader" in order to set the correct fuses and upload the correct bootloader. <br/>
-Make sure you connect an ISP programmer, and select the correct one in the "Programmers" menu. For time-critical operations, an external oscillator is recommended.
+Make sure you connect an ISP programmer, and select the correct one in the "Programmers" menu. 
 
 
 ## How to install
@@ -167,13 +167,15 @@ This installation method requires Arduino IDE version 1.8.0 or greater.
 * Enter the following URL in **Additional Boards Manager URLs**: `https://mcudude.github.io/TinyCore/package_MCUdude_TinyCore_index.json`
 * Open the **Tools > Board > Boards Manager...** menu item.
 * Wait for the platform indexes to finish downloading.
-* Scroll down until you see the **MegaCore** entry and click on it.
+* Scroll down until you see the **TinyCore** entry and click on it.
 * Click **Install**.
-* After installation is complete close the **Boards Manager** window.
+* After installation is complete, close the **Boards Manager** window.
 
 #### Manual Installation
 Click on the "Download ZIP" button in the upper right corner. Extract the ZIP file, and move the extracted folder to the location "**~/Documents/Arduino/hardware**". Create the "hardware" folder if it doesn't exist.
-Open Arduino IDE, and a new category in the boards menu called "MegaCore" will show up.
+Open Arduino IDE, and a new category in the boards menu called "TinyCore" will show up.
+
+Note that a manual installation will not download binary tools such as the most recent avrdude program and the debugging tool.
 
 #### Arduino CLI Installation
 Run the following command in a terminal:
@@ -187,7 +189,7 @@ arduino-cli core install TinyCore:avr --additional-urls https://mcudude.github.i
 
 
 ## Getting started with TinyCore
-Ok, so you have downloaded and installed MicroCore, but how do you get the wheels spinning? Here's a quick start guide:
+Ok, so you have downloaded and installed TinyCore, but how do you get the wheels spinning? Here's a quick start guide:
 * Hook up your microcontroller as shown in the minimal setup schematic for the target you have selected.
 * Open the **Tools > Board > TinyCore** menu item, and select the chip or chip family, e.g ATtiny25/45/85.
 * Select your preferred BOD option. Read more about BOD [here](#bod-option).
@@ -340,7 +342,6 @@ Notes:
 * Do not disable global interrupts, as the ADC interrupt is required to wake the CPU.
 * `analogRead_NR()` uses the ADC interrupt vector.
 </details>
-
 
 
 
