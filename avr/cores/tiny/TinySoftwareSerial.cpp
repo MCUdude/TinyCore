@@ -97,15 +97,13 @@ extern "C"{
 
   #endif
 
-
   void uartDelay() {
     __asm__ __volatile__ (
-    "uartDelay:"              "\n\t" // We rely on this being set up by the tx and rx routines, that way it doesn't have to ldi anything
-      "mov  r0, r21"          "\n\t" // because I don't think it would be set up correctly if we tried to pass it in a constraint from here.
-      "dec  r0"               "\n\t" // prev. line set up __temp_reg__ with _delayCount. decrement it
-      "brne .-4"              "\n\t" // and loop if it's not 0. Total loop time including mov is 3 * _delayCount, the mov offset by the shorter brne not taken at end
-      "ret"                   "\n\t" // 4 clocks for the return, and it took 3 to rcall - total 7 + 3*_delayCount.
-      ::
+      "mov r25,%[count]\n"
+      "1:dec r25\n"
+        "brne 1b\n"
+        "ret\n"
+      ::[count] "r" ((uint8_t)Serial._delayCount)
     );
   }
 }
