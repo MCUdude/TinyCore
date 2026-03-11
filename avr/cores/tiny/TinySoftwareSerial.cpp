@@ -116,14 +116,12 @@ extern "C"{
   TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer) {
     _rx_buffer = rx_buffer;
     _txmask   = _BV(SOFTSERIAL_TXBIT);
-    _txunmask = ~_txmask;
     _delayCount = 0;
   }
 #endif
 
 void TinySoftwareSerial::setTxBit(uint8_t txbit) {
   _txmask   = _BV(txbit);
-  _txunmask = ~txbit;
 }
 
 void TinySoftwareSerial::begin(long baud) {
@@ -246,14 +244,14 @@ bool TinySoftwareSerial::stopListening() {
 
 size_t TinySoftwareSerial::write(uint8_t ch) {
   uint8_t oldSREG = SREG;
-  cli(); //Prevent interrupts from breaking the transmission. Note: TinySoftwareSerial is half duplex.
-  //it can either receive or send, not both (because receiving requires an interrupt and would stall transmission
+  cli();
   __asm__ __volatile__ (
     "   com %[ch]             \n" // ones complement, carry set
     "   sec                   \n"
     "1: brcc 2f               \n"
     "   in r23,%[uartPort]    \n"
-    "   and r23,%[uartUnmask] \n"
+    "   or r23,%[uartMask]    \n" // build the '1' pattern first
+    "   eor r23,%[uartMask]   \n" // flip TX bit low - zero bit pattern, no _txunmask needed
     "   out %[uartPort],r23   \n"
     "   rjmp 3f               \n"
     "2: in r23,%[uartPort]    \n"
@@ -269,14 +267,11 @@ size_t TinySoftwareSerial::write(uint8_t ch) {
     "   brne 1b               \n"
     :
     :
-      [ch] "r" (ch),
-      [count] "r" ((uint8_t)10),
+      [ch]       "r" (ch),
+      [count]    "r" ((uint8_t)10),
       [uartPort] "I" (_SFR_IO_ADDR(ANALOG_COMP_PORT)),
-      [uartMask] "r" (_txmask),
-      [uartUnmask] "r" (_txunmask)
-    : "r23",
-      "r24",
-      "r25"
+      [uartMask] "r" (_txmask)
+    : "r23", "r24", "r25"
   );
   SREG = oldSREG;
   return 1;
