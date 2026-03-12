@@ -1,29 +1,22 @@
 # ATtiny 441/841
 ![x41 Pin Mapping](Pinout_x41.png "Arduino Pin Mapping for ATtiny x41")
 
-Specification         |    ATtiny841   |      ATtiny841 |    ATtiny841   |     ATtiny441  |      ATtiny441 |
-----------------------|----------------|----------------|----------------|----------------|----------------|
-Bootloader (if any)   |                |       Optiboot |  Micronucleus  |                |       Optiboot |
-Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter |
-Flash available user  |     8192 bytes |     7552 bytes |     6586 bytes |     4096 bytes |     3456 bytes |
-RAM                   |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |
-EEPROM                |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |
-GPIO Pins             |     11 + RESET |     11 + RESET |     11 + RESET |     11 + RESET |     11 + RESET |
-ADC Channels          |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |
-Differential ADC      |  Yes, v. fancy |  Yes, v. fancy |  Yes, v. fancy |  Yes, v. fancy |  Yes, v. fancy |
-PWM Channels          |              6 |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |
-Interfaces            |  2x USART, SPI |       SPI, I2C | vUSB, SPI, I2C |       SPI, I2C |       SPI, I2C |
-Interfaces            |      I2C slave |      I2C slave |      I2C slave |      I2C slave |      I2C slave |
-Clocking Options:     |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
-Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |
-Internal, with tuning | 16, 12, 8@5/3v3| 16, 12, 8@5/3v3| 16, 12, 8@5/3v3| 16, 12, 8@5/3v3| 16, 12, 8@5/3v3|
-External Crystal      |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |
-External Clock        |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |
-Int. ULP Oscillator   |   32, 64, 128, |  Not supported |  Not supported |   32, 64, 128, |  Not supported |
-Int. ULP Osc. Cont.   | 256 or 512 kHz |                |                | 256 or 512 kHz |                |
-Default Pin Mapping   |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |
-LED_BUILTIN           |        PIN_PB2 |
-
+| Specification                    | ATtiny841                | ATtiny441                |
+|----------------------------------|--------------------------|--------------------------|
+| Bootloader (occupies 256 bytes)  | Urboot                   | Urboot                   |
+| Flash available user             | 7936 / 8192 bytes        | 3840 / 4096 bytes        |
+| RAM                              | 512 bytes                | 256 bytes                |
+| EEPROM                           | 512 bytes                | 256 bytes                |
+| GPIO Pins                        | 11 + RESET               | 11 + RESET               |
+| ADC Channels                     | 12 (incl RST)            | 12 (incl RST)            |
+| Differential ADC                 | Yes                      | Yes                      |
+| PWM Channels                     | 6                        | 6                        |
+| Interfaces                       | 2× USART, SPI, i2c slave | 2× USART, SPI, i2c slave |
+| Int. Oscillator (MHz)            | 8, 4, 2, 1               | 8, 4, 2, 1               |
+| Internal, with tuning (MHz)      | 16, 12, 8 @ 5/3.3 V      | 16, 12, 8 @ 5/3.3 V      |
+| External Crystal                 | All Standard             | All Standard             |
+| External Clock                   | All Standard             | All Standard             |
+| LED_BUILTIN                      | PIN_PB2                  | PIN_PB2                  |
 
 Two pinout options are available, clockwise and counterclockwise, see below for more information. Be sure that the one you have selected is the one that you intend!
 

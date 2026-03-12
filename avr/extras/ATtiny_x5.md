@@ -1,25 +1,23 @@
 # ATtiny 25/45/85
 ![x5 pin mapping](Pinout_x5.png "Arduino Pin Mapping for ATtiny x5-family")
 
-Specification         |    ATtiny85    |      ATtiny85  |    ATtiny85    |     ATtiny45   |       ATtiny45 |      ATtiny25  |
-----------------------|----------------|----------------|----------------|----------------|----------------|----------------|
-Bootloader (if any)   |                |       Optiboot |  Micronucleus  |                |       Optiboot |                |
-Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter |   ISP/SPI pins |
-Flash available user  |     8192 bytes |     7552 bytes |     6586 bytes |     4096 bytes |     3456 bytes |           2048 |
-RAM                   |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |            128 |
-EEPROM                |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |            128 |
-GPIO Pins             |      5 + RESET |      5 + RESET |      5 + RESET |      5 + RESET |      5 + RESET |      5 + RESET |
-ADC Channels          |   4 (incl RST) |   4 (incl RST) |   4 (incl RST) |   4 (incl RST) |   4 (incl RST) |   4 (incl RST) |
-Differential ADC      |     1/20x gain |     1/20x gain |     1/20x gain |     1/20x gain |     1/20x gain |     1/20x gain |
-PWM Channels          |  3: PB0, PB1/2 |  3: PB0, PB1/2 |  3: PB0, PB1/2 |  3: PB0, PB1/2 |  3: PB0, PB1/2 |  3: PB0, PB1/2 |
-Interfaces            |            USI |            USI |      vUSB, USI |            USI |            USI |            USI |
-Clocking Options:     |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
-Int. Oscillator or PLL| 16, 8, 4, 2, 1 | 16, 8, 4, 2, 1 |    16.5. 16, 8 | 16, 8, 4, 2, 1 | 16, 8, 4, 2, 1 | 16, 8, 4, 2, 1 |
-Internal, with tuning |    16.5, 12, 8 |    16.5, 12, 8 |    16.5, 12, 8 |    16.5, 12, 8 |    16.5, 12, 8 |    16.5, 12, 8 |
-External Crystal      |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
-External Clock        |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
-Int. WDT Oscillator   |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |
-LED_BUILTIN           |        PIN_PB1 |        PIN_PB1 |        PIN_PB1 |        PIN_PB1 |        PIN_PB1 |        PIN_PB1 |
+| Specification                    | ATtiny85         | ATtiny45         | ATtiny25         |
+|----------------------------------|------------------|------------------|------------------|
+| Bootloader (occupies 256 bytes)  | Urboot           | Urboot           | Urboot           |
+| Flash available user             | 7936 / 8192 bytes| 3850 / 4096 bytes| 1792 / 2048 bytes|
+| RAM                              | 512 bytes        | 256 bytes        | 128 bytes        |
+| EEPROM                           | 512 bytes        | 256 bytes        | 128 bytes        |
+| GPIO Pins                        | 5 + RESET        | 5 + RESET        | 5 + RESET        |
+| ADC Channels                     | 4 (incl RST)     | 4 (incl RST)     | 4 (incl RST)     |
+| Differential ADC                 | 1/20x gain       | 1/20x gain       | 1/20x gain       |
+| PWM Channels                     | 3: PB0, PB1/2    | 3: PB0, PB1/2    | 3: PB0, PB1/2    |
+| Interfaces                       | USI              | USI              | USI              |
+| Int. Oscillator or PLL (MHz)     | 16, 8, 4, 2, 1   | 16, 8, 4, 2, 1   | 16, 8, 4, 2, 1   |
+| External Crystal                 | All Standard     | All Standard     | All Standard     |
+| External Clock                   | All Standard     | All Standard     | All Standard     |
+| Int. WDT Oscillator              | 128 kHz          | 128 kHz          | 128 kHz          |
+| LED_BUILTIN                      | PIN_PB2          | PIN_PB2          | PIN_PB2          |
+
 
 ## Programming
 Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.

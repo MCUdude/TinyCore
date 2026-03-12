@@ -1,28 +1,24 @@
 # ATtiny 87/167
 ![x7 pin mapping](Pinout_x7.png "Arduino Pin Mapping for ATtiny x7-family")
 
-| Specification           |    ATtiny167   |    ATtiny167   |    ATtiny167   |    ATtiny87    |    ATtiny87    |    ATtiny87    |
-|-------------------------|----------------|----------------|----------------|----------------|----------------|----------------|
-| Bootloader (if any)     |                |       Optiboot |  Micronucleus  |                |       Optiboot |  Micronucleus  |
-| Uploading uses          |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter | USB (directly) |
-| Flash available user    |    16384 bytes |    15744 bytes |    14842 bytes |     8192 bytes |     7552 bytes |     6554 bytes |
-| RAM                     |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |
-| EEPROM                  |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |
-| GPIO Pins               |             15 |             15 |          ** 13 |             15 |             15 |          ** 13 |
-| ADC Channels            |             11 |             11 |             11 |             11 |             11 |             11 |
-| PWM Channels            | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex |
-| Differential ADC        |    8x/20x gain |    8x/20x gain |    8x/20x gain |    8x/20x gain |    8x/20x gain |    8x/20x gain |
-| Interfaces              |       LIN/UART |       LIN/UART | vUSB, LIN/UART |       LIN/UART |       LIN/UART | vUSB, LIN/UART |
-| Interfaces (cont'd)     |       USI, SPI |       USI, SPI |       USI, SPI |       USI, SPI |       USI, SPI |       USI, SPI |
-| Clocking Options:       |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
-| Int. Oscillator         |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |
-| Int. WDT Oscillator     |        128 kHz |  Not supported |  Not supported |        128 kHz |  Not supported |  Not supported |
-| Internal, with tuning   |          8, 12 |          8, 12 |  Not supported |          8, 12 |          8, 12 |  Not supported |
-| External Crystal        |   All Standard |   All Standard | **16** `**` ,8,4,2,1 |   All Standard |   All Standard | **16** `**` ,8,4,2,1 |
-| External Clock          |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |  Not supported |
-| Default Pin Mapping     |       Standard |       Standard |      Digispark |       Standard |       Standard |      Digispark |
-| LED_BUILTIN ***         | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 |
-| Bootloader LED *        |            n/a |            PA6 |     PB1 or PA6 |            n/a |            PA6 |     PB1 or PA6 |
+| Specification                    | ATtiny167          | ATtiny87           |
+|----------------------------------|--------------------|--------------------|
+| Bootloader (occupies 256 bytes)  | Urboot             | Urboot             |
+| Flash available user             | 16128 / 16384 bytes| 7936 / 8192 bytes  |
+| RAM                              | 512 bytes          | 512 bytes          |
+| EEPROM                           | 512 bytes          | 512 bytes          |
+| GPIO Pins                        | 15                 | 15                 |
+| ADC Channels                     | 11                 | 11                 |
+| PWM Channels                     | 1 fixed, 2 flex    | 1 fixedl 2 flex    |
+| Differential ADC                 | 8x/20x gain        | 8x/20x gain        |
+| Interfaces                       | LIN/UART, USI, SPI | LIN/UART, USI, SPI |
+| Int. Oscillator (MHz)            | 8, 4, 2, 1         | 8, 4, 2, 1         |
+| External Crystal                 | All Standard       | All Standard       |
+| External Clock                   | All Standard       | All Standard       |
+| Int. WDT Oscillator              | 128 kHz            | 128 kHz            |
+| Default Pin Mapping              | Standard           | Standard           |
+| LED_BUILTIN                      | PIN_PA6            | PIN_PA6            |
+
 
 `*` - the bootloader will always use either PA6 or PB1 unless you build your own binaries. The legacy pinout that it was paired with is absolutely godawful, and nobody should ever use it!
 `**` - The bootloader will always run at this speed. The sketch may be set to run at a lower speed by prescaling this.

@@ -1,20 +1,22 @@
 # ATtiny 26
-![tiny26 pin mapping](Pinout_26.png "Arduino Pin Mapping for ATtiny 26");
+![tiny26 pin mapping](Pinout_26.png "Arduino Pin Mapping for ATtiny 26")
 
-Specifications |  .
------------- | -------------
-Flash (program memory)   | 2048b
-RAM  | 128 bytes
-EEPROM | 128 bytes
-Bootloader   | No, self programming is not supported on the ATtiny26.
-GPIO Pins    | 16 (15 usable)
-ADC Channels | 11
-Differential ADC | Yes, 12 pairs, 4 of which are 20x for offset calculation, and a single 1x-only channel, all others 1x or 20x selectable.
-PWM Channels | 2
-Interfaces | USI, high speed timer
-Clock options | Internal 1/8 MHz, Internal PLL at 16 MHz, external crystal, clock, or external RC (not supported) up to 20 MHz on ATtiny26, half those speeds on the ATtiny26L at lower voltage range.
-
-Packages | DIP-20, SOIC-20, MLF-32
+| Specification                    | ATtiny26                |
+|----------------------------------|-------------------------|
+| Bootloader support               | No                      |
+| Flash available user             | 2048 bytes              |
+| RAM                              | 128 bytes               |
+| EEPROM                           | 128 bytes               |
+| GPIO Pins                        | 16 (15 usable)          |
+| ADC Channels                     | 11                      |
+| Differential ADC                 | 12 pairs, 4 with 20x gain for offset, 1x-only channel, others selectable 1x/20x |
+| PWM Channels                     | 2                       |
+| Interfaces                       | USI, high-speed timer   |
+| Int. Oscillator (MHz)            | 16, 8, 4, 2, 1          |
+| External Crystal                 | All Standard            |
+| External Clock                   | All Standard            |
+| Int. WDT Oscillator              | 128 kHz                 |
+| LED_BUILTIN                      | PIN_PB6                 |
 
 ## Overview
 The ATtiny26 is the predecessor to the 261a/461a/861a and are functionally very similar; the tiny26 was one of the very first ATtiny parts so their functionality is less advanced but they do have a similar differential ADC. It has been not recommended for new designs since 2007 and is supported only on behalf of a paying client who is apparently in possessing of a large quantity of them, will be introduced in the 2.0.0 version of ATTinyCore.

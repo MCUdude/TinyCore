@@ -1,24 +1,24 @@
 # ATtiny43U
 ![43 pin mapping](Pinout_43.png "Arduino Pin Mapping for ATtiny 43")
 
-| Specification           |    ATtiny43U   |
-|-------------------------|----------------|
-| Uploading uses          |   ISP/SPI pins |
-| Flash available user    |     4096 bytes |
-| RAM                     |      256 bytes |
-| EEPROM                  |       64 bytes |
-| GPIO Pins               |             15 |
-| ADC Channels            |              4 |
-| Differential ADC        |             No |
-| PWM Channels            |        4 fixed |
-| Interfaces (cont'd)     |            USI |
-| Clocking Options:       |         in MHz |
-| Int. Oscillator         |     8, 4, 2, 1 |
-| Int. WDT Oscillator     |        128 kHz |
-| Internal, with tuning   |  Not supported |
-| External Crystal        |  Not supported |
-| External Clock          |              8 |
-| LED_BUILTIN             |        PIN_PA5 |
+| Specification                    | ATtiny43U          |
+|----------------------------------|--------------------|
+| Bootloader (occupies 256 bytes)  | Urboot             |
+| Uploading uses                   | ISP/SPI pins       |
+| Flash available user             | 3840 / 4096 bytes  |
+| RAM                              | 256 bytes          |
+| EEPROM                           | 64 bytes           |
+| GPIO Pins                        | 16 (incl RST)      |
+| ADC Channels                     | 4                  |
+| Differential ADC                 | No                 |
+| PWM Channels                     | 4                  |
+| Interfaces                       | USI                |
+| Int. Oscillator (MHz)            | 8, 4, 2, 1         |
+| External Crystal                 | Not supported      |
+| External Clock                   | All Standard       |
+| Int. WDT Oscillator              | 128 kHz            |
+| LED_BUILTIN                      | PIN_PA5            |
+
 
 ## Overview
 The ATtiny43 is a very unusual microcontroller - the featureset is unremarkable, inferior to just about anything else in the ATtiny product line - except for one thing: A built-in boost converter that allows it to run off of just ~1.1v (startup - it will keep running as low as 0.7v) - so you can run a project off a single alkaline battery. It generates ~3v while in active mode, and can provide up to 30mA for peripherals. When using the boost converter, you must run at 4MHz or less. The "Internal 4MHz" option sets the fuses to start at 1MHz and then switches to 4MHz upon startup. See the datasheet for details of the layout, external components required, and further details of the boost converter operation.

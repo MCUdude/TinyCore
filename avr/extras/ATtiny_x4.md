@@ -1,27 +1,22 @@
 # ATtiny 24/44/84(a)
 ![x4 pin mapping](Pinout_x4.png "Arduino Pin Mapping for ATtiny x4-family")
 
-Specification         |    ATtiny84    |      ATtiny84  |    ATtiny84    |     ATtiny44   |       ATtiny44 |      ATtiny24  |
-----------------------|----------------|----------------|----------------|----------------|----------------|----------------|
-Bootloader (if any)   |                |       Optiboot |  Micronucleus  |                |       Optiboot |                |
-Uploading Hardware    | ISP programmer | Serial Adapter | USB (directly) | ISP programmer | Serial Adapter | ISP programmer |
-Flash available user  |     8192 bytes |     7552 bytes |     6522 bytes |     4096 bytes |     3456 bytes |           2048 |
-RAM                   |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |            128 |
-EEPROM                |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |            128 |
-GPIO Pins             |     11 + RESET |     11 + RESET |     11 + RESET |     11 + RESET |     11 + RESET |     11 + RESET |
-ADC Channels          |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |
-Differential ADC      |     1/20x gain |     1/20x gain |     1/20x gain |     1/20x gain |     1/20x gain |     1/20x gain |
-PWM Channels          |  4: PA5-7, PB2 |  4: PA5-7, PB2 |  4: PA5-7, PB2 |  4: PA5-7, PB2 |  4: PA5-7, PB2 |  4: PA5-7, PB2 |
-Interfaces            |            USI |            USI |      vUSB, USI |            USI |            USI |            USI |
-Clocking Options:     |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
-Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |     8, 4, 2, 1 |
-Internal, with tuning |    12.8, 12, 8 |    12.8, 12, 8 |    12.8, 12, 8 |    12.8, 12, 8 |    12.8, 12, 8 |    12.8, 12, 8 |
-External Crystal      |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
-External Clock        |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
-Int. WDT Oscillator   |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |
-Default Pin Mapping   |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |
-LED_BUILTIN           |        PIN_PB2 |        PIN_PB2 |     PB2 or PB0 |        PIN_PB2 |        PIN_PB2 |        PIN_PB2 |
-
+| Specification                    | ATtiny84         | ATtiny44         | ATtiny24         |
+|----------------------------------|------------------|------------------|------------------|
+| Bootloader (occupies 256 bytes)  | Urboot           | Urboot           | Urboot           |
+| Flash available user             | 7936 / 8192 bytes| 3840 / 4096 bytes| 1792 / 2048 bytes|
+| RAM                              | 512 bytes        | 256 bytes        | 128 bytes        |
+| EEPROM                           | 512 bytes        | 256 bytes        | 128 bytes        |
+| GPIO Pins                        | 11 + RESET       | 11 + RESET       | 11 + RESET       |
+| ADC Channels                     | 12 (incl RST)    | 12 (incl RST)    | 12 (incl RST)    |
+| Differential ADC                 | 1/20x gain       | 1/20x gain       | 1/20x gain       |
+| PWM Channels                     | 4: PA5-7, PB2    | 4: PA5-7, PB2    | 4: PA5-7, PB2    |
+| Interfaces                       | USI              | USI              | USI              |
+| Int. Oscillator (MHz)            | 8, 4, 2, 1       | 8, 4, 2, 1       | 8, 4, 2, 1       |
+| External Crystal                 | All Standard     | All Standard     | All Standard     |
+| External Clock                   | All Standard     | All Standard     | All Standard     |
+| Int. WDT Oscillator              | 128 kHz          | 128 kHz          | 128 kHz          |
+| LED_BUILTIN                      | PIN_PB2          | PIN_PB2          | PIN_PB2          |
 
 The 24/44/84 and 24a/44a/84a are functionally identical; the latter replaced the former in 2008, and uses slightly less power, and actual ATtiny84 parts are rarely seen in circulation today. They have the same signatures and are fully interchangible, except that the internal oscillator on the x4 not-A is worse (enough-so that the micronucleus bootloader may not be able to work on them). It is extremely common to refer to the ATtiny84a as an ATtiny84, and actual x4-not-A parts are exotic. Microchip still makes them, but charges a large premium for them to encourage people to migrate to less obsolete hardware.
 

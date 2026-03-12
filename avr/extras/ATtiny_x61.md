@@ -1,27 +1,23 @@
 # ATtiny 261/461/861(a)
 ![x61 pin mapping](Pinout_x61.png "Arduino Pin Mapping for ATtiny x61-family")
 
-Specification         |      ATtiny861   |        ATtiny861 |      ATtiny861   |       ATtiny461  |       ATtiny461  |       ATtiny261  |
-----------------------|------------------|------------------|------------------|------------------|------------------|------------------|
-Bootloader (if any)   |                  |         Optiboot |    Micronucleus  |                  |         Optiboot |                  |
-Uploading uses        |     ISP/SPI pins |   Serial Adapter |   USB (directly) |     ISP/SPI pins |   Serial Adapter |     ISP/SPI pins |
-Flash available user  |       8192 bytes |       7552 bytes |        TBD bytes |       4096 bytes |       3456 bytes |             2048 |
-RAM                   |        512 bytes |        512 bytes |        512 bytes |        256 bytes |        256 bytes |              128 |
-EEPROM                |        512 bytes |        512 bytes |        512 bytes |        256 bytes |        256 bytes |              128 |
-GPIO Pins             |       15 + RESET |       15 + RESET |       15 + RESET |       15 + RESET |       15 + RESET |       15 + RESET |
-ADC Channels          |    11 (incl RST) |    11 (incl RST) |    11 (incl RST) |    11 (incl RST) |    11 (incl RST) |    11 (incl RST) |
-Differential ADC      |1x/8x/20x/32 gain |1x/8x/20x/32 gain |1x/8x/20x/32 gain |1x/8x/20x/32 gain |1x/8x/20x/32 gain |1x/8x/20x/32 gain |
-PWM Channels          | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 |
-Interfaces            |              USI |              USI |        vUSB, USI |              USI |              USI |              USI |
-Clocking Options:     |           in MHz |           in MHz |           in MHz |           in MHz |           in MHz |           in MHz |
-Int. Oscillator       |   16, 8, 4, 2, 1 |   16, 8, 4, 2, 1 |      16.5. 16, 8 |   16, 8, 4, 2, 1 |   16, 8, 4, 2, 1 |   16, 8, 4, 2, 1 |
-Internal, with tuning |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |
-External Crystal      |     All Standard |     All Standard |    Not supported |     All Standard |     All Standard |     All Standard |
-External Clock        |     All Standard |     All Standard |    Not supported |     All Standard |     All Standard |     All Standard |
-Int. WDT Oscillator   |          128 kHz | Not as sys. clock| Not as sys. clock|          128 kHz | Not as sys. clock|          128 kHz |
-Default Pin Mapping   |        Clockwise |        Clockwise |        Clockwise |        Clockwise |        Clockwise |        Clockwise |
-LED_BUILTIN           |              PB6 |              PB6 |       PB5 or PB6 |              PB6 |              PB6 |              PB6 |
-
+| Specification                    | ATtiny861               | ATtiny461               | ATtiny261               |
+|----------------------------------|-------------------------|-------------------------|-------------------------|
+| Bootloader (occupies 256 bytes)  | Urboot                  | Urboot                  | Urboot                  |
+| Uploading uses                   | ISP/SPI pins            | ISP/SPI pins            | ISP/SPI pins            |
+| Flash available user             | 7936 / 8192 bytes       | 3840 / 4096 bytes       | 1792 / 2048 bytes       |
+| RAM                              | 512 bytes               | 256 bytes               | 128 bytes               |
+| EEPROM                           | 512 bytes               | 256 bytes               | 128 bytes               |
+| GPIO Pins                        | 15 + RESET              | 15 + RESET              | 15 + RESET              |
+| ADC Channels                     | 11 (incl RST)           | 11 (incl RST)           | 11 (incl RST)           |
+| Differential ADC                 | Yes, 1x/8x/20x/32x gain | Yes, 1x/8x/20x/32x gain | Yes, 1x/8x/20x/32x gain |
+| PWM Channels                     | 3                       | 3                       | 3                       |
+| Interfaces                       | USI                     | USI                     | USI                     |
+| Int. Oscillator (MHz)            | 16, 8, 4, 2, 1          | 16, 8, 4, 2, 1          | 16, 8, 4, 2, 1          |
+| External Crystal                 | All Standard            | All Standard            | All Standard            |
+| External Clock                   | All Standard            | All Standard            | All Standard            |
+| Int. WDT Oscillator              | 128 kHz                 | 128 kHz                 | 128 kHz                 |
+| LED_BUILTIN                      | PIN_PB6                 | PIN_PB6                 | PIN_PB6                 |
 
 The 261/461/861 and 261a/461a/861a are functionally very similar; the latter replaced the former in 2009, and uses slightly less power. Actual ATtiny861 parts are rarely seen in circulation today. They have the same signatures and are almost* fully interchangible. It is extremely common to refer to the ATtiny861a as an ATtiny861.
 

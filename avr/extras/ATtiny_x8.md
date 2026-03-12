@@ -2,25 +2,24 @@
 ![x8 Pin Mapping](Pinout_x8.png "Arduino Pin Mapping for ATtiny 88/48 in TQFP")
 ![x8 Pin Mapping](Pinout_x8_PU.png "Arduino Pin Mapping for ATtiny 88/48 in DIP")
 
-Specification         |    ATtiny88    |       ATtiny88 |    ATtiny88    |      ATtiny48  |       ATtiny48 |
-----------------------|----------------|----------------|----------------|----------------|----------------|
-Bootloader (if any)   |                |       Optiboot |  Micronucleus  |                |       Optiboot |
-Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter |
-Flash available user  |     8192 bytes |     7552 bytes |     6588 bytes |     4096 bytes |     3456 bytes |
-RAM                   |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |
-EEPROM                |       64 bytes |       64 bytes |       64 bytes |       64 bytes |       64 bytes |
-GPIO Pins             |     26 + RESET |     26 + RESET |     25 + RESET |     26 + RESET |     26 + RESET |
-ADC Channels          |   8 (6 in DIP) |   8 (6 in DIP) |              8 |   8 (6 in DIP) |   8 (6 in DIP) |
-PWM Channels          |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |
-Interfaces            |       SPI, I2C |       SPI, I2C | vUSB, SPI, I2C |       SPI, I2C |       SPI, I2C |
-Clocking Options:     |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
-Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |
-Int. WDT Oscillator   |        128 kHz |  Not supported |  Not supported |        128 kHz |  Not supported |
-Internal, with tuning |          8, 12 |          8, 12 |  Not supported |          8, 12 |          8, 12 |
-External Crystal      |  Not supported |  Not supported |  Not supported |  Not supported |  Not supported |
-External Clock        |   All Standard |  All* Standard | **16**,8,4,2,1 |  All* Standard |   All Standard |
-Default Pin Mapping   |       Standard |       Standard |        MH-Tiny |       Standard |       Standard |
-LED_BUILTIN           |
+| Specification                    | ATtiny88           | ATtiny48           |
+|----------------------------------|--------------------|--------------------|
+| Bootloader (occupies 256 bytes)  | Urboot             | Urboot             |
+| Flash available user             | 7936 / 8192 bytes  | 3840 / 4096 bytes  |
+| RAM                              | 512 bytes          | 256 bytes          |
+| EEPROM                           | 64 bytes           | 64 bytes           |
+| GPIO Pins                        | 26 + RESET         | 26 + RESET         |
+| ADC Channels                     | 8 (6 in DIP pack.) | 8 (6 in DIP pack.) |
+| PWM Channels                     | 2                  | 2                  |
+| Interfaces                       | SPI, I2C           | SPI, I2C           |
+| Int. Oscillator (MHz)            | 8, 4, 2, 1         | 8, 4, 2, 1         |
+| Internal, with tuning (MHz)      | 8, 12              | 8, 12              |
+| External Crystal                 | Not supported      | Not supported      |
+| External Clock                   | All Standard       | All Standard       |
+| Int. WDT Oscillator              | 128 kHz            | 128 kHz            |
+| Default Pin Mapping              | Standard           | Standard           |
+| LED_BUILTIN                      | PIN_PB5            | PIN_PB5            |
+
 
 `*` 20 MHz operation not supported. These parts are not even rated for 16!
 

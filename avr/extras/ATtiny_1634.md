@@ -1,25 +1,21 @@
 # ATtiny1634
 ![#1634 Pin Mapping](Pinout_1634.png "Arduino Pin Mapping for ATtiny 1634")
 
-Specification         |    ATtiny1634  |    ATtiny1634  |    ATtiny1634  |
-----------------------|----------------|----------------|----------------|
-Bootloader (if any)   |           None |       Optiboot |  Micronucleus  |
-Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |
-Flash available       |    16384 bytes |    15744 bytes |      TBD bytes |
-RAM                   |     1024 bytes |      128 bytes |      128 bytes |
-EEPROM                |      256 bytes |       64 bytes |       64 bytes |
-GPIO Pins             |     17 + RESET |     17 + RESET |     17 + RESET |
-ADC Channels          |             12 |           None |           None |
-PWM Channels          |              4 |              4 |              4 |
-Interfaces            |   USI, 2xUSART |     USI, USART |     USI, USART |
-Interfaces            |      I2C slave |     USI, USART |     USI, USART |
-Clocking Options      |         in MHz |         in MHz |         in MHz |
-Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |     8, 4, 2, 1 |
-Int. ULP Oscillator   |        128 kHz |        128 kHz |        128 kHz |
-Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |    8, 12, 12.8 |
-External Crystal      |   Up to 16 MHz |   Up to 16 MHz |   Up to 16 MHz |
-External Clock        |   Up to 16 MHz |   Up to 16 MHz |   Up to 16 MHz |
-LED_BUILTIN           |        PIN_PC0 |        PIN_PC0 |        PIN_PC2 |
+| Specification                    | ATtiny1634             |
+|----------------------------------|------------------------|
+| Bootloader (occupies 256 bytes)  | Urboot                 |
+| Flash available user             | 16128 / 16384 bytes    |
+| RAM                              | 1024 bytes             |
+| EEPROM                           | 256 bytes              |
+| GPIO Pins                        | 18 (incl RST)          |
+| ADC Channels                     | 12                     |
+| PWM Channels                     | 4                      |
+| Interfaces                       | 2xUART, USI, i2c slave |
+| Int. Oscillator (MHz)            | 8, 4, 2, 1             |
+| Int. ULP Oscillator              | 128 kHz                |
+| External Crystal (up to 16 MHz)  | All standard           |
+| External Clock(up to 16 MHz)     | All standard           |
+| LED_BUILTIN                      | PIN_PC0                |
 
 ## Overview
 

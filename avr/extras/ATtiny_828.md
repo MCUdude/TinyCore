@@ -1,25 +1,20 @@
 # ATtiny828(R)
 ![828 Pin Mapping](Pinout_828.png "Arduino Pin Mapping for ATtiny828")
 
-Specification         |    ATtiny828   |    ATtiny828   |
-----------------------|----------------|----------------|
-Bootloader (if any)   |           None |       Optiboot |
-Uploading uses        |   ISP/SPI pins | Serial Adapter |
-Flash available user  |     8192 bytes |     7680 bytes |
-RAM                   |      512 bytes |      512 bytes |
-EEPROM                |      256 bytes |      256 bytes |
-GPIO Pins             |     27 + RESET |     27 + RESET |
-ADC Channels          |             28 |             28 |
-PWM Channels (pins)   |          4 (8) |          4 (8) |
-Interfaces            | SPI, I2C slave | SPI, I2C slave |
-(contd.)              |          USART |          USART |
-Clocking Options      |         in MHz |         in MHz |
-Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |
-Int. WDT Oscillator   |  Not supported |  Not supported |
-Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |
-External Crystal      |  Not supported |  Not supported |
-External Clock        |   All Standard |   All Standard |
-
+| Specification                    | ATtiny828            |
+|----------------------------------|----------------------|
+| Bootloader (occupies 256 bytes)  | Urboot               |
+| Flash available user             | 7936 / 8192 bytes    |
+| RAM                              | 512 bytes            |
+| EEPROM                           | 256 bytes            |
+| GPIO Pins                        | 28 (incl RST)        |
+| ADC Channels                     | 28                   |
+| PWM Channels                     | 4                    |
+| Interfaces                       | UART, SPI, I2C slave |
+| Int. Oscillator (MHz)            | 8, 4, 2, 1           |
+| External Crystal                 | Not supported        |
+| External Clock                   | All Standard         |
+| Int. WDT Oscillator              | Not supported        |
 
 The ATtiny828 is a pretty sorry piece of hardware - it clearly had it's crown jewel, an advanced differential ADC, stolen from it at the last minute, It's got no hardware I2C master, the hardware I2C slave requires the WDT to be enabled because of that nasty silicon bug, the internal oscillator has the strong voltage dependence, it doesn't support a crystal... The sad fact is that unless you need a huge number of single-ended ADC inputs and a hardware serial port, this chip just straight up sucks. Try to avoid using these - unless you're going on a silicon-archeology expedition to searching for the Lost ADC of '828 ([solve the mystery and get free stuff](https://github.com/SpenceKonde/AVR_Research/blob/main/UnsolvedMysteries.md#the-828-and-the-mystery-of-the-adc))
 

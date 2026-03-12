@@ -1,24 +1,21 @@
 # ATtiny 2313/4313
 ![x313 pin mapping](Pinout_x313.png "Arduino Pin Mapping for ATtiny x313-family")
 
-Specification         |    ATtiny4313  |   ATtiny2313A  |    ATtiny2313  |
-----------------------|----------------|----------------|----------------|
-Bootloader (if any)   |           None |           None |           None |
-Uploading uses        |   ISP/SPI pins |   ISP/SPI pins |   ISP/SPI pins |
-Flash available user  |     4096 bytes |     2048 bytes |     2048 bytes |
-RAM                   |      256 bytes |      128 bytes |      128 bytes |
-EEPROM                |       64 bytes |       64 bytes |       64 bytes |
-GPIO Pins             |     17 + RESET |     17 + RESET |     17 + RESET |
-ADC Channels          |           None |           None |           None |
-PWM Channels          |              4 |              4 |              4 |
-Interfaces            |     USI, USART |     USI, USART |     USI, USART |
-Clocking Options      |         in MHz |         in MHz |         in MHz |
-Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |     8, 4, 2, 1 |
-Int. WDT Oscillator   |        128 kHz |        128 kHz |        128 kHz |
-Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |    8, 12, 12.8 |
-External Crystal      |   All Standard |   All Standard |   All Standard |
-External Clock        |   All Standard |   All Standard |   All Standard |
-LED_BUILTIN           |        PIN_PB4 |        PIN_PB4 |        PIN_PB4 |
+| Specification                    | ATtiny4313         | ATtiny2313/A       | ATtiny2313         |
+|----------------------------------|--------------------|--------------------|--------------------|
+| Bootloader (occupies 256 bytes)  | Urboot             | Urboot             | Urboot             |
+| Flash available user             | 3840 / 4096 bytes  | 1792 / 2048 bytes  | 2048 bytes         |
+| RAM                              | 256 bytes          | 128 bytes          | 128 bytes          |
+| EEPROM                           | 64 bytes           | 64 bytes           | 64 bytes           |
+| GPIO Pins                        | 17 + RESET         | 17 + RESET         | 17 + RESET         |
+| ADC Channels                     | None               | None               | None               |
+| PWM Channels                     | 4                  | 4                  | 4                  |
+| Interfaces                       | USI, USART         | USI, USART         | USI, USART         |
+| Int. Oscillator (MHz)            | 8, 4, 2, 1         | 8, 4, 2, 1         | 8, 4, 2, 1         |
+| External Crystal                 | All Standard       | All Standard       | All Standard       |
+| External Clock                   | All Standard       | All Standard       | All Standard       |
+| Int. WDT Oscillator              | 128 kHz            | 128 kHz            | 128 kHz            |
+| LED_BUILTIN                      | PIN_PB4            | PIN_PB4            | PIN_PB4            |
 
 Tiny flash, a poor featureset, and a relatively high price tag relegate the x313 to the realm of "desperation" processors. Or one would think it would - except they remain surprisingly popular despite having been obsolete for ages. We do not recommend use of these parts if you can avoid it. The 2313-not-A is a strictly worse version of the 2313, sold for a significant premium. Definitely avoid those.
 
