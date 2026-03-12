@@ -47,14 +47,29 @@ Each chip family has different pinouts, peripherals, and capabilities. Some diff
 * [ATtiny43](/avr/extras/ATtiny_43.md)
 * [ATtiny26](/avr/extras/ATtiny_26.md)
 
-See the specification table below for a quick comparison:
+<details>
+<summary><b>See the specification table for comparison</b></summary>
 
-| **ATtiny**        | 25/45/85     | 24/44/84     | 441/841  | 261/461/861  | 87/167  | 48/88    | 2313/4313 | 1634  | 828  | 43   | 26   |
-|-------------------|--------------|--------------|----------|--------------|-------- |----------|-----------|-------|------|------|------|
-| *Flash*           | 2/4/8kiB     | 2/4/8kiB     | 4/8kiB   | 2/4/8kiB     | 8/16kiB | 4/8kiB   | 2/4kiB    | 16kiB | 8kiB | 4kiB | 2kiB |
-| *RAM*             | 128/256/512B | 128/256/512B | 256/512B | 128/256/512B | 512B    | 256/512B | 128/256B  | 1kiB  | 512B | 256B | 128B |
-| *EEPROM*          | 128/256/512B | 128/256/512B | 256/512B | 128/256/512B | 512B    | 64B      | 128/256B  | 512B  | 256B | 64B  | 128B |
-| *PWM pins*        | 3            | 4            | 6        | 3            | 3       | 2        | 4         | 4     | 4    | 4    | 2    |
+| **ATtiny**               | 25/45/85     | 24/44/84     | 441/841      | 261/461/861  | 87/167     | 48/88     | 2313/4313 | 1634     | 828      | 43       | 26       |
+|--------------------------|--------------|--------------|--------------|--------------|------------|-----------|-----------|----------|----------|----------|----------|
+| *Flash*                  | 2/4/8kiB     | 2/4/8kiB     | 4/8kiB       | 2/4/8kiB     | 8/16kiB    | 4/8kiB    | 2/4kiB    | 16kiB    | 8kiB     | 4kiB     | 2kiB     |
+| *EEPROM*                 | 128/256/512B | 128/256/512B | 256/512B     | 128/256/512B | 512B       |           |           | 256B     | 512B     | 64B      | 128B     |
+| *RAM*                    | 128/256/512B | 128/256/512B | 256/512B     | 128/256/512B | 512B       |           |           | 1kiB     | 512B     | 256B     | 128B     |
+| *Internal 16 MHz*        | Yes, PLL     | No           | No           | Yes, PLL     | No         | No        | No        | No       | No       | No       | Yes, PLL |
+| *Ext. Crystal*           | Yes          | Yes          | Yes          | Yes          | Yes        | No        | Yes       | Yes      | No       | No       | Yes      |
+| *HV programming*         | HVSP         | HVSP         | HVSP         | parallel     | parallel   | parallel  | parallel  | parallel | parallel | parallel | parallel |
+| *I/O pins (incl. RST)*   | 6            | 12           | 12           | 16           | 16         | 28        | 18        | 18       | 28       | 16       | 16       |
+| *Urboot (occupies 256B)* | Yes          | Yes          | Yes          | Yes          | Yes        | Yes       | No        | Yes      | Yes      | No       | No       |
+| *PWM pins*               | 3            | 4            | 6            | 3            | 3          | 2         | 4         | 4        | 4        | 4        | 2        |
+| *Internal Refs*          | 1V1, 2V56    | 1V1          | 1V1,2V2,4V1  | 1V1, 2V56    | 1V1,2V56   | 1V1       | 1V1       | 1V1      | 1V1      | 1V1      | 2V56     |
+| *Analog Pins*            | 4            | 8            | 12           | 11           | 11         | 6 or 8    | none      | 12       | 28       | 4        | 11       |
+| *AREF Pin*               | Yes          | Yes          | Yes          | Yes          | Yes        | No        | No        | Yes      | No       | No       |          |
+| *Diff. ADC pairs*        | 2            | 12           | "46"* (18)   | "16" (10)    | 8          | none      | none      | none     | none     | none     | 8        |
+| *Diff. ADC gain*         | 1x, 20x      | 1x, 20x      | 1x,20x,100x  | 1, 8, 20, 32x| 8x, 20x    | none      | none      | none     | none     | none     | 1x, 20x  |
+
+<b>*</b> The quoted figures originate from Atmel marketing material and are inconsistent with both the counting methodology applied to other parts and fundamental mathematical principles. For example, on the ATtiny441/841, the differential pair count was inflated to 46 by counting each unique pin pair twice (accounting for polarity reversal) and including the 10 channels where the same pin is used as both positive and negative input — intended for offset calibration, these channels will read zero except for offset error. The historically established convention counts only unique pairs and excludes zero-read channels, yielding 18 pairs. Hence the notation: "46" (18).
+</details>
+
 
 ## Supported clock frequencies
 TinyCore supports a variety of different clock frequencies. Select the microcontroller in the boards menu, then select the clock frequency. *You will have to hit "Burn bootloader" in order to set the correct fuses and upload the correct bootloader. This also has to be done if you want to change any of the fuse settings (BOD and EEPROM settings) regardless if a bootloader is installed or not. Make sure you connect an ISP programmer, and select the correct one in the "Programmers" menu.*
