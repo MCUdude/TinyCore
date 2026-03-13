@@ -14,8 +14,8 @@
 | Interfaces                       | USI              | USI              | USI              |
 | Bootloader pins (RX/TX)          | PB1/PB0          | PB1/PB0          | PB1/PB0          |
 | Int. Oscillator or PLL (MHz)     | 16, 8, 4, 2, 1   | 16, 8, 4, 2, 1   | 16, 8, 4, 2, 1   |
-| External Crystal                 | All Standard     | All Standard     | All Standard     |
-| External Clock                   | All Standard     | All Standard     | All Standard     |
+| External Crystal                 | All standard     | All standard     | All standard     |
+| External Clock                   | All standard     | All standard     | All standard     |
 | Int. WDT Oscillator              | 128 kHz          | 128 kHz          | 128 kHz          |
 | LED_BUILTIN                      | PIN_PB2          | PIN_PB2          | PIN_PB2          |
 
@@ -101,7 +101,7 @@ A built-in Servo library is included with this core, with full support for the A
 The Servo library and `tone()` both require exclusive control of Timer1, which has two important consequences. PWM is unavailable on the Timer1 pins (PB4 and, by default, PB1) whenever `tone()` is active or the Servo library is in use. Additionally, the Servo library and `tone()` cannot be used simultaneously.
 
 ## ADC Features
-The ATtiny25/45/85 has a differential ADC. Gain of 1x or 20x is available, and two differential pairs are available. The ADC supports both bipolar mode (-512 to 511) and unipolar mode (0-1023) when taking differential measurements; you can set this using `setADCBipolarMode(true or false)`. On many AVR devices with a differential ADC, only bipolar mode is available. All of the channels can have the positive and negative inputs swapped; they advise taking a measurement in bipolar mode, and then swapping the direction if needed and switching to unipolar mode to double the effective resoluition.
+The ATtiny25/45/85 has a differential ADC. Gain of 1x or 20x is available, and two differential pairs are available. The ADC supports both bipolar mode (-512 to 511) and unipolar mode (0-1023) when taking differential measurements; you can set this using `setADCBipolarMode(true or false)`.
 
 ### ADC Reference options
 The ATtiny25/45/85 has both the 1.1V and 2.56V reference options, a rarity among the classic tinyAVR parts. It even supports an external reference, not that you can usually spare the pins to use one.
@@ -122,7 +122,7 @@ The ATtiny25/45/85 has both the 1.1V and 2.56V reference options, a rarity among
 | ADC_TEMPERATURE | Internal temperature sensor            |
 
 ### Differential Channels
-The ADC on the x5-series can act as a differential ADC with selectable 1x or 20x gain. It can operate in either unipolar or bipolar mode, and the polarity of the two differential pairs can be inverted in order to maximize the resolution available in unipolar mode. TinyCore wraps the IPR bit into the name of the differential ADC channel. Note the organization of the channels - there are two differential pairs A0/A1, and A2/A3 - but there is no way to take a differential measurement between A0 and A2 or A3 for example.
+The ADC can act as a differential ADC with selectable 1x or 20x gain. It can operate in either unipolar or bipolar mode, and the polarity of the two differential pairs can be inverted in order to maximize the resolution available in unipolar mode. TinyCore wraps the IPR bit into the name of the differential ADC channel. Note the organization of the channels - there are two differential pairs A0/A1, and A2/A3 - but there is no way to take a differential measurement between A0 and A2 or A3 for example.
 
 | Positive   | Negative   |Gain | Name            | Notes            |
 |------------|------------|-----|-----------------|------------------|
