@@ -45,6 +45,43 @@
               "version": "1.1.2"
             }
           ]
+        },
+        {
+          "name": "TinyCore",
+          "architecture": "avr",
+          "version": "0.1.0",
+          "category": "Contributed",
+          "url": "https://MCUdude.github.io/TinyCore/TinyCore-0.1.0.tar.bz2",
+          "archiveFileName": "TinyCore-0.1.0.tar.bz2",
+          "checksum": "SHA-256:b9d899c18c5c1e2f6735ad228c855e38831a6403c89ec61946ac7a1d7e891380",
+          "size": "31882822",
+          "boards": [
+            {
+              "name": "ATtiny85/45/25, ATtiny84/44/24, ATtiny841/441, ATtiny1634, ATtiny861/461/261, ATtiny167/87, ATtiny43, ATtiny26, ATtiny828, ATtiny88/48, ATtiny4313/2313"
+            }
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "arduino",
+              "name": "avr-gcc",
+              "version": "7.3.0-atmel3.6.1-arduino7"
+            },
+            {
+              "packager": "TinyCore",
+              "name": "avrdude",
+              "version": "8.1"
+            },
+            {
+              "packager": "arduino",
+              "name": "arduinoOTA",
+              "version": "1.3.0"
+            },
+            {
+              "packager": "TinyCore",
+              "name": "avrocd-tools",
+              "version": "1.1.2"
+            }
+          ]
         }
       ],
       "tools": [
