@@ -1393,10 +1393,10 @@ x313.menu.chip.2313.build.mcu=attiny2313
 x313.menu.chip.2313.upload.maximum_size=2048
 x313.menu.chip.2313.upload.maximum_data_size=128
 
-x313.menu.chip.2313=ATtiny2313A
-x313.menu.chip.2313.build.mcu=attiny2313a
-x313.menu.chip.2313.upload.maximum_size=2048
-x313.menu.chip.2313.upload.maximum_data_size=128
+x313.menu.chip.2313a=ATtiny2313A
+x313.menu.chip.2313a.build.mcu=attiny2313a
+x313.menu.chip.2313a.upload.maximum_size=2048
+x313.menu.chip.2313a.upload.maximum_data_size=128
 
 # Brown out detection
 x313.menu.bod.2v7=BOD 2.7V
