@@ -1345,299 +1345,6 @@ x61.menu.clock.1MHz_external.build.clocksource=1
 x61.menu.clock.1MHz_external.build.f_cpu=1000000L
 
 
-###################
-#### ATtiny828 ####
-###################
-
-# General
-828.name=ATtiny828
-828.build.mcu=attiny828
-828.upload.maximum_size=8192
-828.upload.maximum_data_size=512
-828.upload.tool=avrdude
-828.upload.speed={bootloader.baudrate}
-828.bootloader.tool=avrdude
-828.bootloader.unlock_bits=0xff
-828.bootloader.lock_bits=0xff
-828.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
-828.bootloader.extended_fuses=0b{bootloader.bodpd_bits}{bootloader.bodact_bits}1111
-828.build.core=tiny
-828.build.variant=tiny828
-828.build.board=AVR_ATTINY828
-828.build.extra_flags={build.wiremode} {build.speedfix}
-
-# Upload port select / Bootloader
-828.menu.bootloader.no_bootloader=No bootloader
-828.menu.bootloader.no_bootloader.build.export_merged_output=false
-828.menu.bootloader.no_bootloader.bootloader.str=
-828.menu.bootloader.no_bootloader.bootloader.spm_bit=1
-
-828.menu.bootloader.urboot_uart0=Yes (UART0)
-828.menu.bootloader.urboot_uart0.upload.protocol=urclock
-828.menu.bootloader.urboot_uart0.build.export_merged_output=true
-828.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart0_pr
-828.menu.bootloader.urboot_uart0.bootloader.spm_bit=0
-
-# EEPROM
-828.menu.eeprom.keep=EEPROM retained
-828.menu.eeprom.keep.bootloader.eesave_bit=0
-828.menu.eeprom.erase=EEPROM not retained
-828.menu.eeprom.erase.bootloader.eesave_bit=1
-
-# Brown out detection
-828.menu.bod.2v7=BOD 2.7V
-828.menu.bod.2v7.bootloader.bod_bits=101
-828.menu.bod.2v7.bootloader.bodact_bits=10
-828.menu.bod.2v7.bootloader.bodpd_bits=10
-828.menu.bod.4v3=BOD 4.3V
-828.menu.bod.4v3.bootloader.bod_bits=100
-828.menu.bod.4v3.bootloader.bodact_bits=10
-828.menu.bod.4v3.bootloader.bodpd_bits=10
-828.menu.bod.1v8=BOD 1.8V
-828.menu.bod.1v8.bootloader.bod_bits=110
-828.menu.bod.1v8.bootloader.bodact_bits=10
-828.menu.bod.1v8.bootloader.bodpd_bits=10
-828.menu.bod.disable=BOD disabled
-828.menu.bod.disable.bootloader.bod_bits=101
-828.menu.bod.disable.bootloader.bodact_bits=11
-828.menu.bod.disable.bootloader.bodpd_bits=11
-
-# Clock frequencies
-828.menu.clock.8MHz_internal_5v=8 MHz internal osc. (Vcc > 4.5V)
-828.menu.clock.8MHz_internal_5v.bootloader.low_fuses=0xee
-828.menu.clock.8MHz_internal_5v.bootloader.baudrate=38400
-828.menu.clock.8MHz_internal_5v.build.clocksource=0
-828.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL=9
-828.menu.clock.8MHz_internal_5v.build.f_cpu=8000000L
-
-828.menu.clock.8MHz_internal=8 MHz internal osc. (Vcc < 4.5V)
-828.menu.clock.8MHz_internal.bootloader.low_fuses=0xe
-828.menu.clock.8MHz_internal.bootloader.baudrate=38400
-828.menu.clock.8MHz_internal.build.clocksource=0
-828.menu.clock.8MHz_internal.build.speedfix=
-828.menu.clock.8MHz_internal.build.f_cpu=8000000L
-
-828.menu.clock.4MHz_internal_5v=4 MHz internal osc. (Vcc > 4.5V)
-828.menu.clock.4MHz_internal_5v.bootloader.low_fuses=0x6w
-828.menu.clock.4MHz_internal_5v.bootloader.baudrate=9600
-828.menu.clock.4MHz_internal_5v.build.clocksource=0
-828.menu.clock.4MHz_internal_5v.build.speedfix=-DLOWERCAL=9
-828.menu.clock.4MHz_internal_5v.build.f_cpu=4000000L
-
-828.menu.clock.4MHz_internal=4 MHz internal osc. (Vcc < 4.5V)
-828.menu.clock.4MHz_internal.bootloader.low_fuses=0x6e
-828.menu.clock.4MHz_internal.bootloader.baudrate=9600
-828.menu.clock.4MHz_internal.build.clocksource=0
-828.menu.clock.4MHz_internal.build.speedfix=
-828.menu.clock.4MHz_internal.build.f_cpu=4000000L
-
-828.menu.clock.1MHz_internal_5v=1 MHz internal osc. (Vcc > 4.5V)
-828.menu.clock.1MHz_internal_5v.bootloader.low_fuses=0x6e
-828.menu.clock.1MHz_internal_5v.bootloader.baudrate=9600
-828.menu.clock.1MHz_internal_5v.build.clocksource=0
-828.menu.clock.1MHz_internal_5v.build.speedfix=-DLOWERCAL
-828.menu.clock.1MHz_internal_5v.build.f_cpu=1000000L
-
-828.menu.clock.1MHz_internal=1 MHz internal osc. (Vcc < 4.5V)
-828.menu.clock.1MHz_internal.bootloader.low_fuses=0x6e
-828.menu.clock.1MHz_internal.bootloader.baudrate=9600
-828.menu.clock.1MHz_internal.build.clocksource=0
-828.menu.clock.1MHz_internal.build.speedfix=
-828.menu.clock.1MHz_internal.build.f_cpu=1000000L
-
-828.menu.clock.20MHz_external=20 MHz external CLOCK
-828.menu.clock.20MHz_external.bootloader.low_fuses=0xe0
-828.menu.clock.20MHz_external.bootloader.baudrate=115200
-828.menu.clock.20MHz_external.build.clocksource=2
-828.menu.clock.20MHz_internal.build.speedfix=
-828.menu.clock.20MHz_external.build.f_cpu=20000000L
-
-828.menu.clock.16MHz_external=16 MHz external CLOCK
-828.menu.clock.16MHz_external.bootloader.low_fuses=0xe0
-828.menu.clock.16MHz_external.bootloader.baudrate=115200
-828.menu.clock.16MHz_external.build.clocksource=2
-828.menu.clock.16MHz_internal.build.speedfix=
-828.menu.clock.16MHz_external.build.f_cpu=16000000L
-
-828.menu.clock.12MHz_external=12 MHz external CLOCK
-828.menu.clock.12MHz_external.bootloader.low_fuses=0xe0
-828.menu.clock.12MHz_external.bootloader.baudrate=115200
-828.menu.clock.12MHz_external.build.clocksource=2
-828.menu.clock.12MHz_internal.build.speedfix=
-828.menu.clock.12MHz_external.build.f_cpu=12000000L
-
-828.menu.clock.8MHz_external=8 MHz external CLOCK
-828.menu.clock.8MHz_external.bootloader.low_fuses=0xe0
-828.menu.clock.8MHz_external.bootloader.baudrate=38400
-828.menu.clock.8MHz_external.build.clocksource=2
-828.menu.clock.8MHz_internal.build.speedfix=
-828.menu.clock.8MHz_external.build.f_cpu=8000000L
-
-# Wire mode
-828.menu.wiremode.amaster=Master Only
-828.menu.wiremode.amaster.build.wiremode=-DWIRE_MASTER_ONLY
-828.menu.wiremode.slave=Slave Only
-828.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
-828.menu.wiremode.both=Master and slave
-828.menu.wiremode.both.build.wiremode=-DWIRE_BOTH
-
-
-####################
-#### ATtiny1634 ####
-####################
-
-# General
-1634.name=ATtiny1634
-1634.build.mcu=attiny1634
-1634.upload.maximum_size=16384
-1634.upload.maximum_data_size=1024
-1634.upload.tool=avrdude
-1634.upload.speed={bootloader.baudrate}
-1634.bootloader.tool=avrdude
-1634.bootloader.unlock_bits=0xff
-1634.bootloader.lock_bits=0xff
-1634.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
-1634.bootloader.extended_fuses=0b{bootloader.ulp_bits}{bootloader.bodpd_bits}{bootloader.bodact_bits}{bootloader.spm_bit}
-1634.build.core=tiny
-1634.build.variant=tiny1634_cw
-1634.build.board=AVR_ATTINY1634
-1634.build.extra_flags={build.speedfix}
-
-# Upload port select / Bootloader
-1634.menu.bootloader.no_bootloader=No bootloader
-1634.menu.bootloader.no_bootloader.build.export_merged_output=false
-1634.menu.bootloader.no_bootloader.bootloader.str=
-1634.menu.bootloader.no_bootloader.bootloader.spm_bit=1
-
-1634.menu.bootloader.urboot_uart0=Yes (UART0)
-1634.menu.bootloader.urboot_uart0.upload.protocol=urclock
-1634.menu.bootloader.urboot_uart0.build.export_merged_output=true
-1634.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart0_pr
-1634.menu.bootloader.urboot_uart0.bootloader.spm_bit=0
-
-1634.menu.bootloader.urboot_uart1=Yes (UART1)
-1634.menu.bootloader.urboot_uart1.upload.protocol=urclock
-1634.menu.bootloader.urboot_uart1.build.export_merged_output=true
-1634.menu.bootloader.urboot_uart1.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart1_pr
-1634.menu.bootloader.urboot_uart1.bootloader.spm_bit=0
-
-# EEPROM
-1634.menu.eeprom.keep=EEPROM retained
-1634.menu.eeprom.keep.bootloader.eesave_bit=0
-1634.menu.eeprom.erase=EEPROM not retained
-1634.menu.eeprom.erase.bootloader.eesave_bit=1
-
-# Brown out detection
-1634.menu.bod.2v7=BOD 2.7V
-1634.menu.bod.2v7.bootloader.bod_bits=101
-1634.menu.bod.2v7.bootloader.bodact_bits=10
-1634.menu.bod.2v7.bootloader.bodpd_bits=10
-1634.menu.bod.4v3=BOD 4.3V
-1634.menu.bod.4v3.bootloader.bod_bits=100
-1634.menu.bod.4v3.bootloader.bodact_bits=10
-1634.menu.bod.4v3.bootloader.bodpd_bits=10
-1634.menu.bod.1v8=BOD 1.8V
-1634.menu.bod.1v8.bootloader.bod_bits=110
-1634.menu.bod.1v8.bootloader.bodact_bits=10
-1634.menu.bod.1v8.bootloader.bodpd_bits=10
-1634.menu.bod.disable=BOD disabled
-1634.menu.bod.disable.bootloader.bod_bits=101
-1634.menu.bod.disable.bootloader.bodact_bits=11
-1634.menu.bod.disable.bootloader.bodpd_bits=11
-
-# Clock frequencies
-1634.menu.clock.8MHz_internal_5v=8 MHz internal osc. (Vcc > 4.5V)
-1634.menu.clock.8MHz_internal_5v.bootloader.low_fuses=0xe2
-1634.menu.clock.8MHz_internal_5v.bootloader.baudrate=38400
-1634.menu.clock.8MHz_internal_5v.build.clocksource=0
-1634.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL=9
-1634.menu.clock.8MHz_internal_5v.build.f_cpu=8000000L
-
-1634.menu.clock.8MHz_internal=8 MHz internal osc. (Vcc < 4.5V)
-1634.menu.clock.8MHz_internal.bootloader.low_fuses=0xe2
-1634.menu.clock.8MHz_internal.bootloader.baudrate=38400
-1634.menu.clock.8MHz_internal.build.clocksource=0
-1634.menu.clock.8MHz_internal.build.speedfix=
-1634.menu.clock.8MHz_internal.build.f_cpu=8000000L
-
-1634.menu.clock.4MHz_internal=4 MHz internal osc.
-1634.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
-1634.menu.clock.4MHz_internal.bootloader.baudrate=9600
-1634.menu.clock.4MHz_internal.build.clocksource=0
-1634.menu.clock.4MHz_internal.build.speedfix=
-1634.menu.clock.4MHz_internal.build.f_cpu=4000000L
-
-1634.menu.clock.1MHz_internal=1 MHz internal osc. (Vcc < 4.5V)
-1634.menu.clock.1MHz_internal.bootloader.low_fuses=0x62
-1634.menu.clock.1MHz_internal.bootloader.baudrate=9600
-1634.menu.clock.1MHz_internal.build.clocksource=0
-1634.menu.clock.1MHz_internal.build.speedfix=
-1634.menu.clock.1MHz_internal.build.f_cpu=1000000L
-
-1634.menu.clock.12MHz_external=12 MHz external osc.
-1634.menu.clock.12MHz_external.bootloader.low_fuses=0xef
-1634.menu.clock.12MHz_external.bootloader.baudrate=115200
-1634.menu.clock.12MHz_external.build.clocksource=1
-1634.menu.clock.12MHz_external.build.speedfix=
-1634.menu.clock.12MHz_external.build.f_cpu=12000000L
-
-1634.menu.clock.11_0592MHz_external=11.7456 MHz external osc.
-1634.menu.clock.11_0592MHz_external.bootloader.low_fuses=0xee
-1634.menu.clock.11_0592MHz_external.bootloader.baudrate=115200
-1634.menu.clock.11_0592MHz_external.build.clocksource=1
-1634.menu.clock.11_0592MHz_external.build.speedfix=
-1634.menu.clock.11_0592MHz_external.build.f_cpu=11059200L
-
-1634.menu.clock.9_216MHz_external=9.216 MHz external osc.
-1634.menu.clock.9_216MHz_external.bootloader.low_fuses=0xee
-1634.menu.clock.9_216MHz_external.bootloader.baudrate=115200
-1634.menu.clock.9_216MHz_external.build.clocksource=1
-1634.menu.clock.9_216MHz_external.build.speedfix=
-1634.menu.clock.9_216MHz_external.build.f_cpu=9216000L
-
-1634.menu.clock.8MHz_external=8 MHz external osc.
-1634.menu.clock.8MHz_external.bootloader.low_fuses=0xed
-1634.menu.clock.8MHz_external.bootloader.baudrate=38400
-1634.menu.clock.8MHz_external.build.clocksource=1
-1634.menu.clock.8MHz_external.build.speedfix=
-1634.menu.clock.8MHz_external.build.f_cpu=8000000L
-
-1634.menu.clock.7_3728MHz_external=7.3728 MHz external osc.
-1634.menu.clock.7_3728MHz_external.bootloader.low_fuses=0xed
-1634.menu.clock.7_3728MHz_external.bootloader.baudrate=115200
-1634.menu.clock.7_3728MHz_external.build.clocksource=1
-1634.menu.clock.7_3728MHz_external.build.speedfix=
-1634.menu.clock.7_3728MHz_external.build.f_cpu=7372800L
-
-1634.menu.clock.6MHz_external=6 MHz external osc.
-1634.menu.clock.6MHz_external.bootloader.low_fuses=0xed
-1634.menu.clock.6MHz_external.bootloader.baudrate=57600
-1634.menu.clock.6MHz_external.build.clocksource=1
-1634.menu.clock.6MHz_external.build.speedfix=
-1634.menu.clock.6MHz_external.build.f_cpu=6000000L
-
-1634.menu.clock.4MHz_external=4 MHz external osc.
-1634.menu.clock.4MHz_external.bootloader.low_fuses=0xed
-1634.menu.clock.4MHz_external.bootloader.baudrate=57600
-1634.menu.clock.4MHz_external.build.clocksource=1
-1634.menu.clock.4MHz_external.build.speedfix=
-1634.menu.clock.4MHz_external.build.f_cpu=4000000L
-
-1634.menu.clock.3_6864MHz_external=3.6864 MHz external osc.
-1634.menu.clock.3_6864MHz_external.bootloader.low_fuses=0xed
-1634.menu.clock.3_6864MHz_external.bootloader.baudrate=115200
-1634.menu.clock.3_6864MHz_external.build.clocksource=1
-1634.menu.clock.3_6864MHz_external.build.speedfix=
-1634.menu.clock.3_6864MHz_external.build.f_cpu=3686400L
-
-1634.menu.clock.1MHz_external=1 MHz external osc.
-1634.menu.clock.1MHz_external.bootloader.low_fuses=0xed
-1634.menu.clock.1MHz_external.bootloader.baudrate=9600
-1634.menu.clock.1MHz_external.build.clocksource=1
-1634.menu.clock.1MHz_external.build.speedfix=
-1634.menu.clock.1MHz_external.build.f_cpu=1000000L
-
-
 #########################
 #### ATtiny2313/4313 ####
 #########################
@@ -1803,6 +1510,299 @@ x313.menu.clock.1MHz_external.bootloader.low_fuses=0xfb
 x313.menu.clock.1MHz_external.bootloader.baudrate=9600
 x313.menu.clock.1MHz_external.build.clocksource=1
 x313.menu.clock.1MHz_external.build.f_cpu=1000000L
+
+
+####################
+#### ATtiny1634 ####
+####################
+
+# General
+1634.name=ATtiny1634
+1634.build.mcu=attiny1634
+1634.upload.maximum_size=16384
+1634.upload.maximum_data_size=1024
+1634.upload.tool=avrdude
+1634.upload.speed={bootloader.baudrate}
+1634.bootloader.tool=avrdude
+1634.bootloader.unlock_bits=0xff
+1634.bootloader.lock_bits=0xff
+1634.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
+1634.bootloader.extended_fuses=0b{bootloader.ulp_bits}{bootloader.bodpd_bits}{bootloader.bodact_bits}{bootloader.spm_bit}
+1634.build.core=tiny
+1634.build.variant=tiny1634_cw
+1634.build.board=AVR_ATTINY1634
+1634.build.extra_flags={build.speedfix}
+
+# Upload port select / Bootloader
+1634.menu.bootloader.no_bootloader=No bootloader
+1634.menu.bootloader.no_bootloader.build.export_merged_output=false
+1634.menu.bootloader.no_bootloader.bootloader.str=
+1634.menu.bootloader.no_bootloader.bootloader.spm_bit=1
+
+1634.menu.bootloader.urboot_uart0=Yes (UART0)
+1634.menu.bootloader.urboot_uart0.upload.protocol=urclock
+1634.menu.bootloader.urboot_uart0.build.export_merged_output=true
+1634.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart0_pr
+1634.menu.bootloader.urboot_uart0.bootloader.spm_bit=0
+
+1634.menu.bootloader.urboot_uart1=Yes (UART1)
+1634.menu.bootloader.urboot_uart1.upload.protocol=urclock
+1634.menu.bootloader.urboot_uart1.build.export_merged_output=true
+1634.menu.bootloader.urboot_uart1.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart1_pr
+1634.menu.bootloader.urboot_uart1.bootloader.spm_bit=0
+
+# EEPROM
+1634.menu.eeprom.keep=EEPROM retained
+1634.menu.eeprom.keep.bootloader.eesave_bit=0
+1634.menu.eeprom.erase=EEPROM not retained
+1634.menu.eeprom.erase.bootloader.eesave_bit=1
+
+# Brown out detection
+1634.menu.bod.2v7=BOD 2.7V
+1634.menu.bod.2v7.bootloader.bod_bits=101
+1634.menu.bod.2v7.bootloader.bodact_bits=10
+1634.menu.bod.2v7.bootloader.bodpd_bits=10
+1634.menu.bod.4v3=BOD 4.3V
+1634.menu.bod.4v3.bootloader.bod_bits=100
+1634.menu.bod.4v3.bootloader.bodact_bits=10
+1634.menu.bod.4v3.bootloader.bodpd_bits=10
+1634.menu.bod.1v8=BOD 1.8V
+1634.menu.bod.1v8.bootloader.bod_bits=110
+1634.menu.bod.1v8.bootloader.bodact_bits=10
+1634.menu.bod.1v8.bootloader.bodpd_bits=10
+1634.menu.bod.disable=BOD disabled
+1634.menu.bod.disable.bootloader.bod_bits=101
+1634.menu.bod.disable.bootloader.bodact_bits=11
+1634.menu.bod.disable.bootloader.bodpd_bits=11
+
+# Clock frequencies
+1634.menu.clock.8MHz_internal_5v=8 MHz internal osc. (Vcc > 4.5V)
+1634.menu.clock.8MHz_internal_5v.bootloader.low_fuses=0xe2
+1634.menu.clock.8MHz_internal_5v.bootloader.baudrate=38400
+1634.menu.clock.8MHz_internal_5v.build.clocksource=0
+1634.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL=9
+1634.menu.clock.8MHz_internal_5v.build.f_cpu=8000000L
+
+1634.menu.clock.8MHz_internal=8 MHz internal osc. (Vcc < 4.5V)
+1634.menu.clock.8MHz_internal.bootloader.low_fuses=0xe2
+1634.menu.clock.8MHz_internal.bootloader.baudrate=38400
+1634.menu.clock.8MHz_internal.build.clocksource=0
+1634.menu.clock.8MHz_internal.build.speedfix=
+1634.menu.clock.8MHz_internal.build.f_cpu=8000000L
+
+1634.menu.clock.4MHz_internal=4 MHz internal osc.
+1634.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
+1634.menu.clock.4MHz_internal.bootloader.baudrate=9600
+1634.menu.clock.4MHz_internal.build.clocksource=0
+1634.menu.clock.4MHz_internal.build.speedfix=
+1634.menu.clock.4MHz_internal.build.f_cpu=4000000L
+
+1634.menu.clock.1MHz_internal=1 MHz internal osc. (Vcc < 4.5V)
+1634.menu.clock.1MHz_internal.bootloader.low_fuses=0x62
+1634.menu.clock.1MHz_internal.bootloader.baudrate=9600
+1634.menu.clock.1MHz_internal.build.clocksource=0
+1634.menu.clock.1MHz_internal.build.speedfix=
+1634.menu.clock.1MHz_internal.build.f_cpu=1000000L
+
+1634.menu.clock.12MHz_external=12 MHz external osc.
+1634.menu.clock.12MHz_external.bootloader.low_fuses=0xef
+1634.menu.clock.12MHz_external.bootloader.baudrate=115200
+1634.menu.clock.12MHz_external.build.clocksource=1
+1634.menu.clock.12MHz_external.build.speedfix=
+1634.menu.clock.12MHz_external.build.f_cpu=12000000L
+
+1634.menu.clock.11_0592MHz_external=11.7456 MHz external osc.
+1634.menu.clock.11_0592MHz_external.bootloader.low_fuses=0xee
+1634.menu.clock.11_0592MHz_external.bootloader.baudrate=115200
+1634.menu.clock.11_0592MHz_external.build.clocksource=1
+1634.menu.clock.11_0592MHz_external.build.speedfix=
+1634.menu.clock.11_0592MHz_external.build.f_cpu=11059200L
+
+1634.menu.clock.9_216MHz_external=9.216 MHz external osc.
+1634.menu.clock.9_216MHz_external.bootloader.low_fuses=0xee
+1634.menu.clock.9_216MHz_external.bootloader.baudrate=115200
+1634.menu.clock.9_216MHz_external.build.clocksource=1
+1634.menu.clock.9_216MHz_external.build.speedfix=
+1634.menu.clock.9_216MHz_external.build.f_cpu=9216000L
+
+1634.menu.clock.8MHz_external=8 MHz external osc.
+1634.menu.clock.8MHz_external.bootloader.low_fuses=0xed
+1634.menu.clock.8MHz_external.bootloader.baudrate=38400
+1634.menu.clock.8MHz_external.build.clocksource=1
+1634.menu.clock.8MHz_external.build.speedfix=
+1634.menu.clock.8MHz_external.build.f_cpu=8000000L
+
+1634.menu.clock.7_3728MHz_external=7.3728 MHz external osc.
+1634.menu.clock.7_3728MHz_external.bootloader.low_fuses=0xed
+1634.menu.clock.7_3728MHz_external.bootloader.baudrate=115200
+1634.menu.clock.7_3728MHz_external.build.clocksource=1
+1634.menu.clock.7_3728MHz_external.build.speedfix=
+1634.menu.clock.7_3728MHz_external.build.f_cpu=7372800L
+
+1634.menu.clock.6MHz_external=6 MHz external osc.
+1634.menu.clock.6MHz_external.bootloader.low_fuses=0xed
+1634.menu.clock.6MHz_external.bootloader.baudrate=57600
+1634.menu.clock.6MHz_external.build.clocksource=1
+1634.menu.clock.6MHz_external.build.speedfix=
+1634.menu.clock.6MHz_external.build.f_cpu=6000000L
+
+1634.menu.clock.4MHz_external=4 MHz external osc.
+1634.menu.clock.4MHz_external.bootloader.low_fuses=0xed
+1634.menu.clock.4MHz_external.bootloader.baudrate=57600
+1634.menu.clock.4MHz_external.build.clocksource=1
+1634.menu.clock.4MHz_external.build.speedfix=
+1634.menu.clock.4MHz_external.build.f_cpu=4000000L
+
+1634.menu.clock.3_6864MHz_external=3.6864 MHz external osc.
+1634.menu.clock.3_6864MHz_external.bootloader.low_fuses=0xed
+1634.menu.clock.3_6864MHz_external.bootloader.baudrate=115200
+1634.menu.clock.3_6864MHz_external.build.clocksource=1
+1634.menu.clock.3_6864MHz_external.build.speedfix=
+1634.menu.clock.3_6864MHz_external.build.f_cpu=3686400L
+
+1634.menu.clock.1MHz_external=1 MHz external osc.
+1634.menu.clock.1MHz_external.bootloader.low_fuses=0xed
+1634.menu.clock.1MHz_external.bootloader.baudrate=9600
+1634.menu.clock.1MHz_external.build.clocksource=1
+1634.menu.clock.1MHz_external.build.speedfix=
+1634.menu.clock.1MHz_external.build.f_cpu=1000000L
+
+
+###################
+#### ATtiny828 ####
+###################
+
+# General
+828.name=ATtiny828
+828.build.mcu=attiny828
+828.upload.maximum_size=8192
+828.upload.maximum_data_size=512
+828.upload.tool=avrdude
+828.upload.speed={bootloader.baudrate}
+828.bootloader.tool=avrdude
+828.bootloader.unlock_bits=0xff
+828.bootloader.lock_bits=0xff
+828.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
+828.bootloader.extended_fuses=0b{bootloader.bodpd_bits}{bootloader.bodact_bits}1111
+828.build.core=tiny
+828.build.variant=tiny828
+828.build.board=AVR_ATTINY828
+828.build.extra_flags={build.wiremode} {build.speedfix}
+
+# Upload port select / Bootloader
+828.menu.bootloader.no_bootloader=No bootloader
+828.menu.bootloader.no_bootloader.build.export_merged_output=false
+828.menu.bootloader.no_bootloader.bootloader.str=
+828.menu.bootloader.no_bootloader.bootloader.spm_bit=1
+
+828.menu.bootloader.urboot_uart0=Yes (UART0)
+828.menu.bootloader.urboot_uart0.upload.protocol=urclock
+828.menu.bootloader.urboot_uart0.build.export_merged_output=true
+828.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart0_pr
+828.menu.bootloader.urboot_uart0.bootloader.spm_bit=0
+
+# EEPROM
+828.menu.eeprom.keep=EEPROM retained
+828.menu.eeprom.keep.bootloader.eesave_bit=0
+828.menu.eeprom.erase=EEPROM not retained
+828.menu.eeprom.erase.bootloader.eesave_bit=1
+
+# Brown out detection
+828.menu.bod.2v7=BOD 2.7V
+828.menu.bod.2v7.bootloader.bod_bits=101
+828.menu.bod.2v7.bootloader.bodact_bits=10
+828.menu.bod.2v7.bootloader.bodpd_bits=10
+828.menu.bod.4v3=BOD 4.3V
+828.menu.bod.4v3.bootloader.bod_bits=100
+828.menu.bod.4v3.bootloader.bodact_bits=10
+828.menu.bod.4v3.bootloader.bodpd_bits=10
+828.menu.bod.1v8=BOD 1.8V
+828.menu.bod.1v8.bootloader.bod_bits=110
+828.menu.bod.1v8.bootloader.bodact_bits=10
+828.menu.bod.1v8.bootloader.bodpd_bits=10
+828.menu.bod.disable=BOD disabled
+828.menu.bod.disable.bootloader.bod_bits=101
+828.menu.bod.disable.bootloader.bodact_bits=11
+828.menu.bod.disable.bootloader.bodpd_bits=11
+
+# Clock frequencies
+828.menu.clock.8MHz_internal_5v=8 MHz internal osc. (Vcc > 4.5V)
+828.menu.clock.8MHz_internal_5v.bootloader.low_fuses=0xee
+828.menu.clock.8MHz_internal_5v.bootloader.baudrate=38400
+828.menu.clock.8MHz_internal_5v.build.clocksource=0
+828.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL=9
+828.menu.clock.8MHz_internal_5v.build.f_cpu=8000000L
+
+828.menu.clock.8MHz_internal=8 MHz internal osc. (Vcc < 4.5V)
+828.menu.clock.8MHz_internal.bootloader.low_fuses=0xe
+828.menu.clock.8MHz_internal.bootloader.baudrate=38400
+828.menu.clock.8MHz_internal.build.clocksource=0
+828.menu.clock.8MHz_internal.build.speedfix=
+828.menu.clock.8MHz_internal.build.f_cpu=8000000L
+
+828.menu.clock.4MHz_internal_5v=4 MHz internal osc. (Vcc > 4.5V)
+828.menu.clock.4MHz_internal_5v.bootloader.low_fuses=0x6w
+828.menu.clock.4MHz_internal_5v.bootloader.baudrate=9600
+828.menu.clock.4MHz_internal_5v.build.clocksource=0
+828.menu.clock.4MHz_internal_5v.build.speedfix=-DLOWERCAL=9
+828.menu.clock.4MHz_internal_5v.build.f_cpu=4000000L
+
+828.menu.clock.4MHz_internal=4 MHz internal osc. (Vcc < 4.5V)
+828.menu.clock.4MHz_internal.bootloader.low_fuses=0x6e
+828.menu.clock.4MHz_internal.bootloader.baudrate=9600
+828.menu.clock.4MHz_internal.build.clocksource=0
+828.menu.clock.4MHz_internal.build.speedfix=
+828.menu.clock.4MHz_internal.build.f_cpu=4000000L
+
+828.menu.clock.1MHz_internal_5v=1 MHz internal osc. (Vcc > 4.5V)
+828.menu.clock.1MHz_internal_5v.bootloader.low_fuses=0x6e
+828.menu.clock.1MHz_internal_5v.bootloader.baudrate=9600
+828.menu.clock.1MHz_internal_5v.build.clocksource=0
+828.menu.clock.1MHz_internal_5v.build.speedfix=-DLOWERCAL
+828.menu.clock.1MHz_internal_5v.build.f_cpu=1000000L
+
+828.menu.clock.1MHz_internal=1 MHz internal osc. (Vcc < 4.5V)
+828.menu.clock.1MHz_internal.bootloader.low_fuses=0x6e
+828.menu.clock.1MHz_internal.bootloader.baudrate=9600
+828.menu.clock.1MHz_internal.build.clocksource=0
+828.menu.clock.1MHz_internal.build.speedfix=
+828.menu.clock.1MHz_internal.build.f_cpu=1000000L
+
+828.menu.clock.20MHz_external=20 MHz external CLOCK
+828.menu.clock.20MHz_external.bootloader.low_fuses=0xe0
+828.menu.clock.20MHz_external.bootloader.baudrate=115200
+828.menu.clock.20MHz_external.build.clocksource=2
+828.menu.clock.20MHz_internal.build.speedfix=
+828.menu.clock.20MHz_external.build.f_cpu=20000000L
+
+828.menu.clock.16MHz_external=16 MHz external CLOCK
+828.menu.clock.16MHz_external.bootloader.low_fuses=0xe0
+828.menu.clock.16MHz_external.bootloader.baudrate=115200
+828.menu.clock.16MHz_external.build.clocksource=2
+828.menu.clock.16MHz_internal.build.speedfix=
+828.menu.clock.16MHz_external.build.f_cpu=16000000L
+
+828.menu.clock.12MHz_external=12 MHz external CLOCK
+828.menu.clock.12MHz_external.bootloader.low_fuses=0xe0
+828.menu.clock.12MHz_external.bootloader.baudrate=115200
+828.menu.clock.12MHz_external.build.clocksource=2
+828.menu.clock.12MHz_internal.build.speedfix=
+828.menu.clock.12MHz_external.build.f_cpu=12000000L
+
+828.menu.clock.8MHz_external=8 MHz external CLOCK
+828.menu.clock.8MHz_external.bootloader.low_fuses=0xe0
+828.menu.clock.8MHz_external.bootloader.baudrate=38400
+828.menu.clock.8MHz_external.build.clocksource=2
+828.menu.clock.8MHz_internal.build.speedfix=
+828.menu.clock.8MHz_external.build.f_cpu=8000000L
+
+# Wire mode
+828.menu.wiremode.amaster=Master Only
+828.menu.wiremode.amaster.build.wiremode=-DWIRE_MASTER_ONLY
+828.menu.wiremode.slave=Slave Only
+828.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
+828.menu.wiremode.both=Master and slave
+828.menu.wiremode.both.build.wiremode=-DWIRE_BOTH
 
 
 ##################
