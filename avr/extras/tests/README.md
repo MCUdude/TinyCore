@@ -1,6 +1,6 @@
 # Minimum functionality tests
 
-The tests in this folder each check one particular basic functionality. They are organized in folders, where each folder contains at least a target sketch, which needs to be flashed to the target chip, and perhaps a host sketch for an ATmega328P (Uno or Nano). Further, there will be a generic description of how to wire up the two sketches and how to run the test protocol. In order to simplify things, the test sketches can be uploaded and started using a Python script.
+The tests in this folder each check one particular basic functionality. They are organized in folders, where each folder contains at least a target sketch, which needs to be flashed to the target chip, and perhaps a host sketch for an ATmega328P (Uno, Mega, or Nano). Further, there will be a generic description of how to wire up the two sketches and how to run the test protocol. 
 
 
 

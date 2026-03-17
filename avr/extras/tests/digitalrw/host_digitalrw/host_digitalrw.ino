@@ -9,9 +9,8 @@
 unsigned long start;
 int phase, subphase;
 int iocount;
-int reset_pin = -1;
 int lowcount = 0;
-int highcount = 0;
+
 
 void setup()
 {
@@ -39,7 +38,6 @@ void loop()
     if (digitalRead(COMPIN) == HIGH)
       return;
     iocount = count_pulses();
-    reset_pin = HPIN(iocount);
     pinMode(COMPIN, INPUT);
     Serial.print(F("Number of I/O pins: "));
     Serial.println(iocount);
@@ -53,7 +51,8 @@ void loop()
       if (digitalRead(HPIN(i)) == LOW) {
         Serial.print(F("This target pin is still low: "));
         Serial.println(i);
-        if (lowcount++ > 10) report_failure;
+        if (lowcount++ > 10) 
+          report_failure();
         return;
       }
     }
@@ -72,7 +71,7 @@ void loop()
     for (i = subphase+1; i < iocount; i++)
       if (digitalRead(HPIN(i)) == LOW) {
         Serial.print(F("Target LOW too early: "));
-        Serial.print(i);
+        Serial.println(i);
         report_failure();
       }
     subphase++;
@@ -88,7 +87,6 @@ void loop()
     phase = 9;
     Serial.println(F("Phase 9: Wait for all pins to be HIGH inputs"));
     start = millis();
-    lowcount = 0;
     break;
   case 9: /* wait for all pins to read HIGH */
     for (i = 0; i < iocount; i++)
@@ -153,11 +151,7 @@ void report_failure()
   bool on = false;
   for (int i = 0; i < iocount; i++) pinMode(HPIN(i), INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
-  if (reset_pin >= 0) {
-    pinMode(reset_pin, OUTPUT);
-    digitalWrite(reset_pin, LOW);
-  }
-  Serial.print(F("*** Failure in phase"));
+  Serial.print(F("*** Failure in phase "));
   Serial.println(phase);
   if (subphase >= 0) {
     Serial.print(F("*** before having success on pin "));
