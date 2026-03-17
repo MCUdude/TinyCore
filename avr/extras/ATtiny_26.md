@@ -18,52 +18,48 @@
 | Int. WDT Oscillator              | 128 kHz                 |
 | LED_BUILTIN                      | PIN_PB6                 |
 
-## Overview
-The ATtiny26 is the predecessor to the 261a/461a/861a and are functionally very similar; the tiny26 was one of the very first ATtiny parts so their functionality is less advanced but they do have a similar differential ADC. It has been not recommended for new designs since 2007 and is supported only on behalf of a paying client who is apparently in possessing of a large quantity of them, will be introduced in the 2.0.0 version of ATTinyCore.
-
-
-Any of these parts can be programmed by use of an ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+### Overview
+The ATtiny26 is the predecessor to the ATtiny261/461/861 family, sharing a similar architecture and differential ADC. As one of the earliest ATtiny devices, its peripheral set is less advanced than its successors.
 
 ### No bootloader is possible
-Self programming is not supported on these parts, it wasn't until the next generation that tinies gained self programming.
+Self programming is not supported on these parts, making it impossible to use a bootloader.
 
-## PLL Clock
-The ATtinyw26 parts has an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64 MHz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16 MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. This is straightforward to configure by writing directly to registers - no wrapper is provided. Nobody noticed for years that it was broken when I offered one on the x5 and x61.
+### PLL clock
+The ATtiny26 features an on-chip PLL clocked from the internal oscillator, running at a nominal frequency of 64 MHz when enabled. It can be used in two ways, either independently or in combination.  
+The system clock can be derived from one quarter of the PLL output, providing a 16 MHz clock source without an external crystal. This option inherits the accuracy limitations of the internal oscillator driving the PLL. Timer1 can be clocked directly from the PLL, enabling high-speed PWM and other timer functions independent of the system clock speed.
 
-## Tone Support
-Tone() uses Timer1. For best results, use pin PB0 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, tones can be generated up into the MHz range
+### I2C support
+The ATtiny26 does not feature a dedicated I2C peripheral. Instead, I2C functionality is implemented through the hardware USI (Universal Serial Interface), exposed transparently via the Wire library included with this core. **External pull-up resistors are required on the SDA and SCL lines for I2C to function**. The small flash of these parts may require use of more tightly optimized (and API-incompatible) library.
 
-## I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire.h library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all, and the small flash of these parts may require use of more tightly optimized (and API-incompatible) library.
+### SPI support
+The ATtiny26 does not feature a dedicated SPI peripheral. Instead, SPI functionality is implemented through the hardware USI (Universal Serial Interface), exposed transparently via the included SPI library.
+Note that the USI uses DI (Data In) and DO (Data Out) rather than the conventional MISO/MOSI naming. The mapping depends on the operating mode: in master mode, DI corresponds to MISO and DO to MOSI; in slave mode, these are reversed. The MISO and MOSI #defines reflect master mode, as this is by far the most common use case and the only mode supported by the SPI library. The small flash of these parts may require use of more tightly optimized (and API-incompatible) library.
 
-## SPI Support
-There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common). What is marked on the pinout chart are the pins for ISP programming, so MISO and MOSI are the reverse of what is shown when acting as a master. The small flash of these parts may require use of more tightly optimized (and API-incompatible) library.
+### UART
+The ATtiny26 does not feature a hardware UART. When operating from the internal oscillator, clock calibration may be necessary to achieve sufficient timing accuracy for reliable serial communication.
 
-## UART (Serial) Support
-There is no hardware UART. If running off the internal oscillator, you may need to tune it to get the speed close enough to the correct speed for UART communication to work. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](Ref_TinySoftSerial.md). SoftwareSerial library is not supported. It uses PCINTs. which aren't readily usable on these parts (there is no PCMSK register)
+The core provides a built-in software serial implementation exposed as `Serial`, using the Analog Comparator pins and their dedicated interrupt to avoid conflicts with libraries that rely on pin change interrupts (PCINTs). The default pin assignment is AIN0 for TX and AIN1 for RX. Being a software implementation, `Serial` cannot transmit and receive simultaneously. Note that both an upper and a lower baud rate limit apply.
 
-To disable the RX channel (to use only TX), the following commands should be used after calling Serial.begin(). No special action is needed to disable the TX line if only RX is needed.
-```c
-ACSR &= ~(1 << ACIE);
-ACSR |= ~(1 << ACD);
-```
-## Servo Support
-Unlikely, flash too small, and servo library to inefficient.
+The `SoftwareSerial` library is not supported on the ATtiny26, as it relies on PCINTs, which are not readily usable on this device due to the absence of a `PCMSK` register.
 
-## ADC Features
-The ATtiny26 has a surprisingly sophisticated ADC for it's time, being the first tinyAVR with a real differential ADC (which was not featured on any AVR released between 2016 and 2021 (the ones on the Dx-series domn't count - they limiy ). As of ATTinyCore 2.0.0, these are available through analogRead!  When used to read a pair of analog pins in differential mode, the ADC normally runs in unipolar mode: The voltage on the positive pin must be higher than that on the negative one, but the difference is measured to the full precision of the ADC. It can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and generate meaningful measurements (it will return a signed value, which costs 1 bit of accuracy for the sign bit). This can be enabled by calling the helper function `setADCBipolarMode(true or false)`. On many AVR devices with a differential ADC, only bipolar mode is available.
+### Tone
+`tone()` is implemented using Timer1. For best results, use PB0 as the tone output pin, where `tone()` drives Timer1's output compare unit directly rather than toggling the pin via interrupt, extending the usable frequency range into the MHz region.
+
+### Servo
+The Servo library is not supported on the ATtiny26. The available flash is too limited and the library too large to leave meaningful space for user code.
+
+## ADC features
+The ATtiny261/461/861 has a surprisingly sophisticated ADC with many differential channels, most with selectable gain. These are available through analogRead. When used to read a pair of analog pins in differential mode, the ADC normally runs in unipolar mode: The voltage on the positive pin must be higher than that on the negative one, but the difference is measured to the full precision of the ADC. It can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and generate meaningful measurements (it will return a signed value, which costs 1 bit of accuracy for the sign bit). This can be enabled by calling the helper function `setADCBipolarMode(true or false)`.
 
 ## ADC Reference options
-The ATtiny x61-series has two internal references, one of which can (optionally) use the AREF pin with an external capacitor for improved stability. It can also use an external reference voltage or the supply voltage. For historical reasons, there are several aliases available for some of these options.
+The ATtiny26 provides two internal reference voltages, one of which supports connection of an external capacitor on the AREF pin for improved stability. An external reference voltage and the supply voltage (Vcc) are also available as reference sources.
+
 | Reference Option   | Reference Voltage           | Uses AREF Pin        | Aliases/synonyms                         |
 |--------------------|-----------------------------|----------------------|------------------------------------------|
 | `DEFAULT`          | Vcc                         | No, pin available    |                                          |
 | `EXTERNAL`         | Voltage applied to AREF pin | Yes, ext. voltage    |                                          |
 | `INTERNAL2V56`     | Internal 2.56V reference    | No, pin available    | `INTERNAL2V56_NO_CAP` `INTERNAL2V56NOBP` |
 | `INTERNAL2V56_CAP` | Internal 2.56V reference    | Yes, w/cap. on AREF  |                                          |
-| ~INTERNAL1V1~      | NO Standard 1.1V reference! | N/A                  | You can read 1.18v bandgap. but not use as reference
-
-This is the ONLY part I am aware of without an internal "1.1" (usually a bit higher) bandgap reference option for the ADC!
 
 ### Internal Sources
 | Voltage Source  | Description                            |
@@ -72,8 +68,7 @@ This is the ONLY part I am aware of without an internal "1.1" (usually a bit hig
 | ADC_GROUND      | Reads ground - for offset correction   |
 
 ### Differential ADC
-I don't know how they count the channels to the the headline "8" or "7" numbers. There are 20 differential options - 4 that measusire each of the possible negative pins against themselves are for offset adjustment at 20x gain only, 1 pair available with only 1x gain and all others available in in a 1x or 20x gain setting.
-
+The ATtiny26 provides 20 differential channel configurations. Four of these measure each possible negative pin against itself, intended for gain stage offset calibration at 20x gain only. One pair is available at 1x gain only, while all remaining pairs offer both 1x and 20x gain options.
 
 | Positive   | Negative   |   Gain  | Channel| Name 1x/20x mode | Notes            |
 |------------|------------|---------|--------|------------------|------------------|
@@ -98,7 +93,6 @@ I don't know how they count the channels to the the headline "8" or "7" numbers.
 | ADC10(PB7) | ADC9 (PB6) |      1x |   0x1D | DIFF_A10_A9_1X   |                  |
 
 #### ADC Differential Pair Matrix
-
 |  N\P  |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   8   |   9   |  10   |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 |   0   |       |       |       |       |       |       |       |       |       |       |
@@ -109,32 +103,5 @@ I don't know how they count the channels to the the headline "8" or "7" numbers.
 |   5   |       |       |       |       | 1/20x | 20x*  | 1/20x |       |       |       |
 |   6   |       |       |       |       |       |       |       |       |       |       |
 |   9   |       |       |       |       |       |       |       | 1/20x | 20x*  | 1/20x |
+
 `*` this option is used to measure the offset of that gain stage (applicable to that negative pin only), in order to correct offset gain to within 1 LSB. Doing this is the responsibility of the user.
-
-### Temperature Measurement
-The ATtiny26 predates the usual temperature sensor. There is no temperature measurement.
-
-## Purchasing ATtiny26 Boards
-Don't, unless you've no other options during the Great Chip Shortage or you have
-
-## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny 26 as well as the name you refer to them as when using the `ISR()` macro. Be aware that, like on all other AVRs, a non-existent vector is just a "warning" not an "error" - however, the misspelled vector doesn't end up in the vector table, so if it is enabled and triggered, the device will (at best) immediately reset (often not cleanly). The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed" (that is, 0x0001 is bytes 0x0002 and 0x0003). vect_num is the number you are shown in the event of a duplicate vector error, among other things.
-
-| num | address| Vector Name        | Interrupt Definition
-|-----|--------|--------------------|--------------------------------------
-|   0 | 0x0000 | RESET_vect         | Any reset (pin, WDT, power-on, BOD)
-|   1 | 0x0001 | INT0_vect          | External Interrupt Request 0
-|   2 | 0x0002 | PCINT0_vect        | Pin Change Interrupt 0 (PORT A)
-|   3 | 0x0003 | PCINT1_vect        | Pin Change Interrupt 1 (PORT B)
-|   4 | 0x0004 | WDT_vect           | Watchdog Time-out (interrupt mode)
-|   5 | 0x0005 | TIMER1_COMPA_vect  | Timer/Counter1 Compare Match A
-|   6 | 0x0006 | TIMER1_COMPB_vect  | Timer/Counter1 Compare Match B
-|   7 | 0x0007 | TIMER1_OVF_vect    | Timer/Counter1 Overflow
-|   8 | 0x0008 | TIMER0_COMPA_vect  | Timer/Counter0 Compare Match A
-|   9 | 0x0009 | TIMER0_COMPB_vect  | Timer/Counter0 Compare Match B
-|  10 | 0x000A | TIMER0_OVF_vect    | Timer/Counter0 Overflow
-|  11 | 0x000B | ANA_COMP_vect      | Analog Comparator
-|  12 | 0x000C | ADC_vect           | ADC Conversion Complete
-|  13 | 0x000D | EE_RDY_vect        | EEPROM Ready
-|  14 | 0x000E | USI_START_vect     | USI Start
-|  15 | 0x000F | USI_OVF_vect       | USI Overflow

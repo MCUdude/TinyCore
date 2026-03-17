@@ -1,29 +1,34 @@
 # ATtiny 2313/4313
 ![x313 pin mapping](Pinout_x313.png "Arduino Pin Mapping for ATtiny x313-family")
 
-| Specification                    | ATtiny4313         | ATtiny2313/A       | ATtiny2313         |
-|----------------------------------|--------------------|--------------------|--------------------|
-| Bootloader (occupies 256 bytes)  | Urboot             | Urboot             | Urboot             |
-| Flash available user             | 3840 / 4096 bytes  | 1792 / 2048 bytes  | 2048 bytes         |
-| RAM                              | 256 bytes          | 128 bytes          | 128 bytes          |
-| EEPROM                           | 64 bytes           | 64 bytes           | 64 bytes           |
-| GPIO Pins                        | 17 + RESET         | 17 + RESET         | 17 + RESET         |
-| ADC Channels                     | None               | None               | None               |
-| PWM Channels                     | 4                  | 4                  | 4                  |
-| Interfaces                       | USI, USART         | USI, USART         | USI, USART         |
-| Int. Oscillator (MHz)            | 8, 4, 2, 1         | 8, 4, 2, 1         | 8, 4, 2, 1         |
-| External Crystal                 | All Standard       | All Standard       | All Standard       |
-| External Clock                   | All Standard       | All Standard       | All Standard       |
-| Int. WDT Oscillator              | 128 kHz            | 128 kHz            | 128 kHz            |
-| LED_BUILTIN                      | PIN_PB4            | PIN_PB4            | PIN_PB4            |
+| Specification                    | ATtiny4313         | ATtiny2313/A       |
+|----------------------------------|--------------------|--------------------|
+| Bootloader (occupies 256 bytes)  | Urboot             | Urboot             |
+| Flash available user             | 3840 / 4096 bytes  | 1792 / 2048 bytes  |
+| RAM                              | 256 bytes          | 128 bytes          |
+| EEPROM                           | 64 bytes           | 64 bytes           |
+| GPIO Pins                        | 17 + RESET         | 17 + RESET         |
+| ADC Channels                     | None               | None               |
+| PWM Channels                     | 4                  | 4                  |
+| Interfaces                       | USI, USART         | USI, USART         |
+| Int. Oscillator (MHz)            | 8, 4, 2, 1         | 8, 4, 2, 1         |
+| External Crystal                 | All standard       | All standard       |
+| External Clock                   | All standard       | All standard       |
+| Int. WDT Oscillator              | 128 kHz            | 128 kHz            |
+| LED_BUILTIN                      | PIN_PB4            | PIN_PB4            |
 
-Tiny flash, a poor featureset, and a relatively high price tag relegate the x313 to the realm of "desperation" processors. Or one would think it would - except they remain surprisingly popular despite having been obsolete for ages. We do not recommend use of these parts if you can avoid it. The 2313-not-A is a strictly worse version of the 2313, sold for a significant premium. Definitely avoid those.
+### Overview
+The ATtiny2313/4313 are one of the older chips in the ATtiny lineup. They have a hardware serial port and USI (Universal Serial Interface), but does not have an analog to digital converter. The ATtiny2313 (non-A) does not have PCINT interrupts on all pins, and you have to be spesific about if you're using the ATtiny2313 or ATtiny2313A for hardware debugging. Read more about the differences between these two chips [here](https://ww1.microchip.com/downloads/en/Appnotes/doc8261.pdf).
 
-## Programming
-Any of these parts can be programmed by use of any ISP programmer. No bootloaders are supplied due to the small flash on these parts. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
+### Urboot bootloader
+This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny2313/4313, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792 or 3840 bytes available for user program. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
 
-### There is no bootloader
-Not enough space for it to make sense. The x313-series is a pair of essentially obsolete and overpriced parts being kept in production to milk companies who don't have time to redesign (and haven't for the past decade). Their ongoing popularity is baffling
+A critical improvement over Optiboot is that Urboot actively protects both itself and the reset vector from being overwritten during flash operations, preventing the bootloader from bricking itself. The bootloader remains intact regardless of what is uploaded, making it a reliable choice.
+
+No pre-compiled bootloader binaries are distributed with this core, instead, Avrdude generates the appropriate bootloader on the fly during upload.
+The serial upload pins for these chips are PD0 (RX) and PD1 (TX). The WDT timeout, UART pins, baud rate, and other bootloader parameters can be customized by editing the relevant entries in boards.txt or in your platformio.ini project configuration file.
+
+The AVR internal oscillator is neither highly accurate nor necessarily tightly calibrated from the factory. Since a stable system clock is essential for asynchronous protocols such as UART, the bootloader has "autobaud functionality", which means that it will try to adjust and match the host baud rate.
 
 ### PWM frequency
 TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode.
@@ -46,65 +51,32 @@ Phase correct PWM counts up to 255, turning the pin off as it passes the compare
 
 For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
 
-### Tone Support
-Tone() uses Timer1. For best results, use pin PB3 (12) or PB4 (13), as this will use the hardware output compare to generate the square wave instead of using interrupts. In order to use Tone(), you must select Initialize Secondard Timers: Yes. tone() will disable PWM on PB3 and PB4.
 
-### Servo Support
-The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny 4313 though getting everything to fit may be challenging. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. Like tone(), it takes PWM on PB3 and PB4. It is not compatible with Tone.
+### I2C support
+The ATtiny2313/4313 does not feature a dedicated I2C peripheral. Instead, I2C functionality is implemented through the hardware USI (Universal Serial Interface), exposed transparently via the Wire library included with this core. **External pull-up resistors are required on the SDA and SCL lines for I2C to function**.
 
-### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
+Only the built-in Wire library is officially supported. Issues arising from the use of third-party I2C libraries should be directed to the respective library's author or maintainer, as compatibility with USI-based implementations cannot be guaranteed.
 
-### SPI Support
-There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI. This should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common, and the only mode that the SPI library has ever supported). As with I2C, we only support SPI through the included universal SPI library, not through any other libraries that may exist, and can provide no support for third party SPI libraries.
+### SPI support
+There is no hardware SPI peripheral. Instead, SPI functionality is implemented through the hardware USI (Universal Serial Interface), exposed transparently via the included SPI library.
+Note that the USI uses DI (Data In) and DO (Data Out) rather than the conventional MISO/MOSI naming. The mapping depends on the operating mode: in master mode, DI corresponds to MISO and DO to MOSI; in slave mode, these are reversed. The MISO and MOSI #defines reflect master mode, as this is by far the most common use case and the only mode supported by the SPI library.
 
-### UART (Serial) Support
-There is one full hardware Serial port, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. Be aware that due to the limited memory on these chips the buffers are quite small.
+Only the built-in SPI library is officially supported. If you encounter issues when using a third-party SPI library, please contact that library's author or maintainer, compatibility with USI-based hardware is their responsibility.
+
+### UART (Serial) support
+There is one full hardware serial port, named `Serial`. It works the same as `Serial` on any normal Arduino - it is not a software implementation. Be aware that due to the limited memory on these chips the buffers are quite small.
 
 To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels
-```t
+```c
 UCSRB &= ~(1 << TXEN); // disable TX
 UCSRB &= ~(1 << RXEN); // disable RX
 ```
+
+### Tone support
+`tone()` uses Timer1. For best results, use pin PB3 (12) or PB4 (13), as this will use the hardware output compare to generate the square wave instead of using interrupts. `tone()` will disable PWM on PB3 and PB4.
+
+### Servo support
+The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the ATtiny2313/4313 though getting everything to fit may be challenging. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_TinyCore library](../libraries/Servo/README.md) for more details. Like `tone()`, it takes PWM on PB3 and PB4. It is not compatible with Tone.
+
 ### There is no ADC
 analogRead() is not defined on these parts.
-
-### 2313-not-a does not have PCINT on ports A and D
-Not much more to say there. These parts are pretty primitive, and have been almost universally replaced with the 2313A
-
-## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny x313-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not clearly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first.
-
-|  # | Address | Vector Name        | Interrupt Definition              |
-|----|---------|--------------------|-----------------------------------|
-|  0 |  0x0000 | RESET_vect         | Not an interrupt - this is a jump to the start of your code.  |
-|  1 |  0x0001 | INT0_vect          | External Interrupt Request 0      |
-|  2 |  0x0002 | INT1_vect          | External Interrupt Request 1      |
-|  3 |  0x0003 | TIMER1_CAPT_vect   | Timer/Counter1 Capture Event      |
-|  4 |  0x0004 | TIMER1_COMPA_vect  | Timer/Counter1 Compare Match A    |
-|  5 |  0x0005 | TIMER1_OVF_vect    | Timer/Counter1 Overflow           |
-|  6 |  0x0006 | TIMER0_OVF_vect    | Timer/Counter0 Overflow           |
-|  7 |  0x0007 | USART0_RX_vect     | USART0 Rx Complete                |
-|  7 |  0x0007 | USART_RX_vect      | Alias - provided by io.h          |
-|  8 |  0x0008 | USART0_UDRE_vect   | USART0 Data Register Empty        |
-|  8 |  0x0008 | USART_UDRE_vect    | Alias - provided by io.h          |
-|  9 |  0x0009 | USART0_TX_vect     | USART0 Tx Complete                |
-|  9 |  0x0009 | USART_TX_vect      | Alias - provided by io.h          |
-| 10 |  0x000A | ANALOG_COMP_vect   | Analog Comparator                 |
-| 11 |  0x000B | PCINT0_vect        | Pin Change Interrupt 0 (PORT B)   |
-| 11 |  0x000B | PCINT_B_vect       | Alias - provided by io.h          |
-| 12 |  0x000C | TIMER1_COMPB_vect  | Timer/Counter1 Compare Match B    |
-| 13 |  0x000D | TIMER0_COMPA_vect  | Timer/Counter0 Compare Match A    |
-| 14 |  0x000E | TIMER0_COMPB_vect  | Timer/Counter0 Compare Match B    |
-| 15 |  0x000F | USI_START_vect     | USI Start Condition               |
-| 16 |  0x0010 | USI_OVERFLOW_vect  | USI Overflow                      |
-| 17 |  0x0011 | EE_READY_vect      | EEPROM Ready                      |
-| 18 |  0x0012 | WDT_OVERFLOW_vect  | Watchdog Time-out (interrupt mode)|
-| 19 |  0x0013 | PCINT1_vect        | Pin Change Interrupt 1 (PORT A) * |
-| 19 |  0x0013 | PCINT_A_vect       | Alias - provided by io.h *        |
-| 20 |  0x0014 | PCINT2_vect        | Pin Change Interrupt 2 (PORT D) * |
-| 20 |  0x0014 | PCINT_D_vect       | Alias - provided by io.h *        |
-
-*This core always compiles with ATtiny2313a, not ATtiny2313 as the target*
-
-* Vector not available in ATtiny2313 (although it is defined in the io headers!)

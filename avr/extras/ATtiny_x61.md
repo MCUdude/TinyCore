@@ -22,6 +22,16 @@
 ## Overview
 The ATtiny261/461/861 is a microcontroller designed with brushless DC (BLDC) motor control in mind. It features an on-chip PLL and a high-speed Timer1 capable of generating three complementary PWM signals with configurable dead time, as required for three-phase BLDC motor drives. It also includes a notably capable ADC, second only to the ATtiny441/841 in the number of differential pairs and programmable gain options.
 
+### Urboot bootloader
+This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny261/461/861, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792, 3840, or 7936 bytes available for user code on the ATtiny261, 461, and 861 respectively. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
+
+A critical improvement over Optiboot is that Urboot actively protects both itself and the reset vector from being overwritten during flash operations, preventing the bootloader from bricking itself. The bootloader remains intact regardless of what is uploaded, making it a reliable choice.
+
+No pre-compiled bootloader binaries are distributed with this core, instead, Avrdude generates the appropriate bootloader on the fly during upload.
+The default serial upload pins for these chips are PA6 (TX) and PA7 (RX). The WDT timeout, UART pins, baud rate, and other bootloader parameters can be customized by editing the relevant entries in boards.txt or in your platformio.ini project configuration file.
+
+The AVR internal oscillator is neither highly accurate nor necessarily tightly calibrated from the factory. Since a stable system clock is essential for asynchronous protocols such as UART, the bootloader can be configured to apply an oscillator correction factor. This is exposed as a Tools menu option, with adjustable compensation ranging from -5.00% to +5.00%.
+
 ## Features
 
 ### PLL clock
