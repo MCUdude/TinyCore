@@ -943,7 +943,7 @@ x41.menu.clock.8MHz_internal_5v.bootloader.low_fuses=0xe2
 x41.menu.clock.8MHz_internal_5v.bootloader.ulp_bits=111
 x41.menu.clock.8MHz_internal_5v.bootloader.baudrate=38400
 x41.menu.clock.8MHz_internal_5v.build.clocksource=0
-x41.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL
+x41.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL=6
 x41.menu.clock.8MHz_internal_5v.build.f_cpu=8000000L
 
 x41.menu.clock.8MHz_internal=8 MHz internal osc. (Vcc < 4.5V)
@@ -959,7 +959,7 @@ x41.menu.clock.4MHz_internal_5v.bootloader.low_fuses=0x62
 x41.menu.clock.4MHz_internal_5v.bootloader.ulp_bits=111
 x41.menu.clock.4MHz_internal_5v.bootloader.baudrate=9600
 x41.menu.clock.4MHz_internal_5v.build.clocksource=0
-x41.menu.clock.4MHz_internal_5v.build.speedfix=-DLOWERCAL
+x41.menu.clock.4MHz_internal_5v.build.speedfix=-DLOWERCAL=6
 x41.menu.clock.4MHz_internal_5v.build.f_cpu=4000000L
 
 x41.menu.clock.4MHz_internal=4 MHz internal osc. (Vcc < 4.5V)
@@ -975,7 +975,7 @@ x41.menu.clock.1MHz_internal_5v.bootloader.low_fuses=0x62
 x41.menu.clock.1MHz_internal_5v.bootloader.ulp_bits=111
 x41.menu.clock.1MHz_internal_5v.bootloader.baudrate=9600
 x41.menu.clock.1MHz_internal_5v.build.clocksource=0
-x41.menu.clock.1MHz_internal_5v.build.speedfix=-DLOWERCAL
+x41.menu.clock.1MHz_internal_5v.build.speedfix=-DLOWERCAL=6
 x41.menu.clock.1MHz_internal_5v.build.f_cpu=1000000L
 
 x41.menu.clock.1MHz_internal=1 MHz internal osc. (Vcc < 4.5V)
@@ -1580,7 +1580,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 1634.menu.clock.8MHz_internal_5v.bootloader.low_fuses=0xe2
 1634.menu.clock.8MHz_internal_5v.bootloader.baudrate=38400
 1634.menu.clock.8MHz_internal_5v.build.clocksource=0
-1634.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL=9
+1634.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL=6
 1634.menu.clock.8MHz_internal_5v.build.f_cpu=8000000L
 
 1634.menu.clock.8MHz_internal=8 MHz internal osc. (Vcc < 4.5V)
@@ -1590,12 +1590,26 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 1634.menu.clock.8MHz_internal.build.speedfix=
 1634.menu.clock.8MHz_internal.build.f_cpu=8000000L
 
-1634.menu.clock.4MHz_internal=4 MHz internal osc.
+1634.menu.clock.4MHz_internal_5v=4 MHz internal osc. (Vcc > 4.5V)
+1634.menu.clock.4MHz_internal_5v.bootloader.low_fuses=0x62
+1634.menu.clock.4MHz_internal_5v.bootloader.baudrate=9600
+1634.menu.clock.4MHz_internal_5v.build.clocksource=0
+1634.menu.clock.4MHz_internal_5v.build.speedfix=-DLOWERCAL=6
+1634.menu.clock.4MHz_internal_5v.build.f_cpu=4000000L
+
+1634.menu.clock.4MHz_internal=4 MHz internal osc. (Vcc < 4.5V)
 1634.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
 1634.menu.clock.4MHz_internal.bootloader.baudrate=9600
 1634.menu.clock.4MHz_internal.build.clocksource=0
 1634.menu.clock.4MHz_internal.build.speedfix=
 1634.menu.clock.4MHz_internal.build.f_cpu=4000000L
+
+1634.menu.clock.1MHz_internal_5v=1 MHz internal osc. (Vcc > 4.5V)
+1634.menu.clock.1MHz_internal_5v.bootloader.low_fuses=0x62
+1634.menu.clock.1MHz_internal_5v.bootloader.baudrate=9600
+1634.menu.clock.1MHz_internal_5v.build.clocksource=0
+1634.menu.clock.1MHz_internal_5v.build.speedfix=-DLOWERCAL=6
+1634.menu.clock.1MHz_internal_5v.build.f_cpu=1000000L
 
 1634.menu.clock.1MHz_internal=1 MHz internal osc. (Vcc < 4.5V)
 1634.menu.clock.1MHz_internal.bootloader.low_fuses=0x62
@@ -1730,7 +1744,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 828.menu.clock.8MHz_internal_5v.bootloader.low_fuses=0xee
 828.menu.clock.8MHz_internal_5v.bootloader.baudrate=38400
 828.menu.clock.8MHz_internal_5v.build.clocksource=0
-828.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL=9
+828.menu.clock.8MHz_internal_5v.build.speedfix=-DLOWERCAL=6
 828.menu.clock.8MHz_internal_5v.build.f_cpu=8000000L
 
 828.menu.clock.8MHz_internal=8 MHz internal osc. (Vcc < 4.5V)
@@ -1744,7 +1758,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 828.menu.clock.4MHz_internal_5v.bootloader.low_fuses=0x6w
 828.menu.clock.4MHz_internal_5v.bootloader.baudrate=9600
 828.menu.clock.4MHz_internal_5v.build.clocksource=0
-828.menu.clock.4MHz_internal_5v.build.speedfix=-DLOWERCAL=9
+828.menu.clock.4MHz_internal_5v.build.speedfix=-DLOWERCAL=6
 828.menu.clock.4MHz_internal_5v.build.f_cpu=4000000L
 
 828.menu.clock.4MHz_internal=4 MHz internal osc. (Vcc < 4.5V)
@@ -1758,7 +1772,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 828.menu.clock.1MHz_internal_5v.bootloader.low_fuses=0x6e
 828.menu.clock.1MHz_internal_5v.bootloader.baudrate=9600
 828.menu.clock.1MHz_internal_5v.build.clocksource=0
-828.menu.clock.1MHz_internal_5v.build.speedfix=-DLOWERCAL
+828.menu.clock.1MHz_internal_5v.build.speedfix=-DLOWERCAL=6
 828.menu.clock.1MHz_internal_5v.build.f_cpu=1000000L
 
 828.menu.clock.1MHz_internal=1 MHz internal osc. (Vcc < 4.5V)
