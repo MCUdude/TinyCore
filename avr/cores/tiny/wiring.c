@@ -20,7 +20,11 @@
   #include <avr/eeprom.h>
 #endif
 
-
+#ifdef OSCCAL0
+  #define OSC OSCCAL0
+#else
+  #define OSC OSCCAL
+#endif
 
 #if INITIALIZE_SECONDARY_TIMERS
 static void initToneTimerInternal(void);
@@ -39,402 +43,64 @@ void delay(unsigned int count)
 }
 
 
-/* This attempts to grab a tuning constant from flash (if it's USING_BOOTLOADER) or EEPROM (if not). Note that it is not called unless ENABLE_TUNING is set.
- * inlined for flash savings (call overhead) not speed; it is only ever called once, on startup, so I think it would get inlined anyway most of the time
- * addresses for key values:
- * FLASHEND is second byte of bootloader version, FLASHEND-1 is first byte. (all)
- * OFFSET:   Normal:  PLLs:   x41:          1634/828:
- * LASTCAL-0   12.8    16.5   16.0 @ 5V0    12.8 @ 5V0
- * LASTCAL-1   12.0    16.0   12.8 @ 5V0    12.0 @ 5V0
- * LASTCAL-2    8.0   CUSTOM  12.0 @ 5V0     8.0 @ 5V0
- * LASTCAL-3  CUSTOM   0x00   CUST/0x00     CUSTOM
- * LASTCAL-4
- * LASTCAL-5                  0x00
- *
- * Note that a "tuned" value os 0x00 or 0xFF is never treated as acceptable except for 0xFF in the case of 16 MHz tuning for x41.
- *
- * ENABLE_TUNING values:
- * 1 = use for required changes (it started app boot-tuned wrong, so we need to fix it, or we wanted tuned frequency like 12 or 16.5 from non-bootloaded).
- * 2 = use stored cal contents for 8 MHz even if we start up like that.
- * 4 = enable custom tuning (CUST slot above - we make no promises about any timekeeping functions)
- * 8 = paranoid - don't trust that boot tuning actually happened
- */
-#if USING_BOOTLOADER
-  #define read_tuning_byte(x) pgm_read_byte_near(x)
-  #define LASTCAL FLASHEND
-#else // without a bootloader, we have to store calibration in the EEPROM
-  #define read_tuning_byte(x) eeprom_read_byte((uint8_t*) x)
-  #define LASTCAL E2END
-#endif
-
-#if defined(__SPM_REG)
-  uint8_t read_factory_calibration(void) {
-    uint8_t value = boot_signature_byte_get(1);
-    return value;
-  }
-#endif
-
-// only called in one place most likely, but we'll try to make sure the compiler inlines it just the same. It's 3 instructions, so it absolutely ought to be.
-inline void __attribute__((always_inline)) set_OSCCAL(uint8_t cal) {
-  #ifdef OSCCAL0
-    OSCCAL0 = cal;
-  #else
-    OSCCAL = cal;
-  #endif
-  __asm__ __volatile__ ("nop" "\n\t"); /* This is the "trick" that micronucleus uses to avoid crashes from sudden frequency change. Since micronucleus works, I'll copy that trick. */
-}
-
-static inline bool __attribute__((always_inline)) check_tuning() {
-  // It is almost inconceivable that 0 would be the desired tuning
-  // If this is still 0 by the end, we didn't have a valid tuning constant.
-  uint8_t tuneval = 0;
-  #if (CLOCK_SOURCE == 6)
-  /* start PLL timer tuning */
-    #if (F_CPU == 16500000)
-      tuneval = read_tuning_byte(LASTCAL - 0);
-    #elif (F_CPU == 16000000 || F_CPU == 8000000 || F_CPU) // 16 or divided down 16.
-      tuneval = read_tuning_byte(LASTCAL - 1);
-    #else // Custom tuning
-      tuneval = read_tuning_byte(LASTCAL - 2);
-    #endif
-  /* end PLL timer tuning */
-  #elif (CLOCK_SOURCE == 0)
-  /* start internal tuning */
-    #if defined(__AVR_ATtinyX41__)
-      // 441/841 can be pushed all the way to 16!!
-      #if  (F_CPU == 16000000) // 16 MHz - crazy internal oscillator, no?
-        uint8_t tune8 = read_tuning_byte(LASTCAL - 3)
-        if (tune8 != 0xFF)
-          // Need this specific test because 0xFF is valid tuning here
-          // everywhere else, we assume 0xFF means no tuning saved.
-          tuneval = read_tuning_byte(LASTCAL - 0);
-          // if tuning stored is 0, then tuner determined that chip can't get to 16. or even within 2%.
-          // return success, but tune for 8 MHz, because otherwise the routine would think it meant no tuning stored
-          // and guess - likely resulting in broken 15.x clock. Tuned to 8, they have more chance to figure out what
-          // happened, and user code can check for OSCCAL < 128 - that would mean the chip isn't tuned to 16.
-          // docs will advise that if ENABLE_TUNING is defined, F_CPU is 16 MHz and OSCCAL0 < 128, that means that
-          // the chip in question can't hit 16, please use a different chip, and that they can halve the serial
-          // baud to see what it's printing to serial. On the other hand, if F_CPU is 16 MHz, OSCCAL0 > 128, whether
-          // or not ENABLE_TUNING is defined, if it's not running close enough to 16 for serial to work, it guessed at
-          // cal because no tuning or not enabled, and the guess didn't work; running tuning sketch should fix it.;
-          set_OSCCAL(tuneval != 0 ? tuneval : tune8);
-          return 1;
-        } else {
-          uint8_t osccal=OSCCAL0;
-          if (osccal < 82) {
-            set_OSCCAL(OSCCAL0+174);
-            return 1;
-          } else if (osccal < 88) {
-            set_OSCCAL(255);
-            return 1;
-          }
-          return 0;
-        }
-      #elif (F_CPU == 12800000)
-        tuneval = read_tuning_byte(LASTCAL - 1);
-      #elif (F_CPU == 12000000)
-        tuneval = read_tuning_byte(LASTCAL - 2);
-      #elif (F_CPU ==  8000000 &&  defined(LOWERCAL)) // if LOWERCAL is defined user says Vcc is closer to 5v0, so use tuned cal.
-        tuneval = read_tuning_byte(LASTCAL - 3);
-      #elif (F_CPU ==  8000000 && !defined(LOWERCAL)) // if LOWERCAL is not defined user says Vcc is closer to 3v3, so use factory cal.
-        // do nothing
-      #else
-        tuneval = read_tuning_byte(LASTCAL - 4);
-      #endif
-    #else
-      // Everything else uses the same tuning locations
-      #if   (F_CPU == 12800000)
-        tuneval = read_tuning_byte(LASTCAL - 0);
-      #elif (F_CPU == 12000000)
-        tuneval = read_tuning_byte(LASTCAL - 1);
-      #elif (F_CPU ==  8000000 && ( defined(LOWERCAL) || !(defined(__AVR_ATtiny1634__) || defined(__AVR_ATtiny828__))))
-        // On those parts, oscillator frequency depends dramatically on voltage, but factory cal is very good at 3V3
-        // If they say it's running at ~5V we define LOWERCAL, and we should use the (lower) tuned cal or guess if we
-        // don't have such a constant stored.
-        tuneval = read_tuning_byte(LASTCAL - 2);
-      #elif (F_CPU ==  8000000 && (!defined(LOWERCAL) &&  (defined(__AVR_ATtiny1634__) || defined(__AVR_ATtiny828__))))
-        // do nothing - user says Vcc is closer to 3v3, so factory cal is best.
-      #else // Custom tuning
-        tuneval = read_tuning_byte(LASTCAL - 3);
-      #endif
-    #endif
-  /* end internal tuning */
-  #else
-  /* start non-tunable timer tuning */
-    badCall("Call to check_tuning() detected, but we are using an external oscillator which we can't tune. This is a defect in ATTinyCore and should be reported to the developers promptly");
-    return false;
-  /* end non-tunable timer tuning */
-  #endif
-  #if (!defined(__AVR_ATtinyX41__) || F_CPU != 16000000)
-    // Success here is special case handled above as 0xFF is not an unreasonable tuning value
-    // otherwise 0 = above derermined it shouldn't be tuned, and 0xFF = no tuning constant present (blank flash/eeprom)
-    if (tuneval != 0 && tuneval !=0xFF) {
-      set_OSCCAL(tuneval);
-      return 1;
-    }
-  #endif
-  return 0;
-}
-
-
-
-
 void init_clock() {
-  /*  If clocked from the PLL (CLOCK_SOURCE == 6) then there are three special cases all involving
-   *  the 16.5 MHz clock option used to support VUSB on PLL-clocked parts.
-   *  If F_CPU is set to 16.5, and the Micronucleus bootloader is in use (indicated by BOOTTUNED165
-   *  being defined), the bootloader has already set OSCCAL to run at 16.5; if the board was told
-   *  that was the context it would be started in,
-   *  If it is set to 16.5 but BOOTTUNED165 is not set, we're not using the micronucleus bootloader
-   *  and we need to increase OSCCAL; this is a guess, but works better than nothing.
-   *
-   *  Note that this horrendous mess gets preprocessed down to only a couple of lines. check_tuning()
-   *  is only called once, at most, which is why we inline it.
-   */
-
-  #if (CLOCK_SOURCE == 6)
-    /* Start PLL prescale and tuning */
-    #if (defined(BOOTTUNED165))       // If it's a micronucleus board, it will either run at 16.5 after
-                                      // adjusting the internal oscillator for that speed (in which case
-                                      // we are done) or we want it to be set to run at 16.
-      #if (F_CPU == 16000000L || F_CPU == 8000000L || F_CPU == 4000000L || F_CPU == 2000000L || F_CPU == 1000000L || F_CPU == 500000L || F_CPU == 250000L || F_CPU == 125000L || F_CPU == 62500L )
-        #if defined(ENABLE_TUNING)  && (ENABLE_TUNING & 3)
-                                      // This is "necessary" tuning, if ENABLE_TUNING & 1, we try to tune - unlike cases where we only tune if ENABLE_TUNING & 2 (tune always)
-          if (!check_tuning())        // because it was tuned to a different speed than what we want by the bootloader (or we suspect it was)
-        #endif                        // failing that, or if tuning isn't enabled in the first place we just get the factory cal.
-          #if defined(__SPM_REG)
-            set_OSCCAL(read_factory_calibration());
-          #endif
-        #if (F_CPU     != 16000000L)  // 16MHz is speed of unprescaled PLL clock - if we don't want that, means we want a prescaled one
-          #ifdef CCP
-            CCP=0xD8; //enable change of protected register
-          #else
-            CLKPR=1 << CLKPCE; //enable change of protected register
-          #endif
-          #if   (F_CPU ==  8000000L)
-            CLKPR = 1;                // prescale by 2 for 8MHz
-          #elif (F_CPU ==  4000000L)
-            CLKPR = 2;                // prescale by 4 for 4MHz
-          #elif (F_CPU ==  2000000L)
-            CLKPR = 3;                // prescale by 8 for 2MHz
-          #elif (F_CPU ==  1000000L)
-            CLKPR = 4;                // prescale by 16 for 1MHz
-          #elif (F_CPU ==   500000L)
-            CLKPR = 5;                // prescale by 32 for 0.5MHz
-          #elif (F_CPU ==   250000L)  // these extremely slow speeds are of questionable value.
-            CLKPR = 6;                // prescale by 64 for 0.25MHz
-          #elif (F_CPU ==   125000L)  // but if using micronucleus to get code onto chip, no choice
-            CLKPR = 7;                // prescale by 128 for 125kHz
-          #else // (F_CPU ==   62500L)  // This is far too slow for anything to work right!
-            CLKPR = 8;                // prescale by 256 for 62.50kHz
-          #endif
-        #endif // Not 16 MHz
-      #elif (F_CPU != 16500000L)  // second case - first was not 16.5 AND one of the normal ones - hence it's a custom tuning on a part that's starting
-        #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 4)   // from VUSB and tuned it's osc for 16.5... You know what a normal, every day occurrence that is right?
-          check_tuning();   // if tuning is enabled for custom speed (ENABLE_TUNING & 4) - use tuned value - if we have one.
-                            // If we don't, we're up a certain creek without a useful implement, as we don't know 'til runtime, when we can't tell the user!
-        #else
-          // If we're here, though, we didn't even have a boat because custom tuning is disabled, so we can tell them at compile time.
-          #error "Requested PLL-derived frequency is a custom tuning, which is not enabled."
-        #endif // end of check for custom tuning enabled.
-      #else
-        // Chip was tuned by bootloader to 16.5 MHz, and that's what we're telling it to run at - that was easy. But - if we're paranoid, we can get our stored one!
-        #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 8)
-          check_tuning(); // Don't trust that boot tuning happened.
-        #endif
-      #endif
-    #elif (F_CPU == 16500000L)    // not using a bootloader configured to leave OSC at 16.5 MHz - but that's what we want to run at...
-      #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 3) // if tuning is enabled, grab the tuning constant, if present
-      if (!check_tuning())                                // and only grab default and guess if we didn't find one.
-      #endif
-      { // if that fails, or tuning isn't enabled, we do the guess :-/
-        #if defined(__SPM_REG)
-          if (OSCCAL == read_factory_calibration()) { // adjust the calibration up from 16.0mhz to 16.5mhz
-            if (OSCCAL >= 128) {
-              set_OSCCAL(OSCCAL + 7); // maybe 8 is better? oh well - only about 0.3% out anyway
-            } else {
-              set_OSCCAL(OSCCAL + 5);
-            }
-          }
-        #else
-          if (OSCCAL >= 128) {
-            set_OSCCAL(OSCCAL + 7); // maybe 8 is better? oh well - only about 0.3% out anyway
-          } else {
-            set_OSCCAL(OSCCAL + 5);
-          }
-        #endif
-      }
-    #else // We're using PLL, and we are neither tuned to nor seeking 16.5...
-      #if (F_CPU == 16000000L || F_CPU == 8000000L || F_CPU == 4000000L || F_CPU == 2000000L || F_CPU == 1000000L || F_CPU == 500000L || F_CPU == 250000L || F_CPU == 125000L || F_CPU == 62500L )
-        #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 2) // if we 'always tune' (ENABLE_TUNING == 2)
-          check_tuning();      // Use tuned value if set to always tune, otherwise assume factory tuning is OK.
-        #endif
+  #if (CLOCK_SOURCE == 6) // Internal 16 MHz PLL
+      #if (F_CPU == 16000000L || F_CPU == 8000000L || F_CPU == 4000000L || F_CPU == 2000000L || F_CPU == 1000000L || F_CPU == 500000L)
         // 16MHz is speed of unprescaled PLL clock.
-        #if     (F_CPU != 16000000)
+        #if (F_CPU != 16000000)
           #ifdef CCP
-            CCP   = 0xD8; // enable change of protected register
+            CCP = 0xD8; // Wnable change of protected register
           #else
-            CLKPR = (1 << CLKPCE); // enable change of protected register
+            CLKPR = (1 << CLKPCE); // Wnable change of protected register
           #endif
-          // One really wonders why someone would use the PLL as clock source if they weren't using VUSB or running at 16MHz, it's got to burn more power...
-          #if   (F_CPU ==  8000000L)
-            CLKPR = 1;                // prescale by 2 for 8MHz
-          #elif (F_CPU ==  4000000L)
-            CLKPR = 2;                // prescale by 4 for 4MHz
+          #if (F_CPU == 8000000L)
+            CLKPR = 1; // Prescale by 2 for 8MHz
+          #elif (F_CPU == 4000000L)
+            CLKPR = 2; // Prescale by 4 for 4MHz
           #elif (F_CPU ==  2000000L)  // could also be done with fuses, but this is such a weird situation,
-            CLKPR = 3;                // prescale by 8 for 2MHz
-          #elif (F_CPU ==  1000000L)
-            CLKPR = 4;                // prescale by 16 for 1MHz
-          #elif (F_CPU ==   500000L)
-            CLKPR = 5;                // prescale by 32 for 0.5MHz
-          #elif (F_CPU ==   250000L)  // these extremely slow speeds are of questionable value.
-            CLKPR = 6;                // prescale by 64 for 0.25MHz
-          #elif (F_CPU ==   125000L)
-            CLKPR = 7;                // prescale by 128 for 125kHz
-          #else// (F_CPU ==   62500L)
-            CLKPR = 8; // prescale by 256 for 62.50kHz
-          #endif  // end of checking F_CPUs
-        #endif    // end not 16 MHz
-      #else // else not one of 16 MHz derived ones
-        #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 4)
-          check_tuning(); // if tuning is enabled for custom speed (ENABLE_TUNING & 4)
-        #else             // Use tuned value - if we have one.
-          #error "Requested PLL-derived frequency is a custom tuning, which is not enabled."
-        #endif // end of check for custom tuning enabled.
-      #endif // end if not 16 MHz derived
-    #endif // end check for VUSB-related special cases for the PLL
-  /* End of PLL prescale and tuning */
-  #elif (CLOCK_SOURCE == 0) // system clock is internal, so we may want to tune it, or it may be boot tuned.
+            CLKPR = 3; // Prescale by 8 for 2MHz
+          #elif (F_CPU == 1000000L)
+            CLKPR = 4; // Prescale by 16 for 1MHz
+          #elif (F_CPU == 500000L)
+            CLKPR = 5; // Prescale by 32 for 0.5MHz
+          #else
+            CLKPR = 8; // Prescale by 256 for 62.50kHz
+          #endif  // End of checking F_CPUs
+        #endif // End not 16 MHz
+      #endif // End if not 16 MHz derived
+  /* End of PLL prescale */
+  #elif (CLOCK_SOURCE == 0) // System clock is internal
     /* Start internal osc prescale and tuning */
-    #if (F_CPU == 8000000L || F_CPU == 4000000L || F_CPU == 2000000L || F_CPU == 1000000L || F_CPU == 500000L || F_CPU == 250000L || F_CPU == 125000L || F_CPU == 62500L || F_CPU == 31250L)
-      #if defined(__SPM_REG)
-        // on parts without self programming no bootloader can set the speed. This whole section is skipped because on the one part like this, we do not support these weird clocks.
-        #if (defined(BOOTTUNED128) || defined(BOOTTUNED120) || defined(BOOTTUNED160))
-          // if the bootloader tuned for 12, 12.8, or even 16, but we want a normal speed,  grab the cal byte if enabled and we have it, otherwise grab default cal.
-          #if defined(ENABLE_TUNING)  && (ENABLE_TUNING & 3)  // necessary tuning, if ENABLE_TUNING & 3, we try to tune - unlike cases where we only check ENABLE_TUNING & 2 (tune always)
-            if (!check_tuning())  // try to use stored calibration
-          #endif
-          #if defined(LOWERCAL)   // means it is 1634, 828, or 441/841 so we probably have LOWERCAL set (if running at 5V it should be). Use it to guess at correct cal.
-            set_OSCCAL(read_factory_calibration() - LOWERCAL);
-          #else
-            set_OSCCAL(read_factory_calibration());
-          #endif
-        #else
-          // bootloader hasn't tuned it, and it's a normal frequency. Use tuning if set to always tune, otherwise don't do anything.
-          // BUT if LOWERCAL is defined, that means it is 1634, 828, or 441/841 and running at 5V, treat as "necessary" tuning
-          // and use LOWERCAL to adjust factory cal if no tuning.
-          #if defined(ENABLE_TUNING) && (((ENABLE_TUNING) & 2) || (defined(LOWERCAL) && (ENABLE_TUNING & 3)))
-            if (!check_tuning())  // try to use stored calibration
-          #endif
-          #if defined(LOWERCAL)
-              set_OSCCAL(read_factory_calibration() - LOWERCAL);
-          #else
-              set_OSCCAL(read_factory_calibration());
-          #endif
-        #endif
+    #if (F_CPU == 8000000L || F_CPU == 4000000L || F_CPU == 2000000L || F_CPU == 1000000L || F_CPU == 500000L)
+      #if defined(LOWERCAL)
+        OSC -= LOWERCAL;
       #endif
-      // apply prescaling to get desired frequency if not set by fuses
+      // Apply prescaling to get desired frequency if not set by fuses
       #if (F_CPU != 8000000L && F_CPU != 1000000L)
-        // normal oscillator, and we want a setting that fuses won't give us,
-        // so need to set prescale.
+        // Normal oscillator, and we want a setting that fuses won't give us, so need to set prescale.
         #ifdef CCP
-          CCP=0xD8; //enable change of protected register
+          CCP = 0xD8; // Enable change of protected register
         #else
-          CLKPR=1 << CLKPCE; //enable change of protected register
+          CLKPR = 1 << CLKPCE; // Enable change of protected register
         #endif
-        // One really wonders why someone would use the PLL as clock source if they weren't using VUSB or running at 16MHz, it's got to burn more power...
-        #if (F_CPU ==8000000L)
-          CLKPR=1; //prescale by 2 for 8MHz
-        #elif (F_CPU==4000000L)
-          CLKPR=2; //prescale by 4 for 4MHz
-        #elif (F_CPU==2000000L)
-          CLKPR=3; //prescale by 8 for 2MHz
-        #elif (F_CPU==1000000L)
-          CLKPR=4; //prescale by 16 for 1MHz
-        #elif (F_CPU ==500000L)
-          CLKPR=5; //prescale by 32 for 0.5MHz
-        #elif (F_CPU ==250000L) // these extremely slow speeds are of questionable value.
-          CLKPR=6; //prescale by 64 for 0.25MHz
-        #elif (F_CPU ==125000L) //
-          CLKPR=7; //prescale by 128 for 125kHz
-        #elif (F_CPU ==62500L)
-          CLKPR=8; //prescale by 256 for 62.50kHz
+        #if (F_CPU == 4000000L)
+          CLKPR = 1; // Prescale by 2 for 4MHz
+        #elif (F_CPU == 2000000L)
+          CLKPR = 2; // Prescale by 4 for 2MHz
+        #elif (F_CPU == 500000L)
+          CLKPR = 4; // Prescale by 16 for 0.5MHz
         #else
-          CLKPR = 8;                // prescale by 256 for 31.25kHz
+          CLKPR = 8; // Prescale by 256 for 31.25kHz
         #endif
       #endif // End if not 1/8 MHz
-    #elif (F_CPU == 12800000 || F_CPU == 12000000 || F_CPU == 16000000)
-      // we want a 12.8, 12, or 16 MHz (the non-custom tuning frequencies)
-      #if F_CPU == 16000000
-        #if !defined(__AVR_ATtinyX41__)
-          #error "Only 841/441 can reach 16 MHz with internal oscillator"
-        #elif defined(BOOTTUNED160)
-          // boot tuned to desired frequency, don't need to do anything unless paranoid tuning.
-          #if defined(ENABLE_TUNING) && (ENABLE_TUNING & 8)
-            check_tuning(); // Don't trust that boot tuning happened; maybe it may get uploaded with programmer (paranoid tuning)
-          #endif
-        #else
-          #if defined(ENABLE_TUNING)  && (ENABLE_TUNING & 3)  // necessary tuning, if ENABLE_TUNING & 3, we try to tune - unlike cases where we only check ENABLE_TUNING & 2 (tune always)
-            if (!check_tuning())      // here it started up at one tuned speed, we want a speed that isn't tuned.
-          #endif
-          {
-            // since we're only working with one chip with a non-split osc, *sigh* we can guess....
-          }
-        #endif
-      #elif (F_CPU == 12800000 && defined(BOOTTUNED128)) || (F_CPU == 12000000 && defined(BOOTTUNED120))
-        // boot tuned to desired frequency, don't need to do anything unless paranoid tuning.
-        #if defined(ENABLE_TUNING) && (ENABLE_TUNING & 8)
-          check_tuning(); // Don't trust that boot tuning happened; maybe it may get uploaded with programmer (paranoid tuning)
-        #endif
-      #else // 12.8 or 12.0 without boot tuning, so we use the tuning constants.
-        #if defined(ENABLE_TUNING) && (ENABLE_TUNING & 3)  // necessary tuning, if ENABLE_TUNING & 3, we try to tune - unlike cases where we only check ENABLE_TUNING & 2 (tune always)
-          check_tuning();      // here it started up at one tuned speed, we want a speed that isn't tuned.
-        #else
-          // can't make a general guess here, due to the high/low split in OSCCAL and variety of parts
-          #error "The selected frequency requires tuning or a bootloader that leaves internal so tuned."
-        #endif
-      #endif
     #else
-      CLKPR=1 << CLKPCE; //enable change of protected register
+      CLKPR= 1 << CLKPCE; // Enable change of protected register
     #endif
     /* End of internal osc prescale and tuning */
-  #elif (CLOCK_SOURCE == 0x11 || CLOCK_SOURCE == 0x12)
-    // external 16MHz CLOCK or Crystal, but maybe they want to go slower to save power...
-    // This is used only for board definitions where the crystal is forced to be 16 MHz and nothing else.
-    // That is, on Micronucleus boards that use it for the bootloader. Many people use these as just an easy way
-    // to program the part, and want to use them at low voltages or for low power applications after uploading
-    // code via USB, so the answer of "use an appropriate crystal then" doesn't hold water. That, by the way
-    // is my answer to anyone who wants this support for other crystal speeds.
-    // Used for the commercially available MH-ET tiny88 (16 MHz external clock) and Digispark Pro
-    /* Start of 16 MHz external with prescale */
-    #if     (F_CPU != 16000000) // 16MHz is speed of external clock on these
-      #ifdef CCP
-        CCP=0xD8; //enable change of protected register
-      #else
-        CLKPR=1 << CLKPCE; //enable change of protected register
-      #endif
-      #if (F_CPU ==8000000L)
-        CLKPR=1; //prescale by 2 for 8MHz
-      #elif (F_CPU==4000000L)
-        CLKPR=2; //prescale by 4 for 4MHz
-      #elif (F_CPU==2000000L)
-        CLKPR=3; //prescale by 8 for 2MHz
-      #elif (F_CPU==1000000L)
-        CLKPR=4; //prescale by 16 for 1MHz
-      #elif (F_CPU ==500000L)
-        CLKPR=5; //prescale by 32 for 0.5MHz
-      #elif (F_CPU ==250000L) // these extremely slow speeds are of questionable value.
-        CLKPR=6; //prescale by 64 for 0.25MHz
-      #elif (F_CPU ==125000L) //
-        CLKPR=7; //prescale by 128 for 125kHz
-      #elif (F_CPU ==62500L)
-        CLKPR=8; //prescale by 256 for 62.50kHz
-      #else
-        #error "Frequency requested from 16MHz external clock that cannot be generated by prescaling"
-      #endif //end handling of individual frequencies
-    #endif //end if not 16 MHz (default speed)
-  #endif //end handling for the two types of internal oscillator derived clock source and 16MHz ext clock of MH-ET tiny88
+  #endif // End handling for the two types of internal oscillator derived clock source
 }
+
+
 void init() {
   // this needs to be called before setup() or some functions won't work there
   sei();
@@ -462,7 +128,6 @@ void init() {
     #endif
   #endif
 }
-
 
 
 // This clears up the timer settings, and then calls the tone timer initialization function (unless it's been disabled - but in this case, whatever called this isn't working anyway!
