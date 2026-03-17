@@ -5,11 +5,12 @@
 3. Connect all host and target GPIOs by using a number 2 higher on the host: 0 -> 2, 1 -> 3, ... and from target pin 11 (host pin 13) onwards, add 3 (in order to leave out LED_BUILTIN)
 4. Provide power to the boards.
 5. Flash target sketch.
-6. Upload the host sketch and open terminal at 115200 baud.
-7. Reset the host, then the target.
-8. After a few seconds, the test run should start and end with "Digital read/write test successfully completed."
+6. Disconnect the programmer/debugger from the target!
+7. Upload the host sketch and open terminal at 115200 baud.
+8. Reset the host, then the target.
+9. After a few seconds, the test run should start and end with "Digital read/write test successfully completed."
 
-After a while, the host board will report success over the serial line (and blink 1 sec on/ one sec off) or failure (and blink 0.1 sec on / 0.1 sec off).
+The host board will report success over the serial line and blink 1 sec on/1 sec off, or it will report failure and blink 0.1 sec on / 0.1 sec off.
 
 The protocol is as follows:
 
