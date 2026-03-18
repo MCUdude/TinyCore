@@ -31,13 +31,28 @@ The default serial upload pins for these chips are PD6 (TX) and PD7 (RX). The WD
 
 The AVR internal oscillator is neither highly accurate nor necessarily tightly calibrated from the factory. Since a stable system clock is essential for asynchronous protocols such as UART, the bootloader can be configured to apply an oscillator correction factor. This is exposed as a Tools menu option, with adjustable compensation ranging from -5.00% to +5.00%.
 
-### Clock options
-The available clock sources are the internal oscillator at 8 MHz or 1 MHz, or an external clock. The internal oscillator is guaranteed to within 10% of the target frequency across the full operating temperature and voltage range, though under typical conditions (3.3-5.0V, room temperature) it generally performs close enough for software serial communication to function reliably.
+### Internal oscillator calibration
+The internal 8 MHz oscillator is not highly accurate, which is acceptable for many applications but insufficient for asynchronous protocols such as UART, where a frequency error of ±3-4% will cause communication to fail.
+
+To address this, TinyCore provides an [Oscillator calibration sketch](../libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that calculates a corrected OSCCAL value based on characters received over UART. It uses the default UART pins, **TX = PD6** and **RX = PD7**. Before uploading the sketch, ensure the target is running from its internal 8 MHz oscillator and that EEPROM preservation is enabled. Once uploaded, open the serial monitor at 115200 baud, select "No line ending", and repeatedly send the character `x`. After a few attempts, readable text should begin to appear in the serial monitor. Once the calibration value has stabilised, it is automatically stored in the last byte of EEPROM for future use. This value is not loaded automatically and must be applied explicitly in your sketch:
+
+```cpp
+  // Check if there exists any OSCCAL value in the last EEPROM byte
+  // If not, run the oscillator tuner sketch first
+  uint8_t cal = EEPROM.read(E2END);
+  if (cal < 0xff)
+    OSCCAL = cal;
+```
+
+Another approach is to use the [avrCalibrate](https://github.com/felias-fogg/avrCalibrate) library, which uses a host microcontroller along with the target to perform the calibraion. avrCalibrate can also calibrate internal voltage references.
 
 ### External Clock
 The ATtiny48/88 does not support an external crystal oscillator, but does accept an external clock signal on PB6 (CLKI). External clock generators typically come in the same rectangular metal package as crystals, but can be distinguished by their pin count: clock generators use all four pins (Vcc, GND, CLKOUT, and Enable), whereas crystals use only two, or four with two unconnected. The Enable pin is generally active-high with an internal weak pull-up.
 
 If "Burn Bootloader" is performed with an external clock source selected, but a crystal is connected instead, the chip will become unresponsive to programming until a valid clock signal is provided. This will manifest as a signature mismatch (0x000000 with verbose upload output enabled). To recover, remove the crystal and supply a clock signal of 2-8 MHz on PB6. The [Adafruit ArduinoAsISP sketch](https://github.com/adafruit/ArduinoISP) outputs a suitable clock signal on PB1 (digital pin 9) during bootloader burning.
+
+
+## Features
 
 ### PWM frequency
 TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode.
@@ -103,18 +118,3 @@ Two reference options on the ATtiny48/88.
 
 ### Temperature measurement
 To measure the temperature, select the 1.1v internal voltage reference, and `analogRead(ADC_TEMPERATURE)`; This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
-
-### Internal oscillator calibration
-The internal 8 MHz oscillator is not highly accurate, which is acceptable for many applications but insufficient for asynchronous protocols such as UART, where a frequency error of ±3-4% will cause communication to fail.
-
-To address this, TinyCore provides an [Oscillator calibration sketch](../libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that calculates a corrected OSCCAL value based on characters received over UART. Before uploading the sketch, ensure the target is running from its internal 8 MHz oscillator and that EEPROM preservation is enabled. Once uploaded, open the serial monitor at 115200 baud, select "No line ending", and repeatedly send the character `x`. After a few attempts, readable text should begin to appear in the serial monitor. Once the calibration value has stabilised, it is automatically stored in the last byte of EEPROM for future use. This value is not loaded automatically and must be applied explicitly in your sketch:
-
-```cpp
-  // Check if there exists any OSCCAL value in the last EEPROM byte
-  // If not, run the oscillator tuner sketch first
-  uint8_t cal = EEPROM.read(E2END);
-  if (cal < 0xff)
-    OSCCAL = cal;
-```
-
-Another approach is to use the [avrCalibrate](https://github.com/felias-fogg/avrCalibrate) library, which uses a host microcontroller along with the target to perform the calibraion. avrCalibrate can also calibrate internal voltage references.

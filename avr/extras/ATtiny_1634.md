@@ -27,14 +27,25 @@ UART0 or UART1 can be selected in the Arduino IDE Tools menu. The WDT timeout, U
 
 The AVR internal oscillator is neither highly accurate nor necessarily tightly calibrated from the factory. Since a stable system clock is essential for asynchronous protocols such as UART, the bootloader has "autobaud functionality", which means that it will try to adjust and match the host baud rate.
 
+### Internal oscillator calibration
+The internal 8 MHz oscillator is not highly accurate, which is acceptable for many applications but insufficient for asynchronous protocols such as UART, where a frequency error of ±3-4% will cause communication to fail.
+
+The Arduino IDE Tools menu lets you select `(Vcc > 4.5V)` and `(Vcc < 4.5V)` clock options, where the `(Vcc > 4.5V)` option just subtract 6 counts from the `OSCCAL0` register, to compensate for the clock (most likely) being too fast at more than 4.5V. However, subtracting six counts is just an educated guess, and proper tuning may be necessary if accuracy is important
+
+To address this, TinyCore provides an [Oscillator calibration sketch](../libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that calculates a corrected OSCCAL value based on characters received over UART. It uses the default UART pins, **TX = PB0** and **RX = PA7**. Before uploading the sketch, ensure the target is running from its internal 8 MHz oscillator and that EEPROM preservation is enabled. Once uploaded, open the serial monitor at 115200 baud, select "No line ending", and repeatedly send the character `x`. After a few attempts, readable text should begin to appear in the serial monitor. Once the calibration value has stabilised, it is automatically stored in the last byte of EEPROM for future use. This value is not loaded automatically and must be applied explicitly in your sketch:
+
+```cpp
+  // Check if there exists any OSCCAL value in the last EEPROM byte
+  // If not, run the oscillator tuner sketch first
+  uint8_t cal = EEPROM.read(E2END);
+  if (cal < 0xff)
+    OSCCAL0 = cal;
+```
+
+Another approach is to use the [avrCalibrate](https://github.com/felias-fogg/avrCalibrate) library, which uses a host microcontroller along with the target to perform the calibraion. avrCalibrate can also calibrate internal voltage references.
+
+
 ## Features
-
-### Internal Oscillator voltage dependence
-Like the tiny828 and x41, While the calibration of the internal oscillator on the 1634 is very accurate between 2.7 and 4v, as the voltage rises above 4.5v, the speed increases significantly. Although the magnitude of this is larger than on many of the more common parts, the issue is not as severe as had long been thought - the impact is  magnified by the fact that the bootloader used 57600 baud at 8 MHz - which is off by more than 2% even assuming a perfect oscillator due to baud rate math. The fact that many USB ports actually supply 5.2-5.3V to help charge cellphones of course only makes it that much worse. in 1.5.0 a workaround was implemented to try to make matters better on this front, but he new baud rate changes in 2.0.0 should provide substantial improvements in bootloader reliability here (see the Optiboot reference linked above).
-
-We do still provide a >4.5v clock option in order to improve behavior of the running sketch - it will nudge the oscillator calibration down to move it closer to the nominal 8MHz clock speed; sketches uploaded with the higher voltage option. This is not perfect, but it is generally good enough to work with Serial on around 5v (including 5.25v often found on USB ports to facilitate chargeing powerhungry devices), and millis()/micros() will keep better time than in previous versions.
-
-The internal oscillator is factory calibrated to +/- 10% or +/- 2% for the slightly more expensive 1634R. +/- 2% is good enough for serial communication. However, this spec is only valid below 4v - above 4v, the oscillator runs significantly faster; enough so that serial communication does not work absent the above-described countermeasures.
 
 ### PWM frequency
 TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode.
@@ -114,18 +125,3 @@ void startSleep() { // Call instead of sleep_cpu()
   WDTCSR = (1 << WDP3) | (1 << WDP0) | (1 << WDIE); // Re-enable WDT interrupt
 }
 ```
-
-### Internal oscillator calibration
-The internal 8 MHz oscillator is not highly accurate, which is acceptable for many applications but insufficient for asynchronous protocols such as UART, where a frequency error of ±3-4% will cause communication to fail. The oscillator speed is highly voltage dependent, and is usually too fast when running the target at 5V.
-
-To address this, TinyCore provides an [Oscillator calibration sketch](../libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that calculates a corrected OSCCAL value based on characters received over UART. Before uploading the sketch, ensure the target is running from its internal 8 MHz oscillator and that EEPROM preservation is enabled. Once uploaded, open the serial monitor at 115200 baud, select "No line ending", and repeatedly send the character `x`. After a few attempts, readable text should begin to appear in the serial monitor. Once the calibration value has stabilised, it is automatically stored in the last byte of EEPROM for future use. This value is not loaded automatically and must be applied explicitly in your sketch:
-
-```cpp
-  // Check if there exists any OSCCAL value in the last EEPROM byte
-  // If not, run the oscillator tuner sketch first
-  uint8_t cal = EEPROM.read(E2END);
-  if (cal < 0xff)
-    OSCCAL0 = cal;
-```
-
-Another approach is to use the [avrCalibrate](https://github.com/felias-fogg/avrCalibrate) library, which uses a host microcontroller along with the target to perform the calibraion. avrCalibrate can also calibrate internal voltage references.

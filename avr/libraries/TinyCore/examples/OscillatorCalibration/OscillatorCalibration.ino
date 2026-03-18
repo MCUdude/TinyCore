@@ -10,9 +10,12 @@
 
   Tunes the internal oscillator using a software serial implementation
   and a USB to serial adapter, and store the calibrated OSCCAL value to
-  EEPROM address E2END (last byte in EEPROM).
+  EEPROM address E2END (last byte in EEPROM). The default RX and TX pins are the
+  ones found in the device spesific documentation.
+  https://github.com/MCUdude/TinyCore#supported-microcontrollers
 
-  The microcontroller has to be running off its internal 8 MHz oscillator.
+  The microcontroller has to be running off its internal 8 MHz or 16 MHz PLL
+  oscillator, if the part has a PLL.
   Start off by opening the serial monitor and select the 115200 baud.
   Make sure you're not sending any line ending characters (CR, LF).
   Repedeatly press 'x' [send] to tune the internal oscillator. After a few
@@ -41,10 +44,6 @@
 #include <util/delay.h>
 #include <picoUART.h>
 #include <pu_print.h>
-
-#if F_CPU != 8000000L
-  #error "Target has to run off its internal 8 MHz oscillator for oscillator calibration to work"
-#endif
 
 // Add 0.5 for integer rounding
 const uint8_t CYCLES_PER_BIT = (uint8_t)(PUBIT_CYCLES + 0.5);
