@@ -1970,6 +1970,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 
 # General
 26.name=ATtiny26
+26.build.mcu=attiny26
 26.upload.tool=avrdude
 26.bootloader.tool=avrdude
 26.bootloader.unlock_bits=0xff
