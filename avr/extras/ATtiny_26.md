@@ -27,7 +27,7 @@ Self programming is not supported on these parts, making it impossible to use a 
 ### Internal oscillator calibration
 The internal 8 MHz oscillator and 16 MHz PLL is not highly accurate, which is acceptable for many applications but insufficient for asynchronous protocols such as UART, where a frequency error of ±3-4% will cause communication to fail.
 
-To address this, TinyCore provides an [Oscillator calibration sketch](../libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that calculates a corrected OSCCAL value based on characters received over UART. It uses the default UART pins, **TX = PA6** and **RX = PA7**. Before uploading the sketch, ensure the target is running from its internal 8 MHz oscillator or 16 MHz PLL, and EEPROM preservation is enabled. Once uploaded, open the serial monitor at 115200 baud, select "No line ending", and repeatedly send the character `x`. After a few attempts, readable text should begin to appear in the serial monitor. Once the calibration value has stabilised, it is automatically stored in the last byte of EEPROM for future use. This value is not loaded automatically and must be applied explicitly in your sketch:
+TinyCore provides an oscillator calibration sketch, but this is not compatible with the ATtiny26, due to the limited PCINT functionality this chip offers. However the [avrCalibrate](https://github.com/felias-fogg/avrCalibrate) library supports the ATtiny26, and avrCalibrate can also calibrate the internal voltage reference. When the new calibration value for OSCCAL is calculated and stored to EEPROM, or can be retrieved like so, given that the new calibration value is stored in the last EEPROM byte:
 
 ```cpp
   // Check if there exists any OSCCAL value in the last EEPROM byte
@@ -36,9 +36,6 @@ To address this, TinyCore provides an [Oscillator calibration sketch](../librari
   if (cal < 0xff)
     OSCCAL = cal;
 ```
-
-Another approach is to use the [avrCalibrate](https://github.com/felias-fogg/avrCalibrate) library, which uses a host microcontroller along with the target to perform the calibraion. avrCalibrate can also calibrate internal voltage references.
-
 
 ## Features
 
@@ -123,18 +120,3 @@ The ATtiny26 provides 20 differential channel configurations. Four of these meas
 |   9   |       |       |       |       |       |       |       | 1/20x | 20x*  | 1/20x |
 
 `*` this option is used to measure the offset of that gain stage (applicable to that negative pin only), in order to correct offset gain to within 1 LSB. Doing this is the responsibility of the user.
-
-### Internal oscillator calibration
-The internal 8 MHz oscillator is not highly accurate, which is acceptable for many applications but insufficient for asynchronous protocols such as UART, where a frequency error of ±3-4% will cause communication to fail.
-
-To address this, TinyCore provides an [Oscillator calibration sketch](../libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that calculates a corrected OSCCAL value based on characters received over UART. Before uploading the sketch, ensure the target is running from its internal 8 MHz oscillator and that EEPROM preservation is enabled. Once uploaded, open the serial monitor at 115200 baud, select "No line ending", and repeatedly send the character `x`. After a few attempts, readable text should begin to appear in the serial monitor. Once the calibration value has stabilised, it is automatically stored in the last byte of EEPROM for future use. This value is not loaded automatically and must be applied explicitly in your sketch:
-
-```cpp
-  // Check if there exists any OSCCAL value in the last EEPROM byte
-  // If not, run the oscillator tuner sketch first
-  uint8_t cal = EEPROM.read(E2END);
-  if (cal < 0xff)
-    OSCCAL = cal;
-```
-
-Another approach is to use the [avrCalibrate](https://github.com/felias-fogg/avrCalibrate) library, which uses a host microcontroller along with the target to perform the calibraion. avrCalibrate can also calibrate internal voltage references.
