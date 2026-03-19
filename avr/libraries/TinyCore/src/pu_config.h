@@ -87,32 +87,6 @@
     #define PU_PCIF PCIF0
   #endif
 
-#elif defined(__AVR_ATtiny441__) || defined(__AVR_ATtiny841__)
-  #ifndef PU_TX
-    #define PU_TX A,1
-  #endif
-  #ifndef PU_RX
-    #define PU_RX A,2
-  #endif
-  #ifndef PU_PCINT_vect
-    #define PU_PCINT_vect PCINT0_vect
-  #endif
-  #ifndef PU_PCINT_CTRL
-    #define PU_PCINT_CTRL GIMSK
-  #endif
-  #ifndef PU_PCMSK
-    #define PU_PCMSK PCMSK0
-  #endif
-  #ifndef PU_PCIFR
-    #define PU_PCIFR GIFR
-  #endif
-  #ifndef PU_PCIE
-    #define PU_PCIE PCIE0 
-  #endif
-  #ifndef PU_PCIF
-    #define PU_PCIF PCIF0
-  #endif
-
 #elif defined(__AVR_ATtiny261__) || defined(__AVR_ATtiny461__) || defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny26__)
   #ifndef PU_TX
     #define PU_TX A,6
@@ -137,6 +111,9 @@
   #endif
   #ifndef PU_PCIF
     #define PU_PCIF PCIF0
+  #endif
+  #ifndef TCNT0
+    #define TCNT0 TCNT0L // Compatibility hack for the OscillatorCalibration sketch
   #endif
 
 #elif defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
@@ -189,6 +166,9 @@
   #endif
   #ifndef PU_PCIF
     #define PU_PCIF PCIF2
+  #endif
+  #ifndef TCCR0B
+    #define TCCR0B TCCR0A // Compatibility hack for the OscillatorCalibration sketch
   #endif
 
 #elif defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny2313A__) || defined(__AVR_ATtiny4313__)
