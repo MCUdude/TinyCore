@@ -18,5 +18,7 @@ void loop() {
   while (Serial.available() == 0);  // Check if data is received
   byte incomingByte = Serial.read(); // Read one byte
   Serial.println((char)incomingByte);
+#if FLASHEND > 2047
   Serial.printf("Got char %c and ASCII value %d\n\r", incomingByte, incomingByte);
+#endif
 }
