@@ -54,9 +54,9 @@ void loop() {
     strcpy(buf,"END2");
   if (buf[3]++ == '3') {
     if (succ)
-      Serial.println(F("Wire master test successfull"));
+      Serial.println(F("Wire test successfull"));
     else
-      Serial.println("*** Wire master test failed");
+      Serial.println("*** Wire test failed");
     while(1);
   }
 }

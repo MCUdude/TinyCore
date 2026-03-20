@@ -41,6 +41,6 @@ void requestEvent() {
   Wire.write(buf); // respond with message of 4 bytes
                    // as expected by master
   if (strcmp(buf,"END3") == 0) {
-    Serial.println(F("Wire slave test successful"));
+    Serial.println(F("Wire test successful"));
   }
 }
