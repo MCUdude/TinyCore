@@ -12,6 +12,7 @@ void setup() {
   Wire.onReceive(receiveEvent); // register event
   Wire.onRequest(requestEvent);
   Serial.begin(9600);           // start serial for output
+  Serial.println(F("\n\rWire slave test"));
 }
 
 void loop() {

@@ -20,12 +20,12 @@ The tests in this folder each check one particular basic functionality. They are
 | `analogWrite()`on all supported pins        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🔴        |
 | `Serial.print()` and `Serial.read()`        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
 | `analogRead()`on all supported pins         | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚫️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
-| SPI master                                  | 🔴        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | ⚪️        | 🟢        | ⚫️          | ⚫️          | ⚪️         | ⚫️        | ⚫️        |
-| Wire master                                 | 🟢        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| Wire slave                                  | 🟢        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| Neopixel library/libraries                  | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
-| Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
+| SPI master                                  | 🔴        | ⚪️        | ⚪️         | 🔴         | 🔴        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | 🔴        |
+| SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | ⚪️         | ⚫️        | ⚫️        |
+| Wire master                                 | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | 🔴        |
+| Wire slave                                  | 🟢        | ⚪️        | ⚪️         | 🟢         | 🔴        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | 🔴        |
+| Neopixel library/libraries                  | 🟢        | ⚪️        | ⚪️         | ⚪️         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
+| Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | ⚪️         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚪️        |
 
 🟢 = Works
 🔴 = Does not work
@@ -36,12 +36,19 @@ The tests in this folder each check one particular basic functionality. They are
 ATtiny26:
 
 - analogWrite: PWM does not work on either PWM pin (9 and 11)
-
-ATtinyX7:
-
-- Serial: TX works, RX does not
+- Wire Master & Slave, SPI master: Not enough memory for test sketch
 
 ATtiny85:
 
 - SPI master does not work
-- SPI slave does not compile, because some SPI registers are missing. I guess, one needs a different script 
+
+ATtiny167:
+
+- TWI slave: Stops after a few interactions and is stuck in waiting for the serial output buffer to become empty (same behavior as in the 1.5.2 core)
+
+- SPI master: Stops in the middle of the test. Perhaps a similar problem as above.
+
+ATtiny861:
+
+- SPI master: Message is not received by slave 
+
