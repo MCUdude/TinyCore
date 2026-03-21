@@ -1980,6 +1980,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 26.build.variant=tiny26
 26.build.board=AVR_ATTINY26
 26.build.extra_flags={build.softser}
+26.debug.executable=
 
 # Upload port select / Bootloader
 26.menu.bootloader.no_bootloader=No bootloader
