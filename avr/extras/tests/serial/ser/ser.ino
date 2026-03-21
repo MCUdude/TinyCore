@@ -1,9 +1,12 @@
 // At 8 MHz internal osc., 57600 baud should work for software UART, and 250000 baud should work for hardware UART
-#define BPS 57600
-//#define CORR_OSCCAL 0x70
+#define BPS 9600
+#define CORR_OSCCAL 0x68
 
 void setup() {
-  Serial.begin(57600);
+#ifdef CORR_OSCCAL  
+  OSCCAL = CORR_OSCCAL;
+#endif
+  Serial.begin(BPS);
   Serial.println();
   Serial.println();
   Serial.println("Hello World!");
