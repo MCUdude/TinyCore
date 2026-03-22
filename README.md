@@ -54,8 +54,8 @@ Each chip family has different pinouts, peripherals, and capabilities. Some diff
 | **ATtiny**               | 25/45/85     | 24/44/84     | 441/841      | 261/461/861  | 87/167     | 48/88     | 2313/4313 | 1634     | 828      | 43       | 26       |
 |--------------------------|--------------|--------------|--------------|--------------|------------|-----------|-----------|----------|----------|----------|----------|
 | *Flash*                  | 2/4/8kiB     | 2/4/8kiB     | 4/8kiB       | 2/4/8kiB     | 8/16kiB    | 4/8kiB    | 2/4kiB    | 16kiB    | 8kiB     | 4kiB     | 2kiB     |
-| *EEPROM*                 | 128/256/512B | 128/256/512B | 256/512B     | 128/256/512B | 512B       |           |           | 256B     | 512B     | 64B      | 128B     |
-| *RAM*                    | 128/256/512B | 128/256/512B | 256/512B     | 128/256/512B | 512B       |           |           | 1kiB     | 512B     | 256B     | 128B     |
+| *EEPROM*                 | 128/256/512B | 128/256/512B | 256/512B     | 128/256/512B | 512B       | 64/64B    | 128/256B  | 256B     | 512B     | 64B      | 128B     |
+| *RAM*                    | 128/256/512B | 128/256/512B | 256/512B     | 128/256/512B | 512B       | 256/512B  | 128/256B  | 1kiB     | 512B     | 256B     | 128B     |
 | *Internal 16 MHz*        | Yes, PLL     | No           | No           | Yes, PLL     | No         | No        | No        | No       | No       | No       | Yes, PLL |
 | *Ext. Crystal*           | Yes          | Yes          | Yes          | Yes          | Yes        | No        | Yes       | Yes      | No       | No       | Yes      |
 | *HV programming*         | HVSP         | HVSP         | HVSP         | parallel     | parallel   | parallel  | parallel  | parallel | parallel | parallel | parallel |
