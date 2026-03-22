@@ -14,23 +14,23 @@ The tests in this folder each check one particular basic functionality. They are
 
 
 
-| Tests                                       | ATtinyX5 | ATtinyX4 | ATtinyX41 | ATtinyX61 | ATtinyX7 | ATtinyX8 | ATtinyX313 | ATtiny1634 | *ATtiny828* | ATtiny43 | ATtiny26 |
-| ------------------------------------------- | -------- | -------- | --------- | --------- | -------- | -------- | ---------- | ---------- | ----------- | -------- | -------- |
-| `digitalRead()`/`digitalWrite()`on all pins | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️           | 🟢        | 🟢        |
-| `analogWrite()`on all supported pins        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️           | 🟢        | 🔴        |
-| `Serial.print()` and `Serial.read()`        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️           | 🟢        | 🟢        |
-| `analogRead()`on all supported pins         | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚫️          | ⚪️          | ⚪️           | 🟢        | 🟢        |
-| SPI master                                  | 🔴        | ⚪️        | ⚪️         | 🔴         | 🔴        | 🟢        | ⚪️          | ⚪️          | ⚪️           | 🔴        | 🔴        |
-| SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | ⚪️           | ⚫️        | ⚫️        |
-| Wire master                                 | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️           | 🟢        | 🔴        |
-| Wire slave                                  | 🟢        | ⚪️        | ⚪️         | 🟢         | 🔴        | 🟢        | ⚪️          | ⚪️          | ⚪️           | 🔴        | 🔴        |
-| Neopixel library/libraries                  | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️           | 🟢        | 🔴        |
-| Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️           | 🔴        | 🔴        |
+| Tests                                       | ATtinyX5 | ATtinyX4 | ATtinyX41 | ATtinyX61 | ATtinyX7 | ATtinyX8 | ATtinyX313 | ATtiny1634 | ATtiny828 | ATtiny43 | ATtiny26 |
+| ------------------------------------------- | -------- | -------- | --------- | --------- | -------- | -------- | ---------- | ---------- | --------- | -------- | -------- |
+| `digitalRead()`/`digitalWrite()`on all pins | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | ⚪️         | 🟢        | 🟢        |
+| `analogWrite()`on all supported pins        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🟢        | 🔴        |
+| `Serial.print()` and `Serial.read()`        | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🟢        |
+| `analogRead()`on all supported pins         | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚫️          | ⚪️          | 🟡         | 🟢        | 🟢        |
+| SPI master                                  | 🔴        | ⚪️        | ⚪️         | 🔴         | 🔴        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🔴        | 🔴        |
+| SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | 🔴         | ⚫️        | ⚫️        |
+| Wire master                                 | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🟢        | 🔴        |
+| Wire slave                                  | 🟢        | ⚪️        | ⚪️         | 🟢         | 🔴        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🔴        | 🔴        |
+| Neopixel library/libraries                  | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟡         | 🟢        | 🔴        |
+| Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🔴        | 🔴        |
 
 🟢 = Works
 🔴 = Does not work
 🟡 = Partially works
-⚫️ = Not present
+⚫️ = Not present / Not implemented
 ⚪️ = Untested
 
 ATtiny26:
@@ -58,3 +58,10 @@ ATtiny43U:
 - Servo: Compiler message: Not supported
 - Wire slave: Does not start
 - SPI master: No transfer (in 1.5.2 core: compilation error)
+
+ATtiny828:
+
+- Neopixel does not work on: 6,7,8,9,11, ...? Does not work on 1.5.2 either on pin 11, even if I set Neopixel port to PORTB.
+- Wire Master & Salve use apparently my bitbang I2C lib SoftI2CMaster and fail with a compilation error
+- Reading analog values: Wildly wrong and huge differences. Even when measuring individually, the values are way off (with the 1.5.2 core, it is the same; maybe it is a problem with the sample?)
+- Does not work at all. Under the 1.5.2 core it works for pins 20-22 (but not for 16).

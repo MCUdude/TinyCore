@@ -25,6 +25,16 @@ void setup()
   start = millis();
 }
 
+int realpin(int pin)
+{
+  // 828 is the only ATtiny that has one pin with a HIGHER number than the RESET pin
+#ifdef __AVR_ATtiny828__ 
+  return ((pin == iopins-1) ? iopins : pin); 
+#else
+  return(pin);
+#endif
+}
+
 void loop()
 {
   int i;
@@ -49,10 +59,10 @@ void loop()
   case 3:
     for (i = 0; i < iopins; i++) {
       if (i == led_builtin) {
-        digitalWrite(i, HIGH);
-        pinMode(i, OUTPUT);
+        digitalWrite(realpin(i), HIGH);
+        pinMode(realpin(i), OUTPUT);
       } else {
-        pinMode(i, INPUT_PULLUP);
+        pinMode(realpin(i), INPUT_PULLUP);
       }
     }
     delay(100);
@@ -61,22 +71,22 @@ void loop()
     break;
   case 4:
     for (i = 0; i < iopins; i++)
-      if (digitalRead(i) == LOW)
+      if (digitalRead(realpin(i)) == LOW)
         report_failure();
     phase = 5;
     start = millis();
     break;
   case 5:
     for (i = 0; i < iopins; i++) {
-      digitalWrite(i, HIGH);
-      pinMode(i, OUTPUT);
+      digitalWrite(realpin(i), HIGH);
+      pinMode(realpin(i), OUTPUT);
     }
     phase = 6;
     start = millis();
     break;
   case 6:
     for (i = 0; i < iopins; i++) {
-      digitalWrite(i, LOW);
+      digitalWrite(realpin(i), LOW);
       delay(200);
     }
     delay(100);
@@ -84,22 +94,22 @@ void loop()
     start = millis();
     break;
   case 7:
-    for (i = 0; i < iopins; i++) pinMode(i, INPUT);
+    for (i = 0; i < iopins; i++) pinMode(realpin(i), INPUT);
     phase = 9;
     subphase = 0;
     start = millis();
     break;
   case 9: /* wait for all pins to come high */
     for (i = 0; i < iopins; i++)
-      if (digitalRead(i) == LOW) return;
+      if (digitalRead(realpin(i)) == LOW) return;
     phase = 10;
     start = millis();
     break;
   case 10: /* Now wait for switching to LOW one by one */
     for (i = 0; i <= subphase; i++) 
-      if (digitalRead(i) == HIGH) return;
+      if (digitalRead(realpin(i)) == HIGH) return;
     for (i = subphase+1; i < iopins; i++)
-      if (digitalRead(i) == LOW) return;
+      if (digitalRead(realpin(i)) == LOW) return;
     subphase++;
     if (subphase >= iopins) {
       subphase = -1;

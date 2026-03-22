@@ -1,6 +1,6 @@
 // At 8 MHz internal osc., 57600 baud should work for software UART, and 250000 baud should work for hardware UART
 #define BPS 9600
-#define CORR_OSCCAL 0x68
+//#define CORR_OSCCAL 0x68
 
 void setup() {
 #ifdef CORR_OSCCAL  

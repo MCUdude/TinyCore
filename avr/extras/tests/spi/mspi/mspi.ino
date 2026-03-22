@@ -11,7 +11,7 @@ char buf[12];
 
 void setup (void) {
    //Serial.setTxBit(4);
-   Serial.begin(57600); //set baud
+   Serial.begin(9600); //set baud
    Serial.println(F("\n\r\n\rSPI Master test sketch"));
    digitalWrite(SS, HIGH); // disable Slave Select
    SPI.begin ();
