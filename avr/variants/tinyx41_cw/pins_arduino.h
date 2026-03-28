@@ -300,21 +300,17 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define SDA_PORT                 (PORTA)
 #define SDA_PIN                  (6)
 
-/* Hardware SPI */
-#if defined(SET_REMAP) && SET_REMAP > 1
-  /* remapped pins */
-  #define MISO                     PIN_PA0
-  #define MOSI                     PIN_PA1
-  #define SS                       PIN_PA2
-  #define SCK                      PIN_PA3
+/* Hardware SPI pins */
+#define SCK                      PIN_PA4
+#define MISO                     PIN_PA5
+#define MOSI                     PIN_PA6
+#define SS                       PIN_PA7
 
-#else
-  /* default pins */
-  #define SCK                      PIN_PA4
-  #define MISO                     PIN_PA5
-  #define MOSI                     PIN_PA6
-  #define SS                       PIN_PA7
-#endif
+/* Remapped SPI pins */
+#define MISO_REMAP               PIN_PA0
+#define MOSI_REMAP               PIN_PA1
+#define SS_REMAP                 PIN_PA2
+#define SCK_REMAP                PIN_PA3
 
 /* Two hardware serial ports */
 #if defined(SET_REMAP) && SET_REMAP & 1

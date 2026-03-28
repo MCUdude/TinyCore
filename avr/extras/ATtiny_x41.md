@@ -82,6 +82,14 @@ The ATtiny441/841 does not have a hardware I2C master. The included Wire library
 There is hardware SPI support. Use the normal SPI module.
 The ATtiny441/841 features a full hardware SPI peripheral, supported by the standard SPI library. Third-party libraries targeting tinyAVR parts that rely on USI-based implementations such as USIWire should not be used, as the ATtiny87/167 is among the few tinyAVR devices with a dedicated SPI peripheral and does not use the USI for SPI communication.
 
+The SPI pins can be remapped to an alternative position if this is required.  
+Simply call `REMAP |= _BV(SPIMAP);` *before* `SPI.begin();`to set the alternative pin routing for SPI.
+
+| Pin mapping | SCK | MISO | MOSI | SS  |
+|-------------|-----|------|------|-----|
+| Default     | PA4 | PA5  | PA6  | PA7 |
+| Remapped    | PA3 | PA0  | PA1  | PA2 |
+
 ### UART (Serial) support
 The ATtiny441/841 features two full hardware serial ports, exposed as `Serial` and `Serial1`, both fully compatible with the standard Arduino Serial API.
 
