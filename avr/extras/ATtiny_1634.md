@@ -21,6 +21,19 @@
 | External Clock(up to 16 MHz)     | All standard           |
 | LED_BUILTIN                      | PIN_PC0                |
 
+## Table of contents
+- [Urboot bootloader](#urboot-bootloader)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [PWM frequency](#pwm-frequency)
+  - [I2C support](#i2c-support)
+  - [SPI Support](#spi-support)
+  - [UART (Serial) Support](#uart-serial-support)
+  - [Tone Support](#tone-support)
+  - [Servo Support](#servo-support)
+  - [ADC Reference options](#adc-reference-options)
+  - [Workaround for PD3 Input Errata](#workaround-for-pd3-input-errata)
+
 ### Urboot bootloader
 This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny441/841, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 3840 or 7936 bytes available for user program. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
 

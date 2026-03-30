@@ -23,6 +23,28 @@
 | Int. WDT Oscillator              | 128 kHz          | 128 kHz          | 128 kHz          |
 | LED_BUILTIN                      | PIN_PB2          | PIN_PB2          | PIN_PB2          |
 
+## Table of contents
+- [Urboot bootloader](#urboot-bootloader)
+- [LED_BUILTIN is on PB2](#led_builtin-is-on-pb2)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [PLL clock](#pll-clock)
+  - [Timer1 is a high speed timer](#timer1-is-a-high-speed-timer)
+  - [PWM](#pwm)
+  - [PWM frequency](#pwm-frequency)
+  - [I2C support](#i2c-support)
+  - [SPI support](#spi-support)
+  - [UART (Serial) support](#uart-serial-support)
+  - [Tone support](#tone-support)
+  - [Servo support](#servo-support)
+  - [Servo and tone conflicts](#servo-and-tone-conflicts)
+- [ADC features](#adc-features)
+  - [ADC reference options](#adc-reference-options)
+  - [Internal sources](#internal-sources)
+  - [Differential channels](#differential-channels)
+  - [Temperature measurement](#temperature-measurement)
+
+
 ### Urboot bootloader
 This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny25/45/85, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792, 3840, or 7936 bytes available for user code on the ATtiny25, 45, and 85 respectively. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
 
@@ -54,7 +76,7 @@ Another approach is to use the [avrCalibrate](https://github.com/felias-fogg/avr
 
 ## Features
 
-### PLL Clock
+### PLL clock
 The ATtiny25/45/85 features an on-chip PLL clocked from the internal oscillator, running at a nominal frequency of 64 MHz when enabled. It can be used in two ways, either independently or in combination.  
 The system clock can be derived from one quarter of the PLL output, providing a 16 MHz clock source without an external crystal. This option inherits the accuracy limitations of the internal oscillator driving the PLL. Timer1 can be clocked directly from the PLL, enabling high-speed PWM and other timer functions independent of the system clock speed.
 
@@ -94,13 +116,13 @@ The ATtiny25/45/85 does not feature a dedicated I2C peripheral. Instead, I2C fun
 
 Only the built-in Wire library is officially supported. Issues arising from the use of third-party I2C libraries should be directed to the respective library's author or maintainer, as compatibility with USI-based implementations cannot be guaranteed.
 
-### SPI Support
+### SPI support
 The ATtiny25/45/85 does not feature a dedicated SPI peripheral. Instead, SPI functionality is implemented through the hardware USI (Universal Serial Interface), exposed transparently via the included SPI library.
 Note that the USI uses DI (Data In) and DO (Data Out) rather than the conventional MISO/MOSI naming. The mapping depends on the operating mode: in master mode, DI corresponds to MISO and DO to MOSI; in slave mode, these are reversed. The MISO and MOSI #defines reflect master mode, as this is by far the most common use case and the only mode supported by the SPI library.
 
 Only the built-in SPI library is officially supported. If you encounter issues when using a third-party SPI library, please contact that library's author or maintainer, compatibility with USI-based hardware is their responsibility.
 
-### UART (Serial) Support
+### UART (Serial) support
 The ATtiny25/45/85 does not feature a hardware UART. When operating from the internal oscillator, clock calibration may be necessary to achieve sufficient timing accuracy for reliable UART communication.
 
 The core provides a built-in software serial implementation exposed as `Serial`. To avoid conflicts with libraries and applications that rely on pin change interrupts (PCINTs), it uses the analog comparator pins and their dedicated interrupt. The default pin assignment is AIN0 for TX and AIN1 for RX.
@@ -109,21 +131,21 @@ Being a software implementation, `Serial` cannot transmit and receive simultaneo
 
 The TX pin can be reassigned to any pin using `Serial.setTxBit(n)`, where n corresponds to the pin number in PBn notation. To disable the RX channel and use TX only, select TX only from the Software Serial menu under Tools. To disable TX, refrain from printing to Serial and configure the pin to the desired mode after calling `Serial.begin()`.
 
-### Tone
+### Tone support
 `tone()` is implemented using Timer1. If Timer1 has been configured for high-speed operation, `tone()` will produce frequencies two or four times higher than expected, normal speed operation is recommended when using `tone()`.
 
 For best results, use pin 1 or 4 as the tone output pin. On these pins, `tone()` drives Timer1's output compare unit directly rather than toggling the pin via interrupt, which extends the usable frequency range into the MHz region. When `SoftwareSerial` or the built-in `Serial` is active, `tone()` remains functional on pins 1 and 4 but is unavailable on all other pins. Note that `tone()` disables PWM on pins 1 and 4 for the duration of its use.
 
-### Servo Support
+### Servo support
 A built-in Servo library is included with this core, with full support for the ATtiny25/45/85. Note that any ongoing software serial activity, whether through `SoftwareSerial` or the built-in `Serial`, will cause glitches in the servo signal during transmission or reception.
 
-### Servo and Tone Conflicts
+### Servo and tone conflicts
 The Servo library and `tone()` both require exclusive control of Timer1, which has two important consequences. PWM is unavailable on the Timer1 pins (PB4 and, by default, PB1) whenever `tone()` is active or the Servo library is in use. Additionally, the Servo library and `tone()` cannot be used simultaneously.
 
-## ADC Features
+## ADC features
 The ATtiny25/45/85 has a differential ADC. Gain of 1x or 20x is available, and two differential pairs are available. The ADC supports both bipolar mode (-512 to 511) and unipolar mode (0-1023) when taking differential measurements; you can set this using `setADCBipolarMode(true or false)`.
 
-### ADC Reference options
+### ADC reference options
 The ATtiny25/45/85 has both the 1.1V and 2.56V reference options, a rarity among the classic tinyAVR parts. It even supports an external reference, not that you can usually spare the pins to use one.
 
 | Reference option   | Reference voltage           | Uses AREF pin        | Aliases/synonyms                         |
@@ -134,14 +156,14 @@ The ATtiny25/45/85 has both the 1.1V and 2.56V reference options, a rarity among
 | `INTERNAL2V56`     | Internal 2.56V reference    | No, pin available    | `INTERNAL2V56_NO_CAP` `INTERNAL2V56NOBP` |
 | `INTERNAL2V56_CAP` | Internal 2.56V reference    | Yes, w/cap. on AREF  |                                          |
 
-### Internal Sources
+### Internal sources
 | Voltage Source  | Description                            |
 |-----------------|----------------------------------------|
 | ADC_INTERNAL1V1 | Reads the INTERNAL1V1 reference        |
 | ADC_GROUND      | Measures ground (offset cal?)          |
 | ADC_TEMPERATURE | Internal temperature sensor            |
 
-### Differential Channels
+### Differential channels
 The ADC can act as a differential ADC with selectable 1x or 20x gain. It can operate in either unipolar or bipolar mode, and the polarity of the two differential pairs can be inverted in order to maximize the resolution available in unipolar mode. TinyCore wraps the IPR bit into the name of the differential ADC channel. Note the organization of the channels - there are two differential pairs A0/A1, and A2/A3 - but there is no way to take a differential measurement between A0 and A2 or A3 for example.
 
 | Positive   | Negative   |Gain | Name            | Notes            |
@@ -159,5 +181,5 @@ The ADC can act as a differential ADC with selectable 1x or 20x gain. It can ope
 | ADC3 (PB3) | ADC2 (PB4) | 1x  | DIFF_A3_A2_1X   | Input Reversed   |
 | ADC3 (PB3) | ADC2 (PB4) | 20x | DIFF_A3_A2_20X  | Input Reversed   |
 
-### Temperature Measurement
+### Temperature measurement
 To measure the temperature, select the 1.1v internal voltage reference, and `analogRead(ADC_TEMPERATURE)`; This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.

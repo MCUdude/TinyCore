@@ -21,6 +21,25 @@
 | Int. WDT Oscillator              | 128 kHz            | 128 kHz            |
 | LED_BUILTIN                      | PIN_PB5            | PIN_PB5            |
 
+
+## Table of contents
+- [Overview](#overview)
+- [Urboot bootloader](#urboot-bootloader)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [External Clock](#external-clock)
+- [Features](#features)
+  - [PWM frequency](#pwm-frequency)
+  - [I2C support](#i2c-support)
+  - [SPI support](#spi-support)
+  - [UART (Serial) support](#uart-serial-support)
+  - [Tone support](#tone-support)
+  - [Servo support](#servo-support)
+- [ADC features](#adc-features)
+  - [ADC reference options](#adc-reference-options)
+  - [Internal sources](#internal-sources)
+  - [Temperature measurement](#temperature-measurement)
+
+
 ## Overview
 The ATtiny48/88 is designed as a low-cost alternative compatible with the popular ATmega48/888 series, sharing a nearly identical pinout with a few additional GPIO pins available in the TQFP package. While the ATtiny48/88 includes full hardware I2C and SPI peripherals, it lacks both a hardware UART and support for an external crystal oscillator.
 
@@ -111,7 +130,7 @@ Two reference options on the ATtiny48/88.
 | `INTERNAL1V1`      | Internal 1.1V reference     | n/a                  |
 | `INTERNAL`         | Alias of INTERNAL1V1        | n/a                  |
 
-### Internal Sources
+### Internal sources
 
 | Voltage Source  | Description                            |
 |-----------------|----------------------------------------|

@@ -21,6 +21,26 @@
 | Int. WDT Oscillator              | Not supported        |
 | LED_BUILTIN                      | PIN_PB0              |
 
+
+## Table of contents
+- [Urboot bootloader](#urboot-bootloader)
+- [Warning: PD3 Non-functional as input without watchdog timer](#warning-pd3-non-functional-as-input-without-watchdog-timer)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [PWM frequency](#pwm-frequency)
+  - [Tone support](#tone-support)
+  - [Servo support](#servo-support)
+  - [I2C support](#i2c-support)
+  - [SPI support](#spi-support)
+  - [UART (Serial) support](#uart-serial-support)
+  - [ADC support](#adc-support)
+  - [ADC reference options](#adc-reference-options)
+- [Weird I/O-pin related features](#weird-io-pin-related-features)
+  - [PD3 silicon errata](#pd3-silicon-errata)
+  - [Special "high sink" port](#special-high-sink-port)
+  - [Separate pullup-enable register](#separate-pullup-enable-register)
+
+
 ### Urboot bootloader
 This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny2313/4313, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792 or 3840 bytes available for user program. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
 
@@ -31,7 +51,7 @@ The serial upload pins for these chips are PC2 (RX) and PC3 (TX). The WDT timeou
 
 The AVR internal oscillator is neither highly accurate nor necessarily tightly calibrated from the factory. Since a stable system clock is essential for asynchronous protocols such as UART, the bootloader has "autobaud functionality", which means that it will try to adjust and match the host baud rate.
 
-### Warning: PD3 Non-functional as input without watchdog timer
+### Warning: PD3 non-functional as input without watchdog timer
 A hardware errata documented in the datasheet describes a significant limitation of PD3: it cannot function as an input unless the ULP oscillator (used by the watchdog timer, among other things) is running. When the ULP oscillator is inactive, PD3 is internally pulled low. This has an additional consequence: if PD3 is configured as an output and driven high, it will continuously draw current even with no external load. Power-saving sleep mode should never be used with PD3 configured as an output driven high.
 
 A software workaround is available, but the pin remains less capable than it should be and is best restricted to active output while the processor is awake, such as through its PWM functionality, unless the WDT/ULP oscillator is kept running.
@@ -79,16 +99,16 @@ Phase correct PWM counts up to 255, turning the pin off as it passes the compare
 
 For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
 
-### Tone Support
+### Tone support
 Tone() uses Timer1. For best results, use pin 21 or 22 (PC5, PC6), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins 21 and 22.
 
-### Servo Support
+### Servo support
 A built-in Servo library is included with this core, with full support for the ATtiny828. Note that any ongoing software serial activity, whether through `SoftwareSerial` or the built-in `Serial`, will cause glitches in the servo signal during transmission or reception. The Servo library disables PWM on PC5 and PC6, and cannot be used simultaneously with `tone()`. See the [the Servo/Servo_TinyCore library](../libraries/Servo/README.md) for further details.
 
-### I2C Support
+### I2C support
 Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire.h library. **You must have external pullup resistors installed** in order for I2C functionality to work reliably. Furthermore, the slave functionality requires the WDT to be enabled, otherwise the SCL pin will be pulled low due to a silicon bug. Slave and master I2C use different pins because of this godawful bug. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
-### SPI Support
+### SPI support
 There is full Hardware SPI support. However, PD3 is one of the pins used by the hardware SPI; you must use the WDT workaround for the PD3 silicon bug if using SPI. Third party SPI libraries designed for tinyAVRs are not supported by the hardware and will not work.
 
 ### UART (Serial) support
@@ -104,7 +124,7 @@ UCSRB &= ~(1 << RXEN); // disable RX
 ### ADC support
 There is abundant evidence that this device was intended to have a differential ADC; the register layout matches that of the ATtiny841 which has a vere nice differential ADC, except that all the register bits that would be involved in that are marked reserved. If that wasn't enough to convince you, reading that chapter of the datasheet, it is clear that references to a differential ADC were scrubbed in a hurry at the last minute. I suspect it was found to be afflicted by a fatal flaw, whose workaround if any was to onerouos or the nature of the mistake too humiliating to present to customers, managemnt denied the request for a respin to fix it, and they responded by removing it on paper only - and is still actually in the silicon (if they had time to respin, they'd have fixed it, I suspect).  See the link at the top of this page - if you like poking at "reserved" registers and trying to find secret features, and have time on your hands, it could be a lot of fun, and if you solve the mystery, I'll mail you some free boards of your choice from my store.
 
-#### ADC Reference options
+#### ADC reference options
 Despite having 28 ADC input channels, the 828 only has the two basic reference options.
 
 | Reference Option | Description               |

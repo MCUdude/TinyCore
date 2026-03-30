@@ -21,6 +21,20 @@
 | Int. WDT Oscillator              | 128 kHz            | 128 kHz            |
 | LED_BUILTIN                      | PIN_PB4            | PIN_PB4            |
 
+## Table of contents
+- [Overview](#overview)
+- [Urboot bootloader](#urboot-bootloader)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [PWM frequency](#pwm-frequency)
+  - [I2C support](#i2c-support)
+  - [SPI support](#spi-support)
+  - [UART (Serial) support](#uart-serial-support)
+  - [Tone support](#tone-support)
+  - [Servo support](#servo-support)
+  - [There is no ADC](#there-is-no-adc)
+
+
 ### Overview
 The ATtiny2313/4313 are one of the older chips in the ATtiny lineup. They have a hardware serial port and USI (Universal Serial Interface), but does not have an analog to digital converter. The ATtiny2313 (non-A) does not have PCINT interrupts on all pins, and you have to be spesific about if you're using the ATtiny2313 or ATtiny2313A for hardware debugging. Read more about the differences between these two chips [here](https://ww1.microchip.com/downloads/en/Appnotes/doc8261.pdf).
 

@@ -23,7 +23,22 @@
 | Int. WDT Oscillator              | 128 kHz            |
 | LED_BUILTIN                      | PIN_PA5            |
 
-## Overview
+## Table of contents
+- [Overview](#overview)
+- [Urboot bootloader](#urboot-bootloader)
+- [Boost converter operation](#boost-converter-operation)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [PWM frequency](#pwm-frequency)
+  - [I2C support](#i2c-support)
+  - [SPI support](#spi-support)
+  - [UART (Serial) Support](#uart-serial-support)
+  - [Tone support](#tone-support)
+  - [Servo support](#servo-support)
+  - [ADC Reference options](#adc-reference-options)
+  - [Temperature measurement](#temperature-measurement)
+
+### Overview
 The ATtiny43 is an unusual device with an otherwise unremarkable peripheral set, distinguished by a single standout feature: a built-in boost converter that allows operation from as little as 1.1V at startup, continuing down to 0.7V, enabling a complete project to run from a single alkaline battery. The boost converter generates approximately 3V during active operation and can supply up to 30mA for peripherals. When the boost converter is in use, the clock speed must not exceed 4 MHz. The "Internal 4MHz" clock option configures the fuses to start at 1 MHz and switch to 4 MHz during startup. Refer to the datasheet for the required external components, PCB layout guidelines, and further details of boost converter operation.
 
 ### Urboot bootloader
@@ -36,7 +51,7 @@ The default serial upload pins for these chips are PA4 (TX) and PA5 (RX). The WD
 
 The AVR internal oscillator is neither highly accurate nor necessarily tightly calibrated from the factory. Since a stable system clock is essential for asynchronous protocols such as UART, the bootloader can be configured to apply an oscillator correction factor. This is exposed as a Tools menu option, with adjustable compensation ranging from -5.00% to +5.00%.
 
-### Boost Converter Operation
+### Boost converter operation
 The boost converter starts up at a battery voltage of 1.2V according to the datasheet, though in practice startup has been observed at 1.1V. It generates a regulated 3V output and continues operating down to a battery voltage of 0.8V or potentially lower. It can supply up to 30mA to external devices provided VBat remains above 1.0V; below this threshold the maximum deliverable current decreases, and the 3V output is no longer guaranteed under load.
 
 The primary advantage over an external boost converter becomes apparent in power-sensitive designs where the processor spends a significant portion of its time in sleep modes. In Active Low Current mode, the output voltage is permitted to droop during sleep, allowing the converter to operate at a very low duty cycle and consume minimal power. When the processor wakes, the converter ramps the supply back up. This behaviour is handled automatically by the chip, and results in substantially lower average current consumption compared to a continuously regulated external boost converter under the same conditions.
@@ -86,7 +101,7 @@ Only the built-in Wire library is officially supported. Issues arising from the 
 The ATtiny43 does not feature a dedicated SPI peripheral. Instead, SPI functionality is implemented through the hardware USI (Universal Serial Interface), exposed transparently via the included SPI library.
 Note that the USI uses DI (Data In) and DO (Data Out) rather than the conventional MISO/MOSI naming. The mapping depends on the operating mode: in master mode, DI corresponds to MISO and DO to MOSI; in slave mode, these are reversed. The MISO and MOSI #defines reflect master mode, as this is by far the most common use case and the only mode supported by the SPI library.
 
-### UART (Serial) Support
+### UART (Serial) support
 The ATtiny43 does not feature a hardware UART. When operating from the internal oscillator, clock calibration may be necessary to achieve sufficient timing accuracy for reliable UART communication.
 
 The core provides a built-in software serial implementation exposed as `Serial`. To avoid conflicts with libraries and applications that rely on pin change interrupts (PCINTs), it uses the analog comparator pins and their dedicated interrupt. The default pin assignment is AIN0 for TX (PA4) and AIN1 for RX (PA5).
@@ -95,13 +110,13 @@ Being a software implementation, `Serial` cannot transmit and receive simultaneo
 
 The TX pin can be reassigned to any pin on PORTA using `Serial.setTxBit(n)`, where n corresponds to the pin number in PAn notation. To disable the RX channel and use TX only, select TX only from the Software Serial menu under Tools. To disable TX, refrain from printing to Serial and configure the pin to the desired mode after calling `Serial.begin()`.
 
-### Tone Support
+### Tone support
 Tone() uses Timer1. For best results, use pin 5 or 6 (PB5, PB6) as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will take out PWM on pins PB5 and PB5. It doesn't do a great job because of the limitations of the timer these parts have.
 
 ### Servo support
 The Servo library is not supported on the ATtiny43. Servos require 5-6V, which is incompatible with the 1.8-2V supply provided by the on-chip boost converter. Additionally, the ATtiny43 timer is not well suited to servo signal generation, and any implementation would be difficult to produce and unsatisfactory in practice.
 
-### ADC Reference options
+### ADC reference options
 | Reference Option | Description               |
 |------------------|---------------------------|
 | `DEFAULT`        | Vcc                       |

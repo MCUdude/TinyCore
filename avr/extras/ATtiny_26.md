@@ -22,10 +22,27 @@
 | Int. WDT Oscillator              | 128 kHz                 |
 | LED_BUILTIN                      | PIN_PB6                 |
 
+## Table of contents
+- [Overview](#overview)
+- [No bootloader support](#no-bootloader-is-possible)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [PLL clock](#pll-clock)
+  - [I2C support](#i2c-support)
+  - [SPI support](#spi-support)
+  - [UART (Serial) support](#uart-serial-support)
+  - [Tone](#tone-support)
+  - [Servo](#servo-support)
+- [ADC features](#adc-features)
+  - [ADC Reference options](#adc-reference-options)
+  - [Internal sources](#internal-sources)
+  - [Differential ADC](#differential-adc)
+  - [ADC differential pair matrix](#adc-differential-pair-matrix)
+
 ### Overview
 The ATtiny26 is the predecessor to the ATtiny261/461/861 family, sharing a similar architecture and differential ADC. As one of the earliest ATtiny devices, its peripheral set is less advanced than its successors.
 
-### No bootloader is possible
+### No bootloader support
 Self programming is not supported on these parts, making it impossible to use a bootloader.
 
 ### Internal oscillator calibration
@@ -54,23 +71,23 @@ The ATtiny26 does not feature a dedicated I2C peripheral. Instead, I2C functiona
 The ATtiny26 does not feature a dedicated SPI peripheral. Instead, SPI functionality is implemented through the hardware USI (Universal Serial Interface), exposed transparently via the included SPI library.
 Note that the USI uses DI (Data In) and DO (Data Out) rather than the conventional MISO/MOSI naming. The mapping depends on the operating mode: in master mode, DI corresponds to MISO and DO to MOSI; in slave mode, these are reversed. The MISO and MOSI #defines reflect master mode, as this is by far the most common use case and the only mode supported by the SPI library. The small flash of these parts may require use of more tightly optimized (and API-incompatible) library.
 
-### UART
+### UART (Serial) support
 The ATtiny26 does not feature a hardware UART. When operating from the internal oscillator, clock calibration may be necessary to achieve sufficient timing accuracy for reliable serial communication.
 
 The core provides a built-in software serial implementation exposed as `Serial`, using the Analog Comparator pins and their dedicated interrupt to avoid conflicts with libraries that rely on pin change interrupts (PCINTs). The default pin assignment is AIN0 for TX and AIN1 for RX. Being a software implementation, `Serial` cannot transmit and receive simultaneously. Note that both an upper and a lower baud rate limit apply.
 
 The `SoftwareSerial` library is not supported on the ATtiny26, as it relies on PCINTs, which are not readily usable on this device due to the absence of a `PCMSK` register.
 
-### Tone
+### Tone support
 `tone()` is implemented using Timer1. For best results, use PB0 as the tone output pin, where `tone()` drives Timer1's output compare unit directly rather than toggling the pin via interrupt, extending the usable frequency range into the MHz region.
 
-### Servo
+### Servo support
 The Servo library is not supported on the ATtiny26. The available flash is too limited and the library too large to leave meaningful space for user code.
 
 ## ADC features
 The ATtiny261/461/861 has a surprisingly sophisticated ADC with many differential channels, most with selectable gain. These are available through analogRead. When used to read a pair of analog pins in differential mode, the ADC normally runs in unipolar mode: The voltage on the positive pin must be higher than that on the negative one, but the difference is measured to the full precision of the ADC. It can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and generate meaningful measurements (it will return a signed value, which costs 1 bit of accuracy for the sign bit). This can be enabled by calling the helper function `setADCBipolarMode(true or false)`.
 
-## ADC Reference options
+### ADC Reference options
 The ATtiny26 provides two internal reference voltages, one of which supports connection of an external capacitor on the AREF pin for improved stability. An external reference voltage and the supply voltage (Vcc) are also available as reference sources.
 
 | Reference Option   | Reference Voltage           | Uses AREF Pin        | Aliases/synonyms                         |
@@ -80,7 +97,7 @@ The ATtiny26 provides two internal reference voltages, one of which supports con
 | `INTERNAL2V56`     | Internal 2.56V reference    | No, pin available    | `INTERNAL2V56_NO_CAP` `INTERNAL2V56NOBP` |
 | `INTERNAL2V56_CAP` | Internal 2.56V reference    | Yes, w/cap. on AREF  |                                          |
 
-### Internal Sources
+### Internal sources
 | Voltage Source  | Description                            |
 |-----------------|----------------------------------------|
 | ADC_INTERNAL1V1 | Reads the 1.18v bandgap reference <br\> which can't be used as AREF |
@@ -111,7 +128,7 @@ The ATtiny26 provides 20 differential channel configurations. Four of these meas
 | ADC10(PB7) | ADC9 (PB6) |     20x |   0x1C | DIFF_A10_A9_20X  |                  |
 | ADC10(PB7) | ADC9 (PB6) |      1x |   0x1D | DIFF_A10_A9_1X   |                  |
 
-#### ADC Differential Pair Matrix
+#### ADC Differential pair matrix
 |  N\P  |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   8   |   9   |  10   |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 |   0   |       |       |       |       |       |       |       |       |       |       |

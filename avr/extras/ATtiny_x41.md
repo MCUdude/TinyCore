@@ -21,6 +21,30 @@
 | External Clock                   | All standard             | All standard             |
 | LED_BUILTIN                      | PIN_PB2                  | PIN_PB2                  |
 
+
+## Table of contents
+- [Overview](#overview)
+- [Urboot bootloader](#urboot-bootloader)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [PWM frequency](#pwm-frequency)
+  - [I2C support](#i2c)
+  - [SPI support](#spi-support)
+  - [UART (Serial) support](#uart-serial-support)
+  - [Tone support](#tone-support)
+  - [ADC features](#adc-features)
+  - [Reference options](#reference-options)
+    - [Synonyms for reference options](#synonyms-for-reference-options)
+  - [Internal sources](#internal-sources)
+  - [Differential ADC channels](#differential-adc-channels)
+  - [ADC differential pair matrix](#adc-differential-pair-matrix)
+  - [Temperature measurement](#temperature-measurement)
+- [Special I/O-pin related features](#special-io-pin-related-features)
+  - [Separate pull-up enable register](#separate-pull-up-enable-register)
+  - [Enhanced sink capability on PA5 and PA7](#enhanced-sink-capability-on-pa5-and-pa7)
+  - [Break-before-make](#break-before-make)
+
+
 ### Overview
 The ATtiny441/841 is an enhanced successor to the ATtiny24/44/84 family, offering pin compatibility and a significantly expanded peripheral set at a modest price premium. It is available in surface mount packages only. 
 
@@ -75,7 +99,7 @@ Phase correct PWM counts up to 255, turning the pin off as it passes the compare
 
 For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
 
-### I2C
+### I2C support
 The ATtiny441/841 does not have a hardware I2C master. The included Wire library provides I2C master functionality through a software implementation, while the hardware I2C slave peripheral is used for slave functionality. It serves as a drop-in replacement for the standard Wire library, with the caveat that the clock speed cannot be configured. **External pull-up resistors are required** on the SDA and SCL lines for reliable operation. Note that error reporting from the software I2C master is unreliable.
 
 ### SPI support
@@ -140,7 +164,7 @@ Due to the long and storied history of ATtinyCore, there are a large number of s
 | `INTERNAL4V096NOBP`    | `INTERNAL4V096`         | deprecated                     |
 
 
-### Internal Sources
+### Internal sources
 | Voltage Source  | Description                            |
 |-----------------|----------------------------------------|
 | ADC_INTERNAL1V1 | Reads the INTERNAL1V1 reference        |
@@ -199,7 +223,7 @@ Due to the long and storied history of ATtinyCore, there are a large number of s
 |      ADC9 | PB3 |      ADC8 | PB2 |  DIFF_A9_A8 |    0x3F |
 
 
-#### ADC Differential Pair Matrix
+#### ADC differential pair matrix
 The t x41-series parts offer a superset of the tinyx4-series; in the below table,**bold** indicates that an option was not available on the ATtiny x4-series
 |  N\P  |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |   10  |   11  |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
@@ -215,7 +239,7 @@ The t x41-series parts offer a superset of the tinyx4-series; in the below table
 |   9   |       |       |       |       |       |       |       |       | **X** | **X** | **X** | **X** |
 
 
-### Temperature Measurement
+### Temperature measurement
 To measure the temperature, select the 1.1v internal voltage reference, and `analogRead(ADC_TEMPERATURE)`; This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
 
 ## Special I/O-pin related features
@@ -237,7 +261,7 @@ PHDE=(1<<PHDEA0)|(1<<PHDEA1); //PHDEA0 controls PA5, PHDEA1 controls PA7.
 
 This feature appears to be unique to the ATtiny441/841 and the closely related ATtiny828, both of which also share the distinction of being the only classic AVR devices that support remapping of timer PWM outputs to alternative pins.
 
-### Break-Before-Make
+### Break-before-make
 The ATtiny441/841 supports a Break-Before-Make mode, configurable on a per-port basis via the `PORTCR` register. When enabled, any pin transitioning from input to output via a DDR bit change will be held in a tristated (high-impedance) state for one system clock cycle before the output driver is engaged. This feature is not used by the core. It appears to be intended for scenarios where output values are pre-loaded into PORTx and multiple pins are simultaneously switched from input to output via a single DDR write, though the specific application this was designed for is not immediately obvious.
 
 ```c

@@ -22,6 +22,25 @@
 | Int. WDT Oscillator              | 128 kHz            | 128 kHz            |
 | LED_BUILTIN                      | PIN_PA6            | PIN_PA6            |
 
+
+## Table of contents
+- [Urboot bootloader](#urboot-bootloader)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [Flexible PWM support](#flexible-pwm-support)
+  - [PWM frequency](#pwm-frequency)
+  - [I2C support](#i2c-support)
+  - [SPI support](#spi-support)
+  - [UART with LIN support](#uart-with-lin-support)
+  - [Tone support](#tone-support)
+  - [Servo support](#servo-support)
+- [ADC features](#adc-features)
+  - [ADC Reference options](#adc-reference-options)
+  - [Internal sources](#internal-sources)
+  - [Differential ADC](#differential-adc)
+  - [Temperature measurement](#temperature-measurement)
+
+
 ### Urboot bootloader
 This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny87/167, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 7936 or 16128 bytes available for user program. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
 
@@ -116,7 +135,7 @@ The device has the unusual ability to drive its internal reference voltage onto 
 | `INTERNAL2V56_XREF` | Internal 2.56V reference    | Yes, reference output on AREF |
 | `INTERNAL`          | Same as `INTERNAL1V1`       | No, pin available             |
 
-### Internal Sources
+### Internal sources
 | Voltage Source    | Description                            |
 |-------------------|----------------------------------------|
 | `ADC_INTERNAL1V1` | Reads the INTERNAL1V1 reference        |
@@ -138,5 +157,5 @@ The ATtiny87/167 provides a modest selection of differential ADC pairs with sele
 | ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  `DIFF_A8_A9_8X` |  `DIFF_A8_A9_20X` |   `DIFF_A8_A3_8X` |   `DIFF_A8_A3_20X` |
 | ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | `DIFF_A9_A10_8X` | `DIFF_A9_A10_20X` |  `DIFF_A3_A15_8X` |  `DIFF_A3_A15_20X` |
 
-### Temperature Measurement
+### Temperature measurement
 To measure the temperature, select the 1.1v internal voltage reference, and `analogRead(ADC_TEMPERATURE)`; This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.

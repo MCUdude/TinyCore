@@ -23,6 +23,30 @@
 | Int. WDT Oscillator              | 128 kHz                 | 128 kHz                 | 128 kHz                 |
 | LED_BUILTIN                      | PIN_PB6                 | PIN_PB6                 | PIN_PB6                 |
 
+
+## Table of contents
+- [Overview](#overview)
+- [Urboot bootloader](#urboot-bootloader)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [PLL clock](#pll-clock)
+  - [Timer1 is a high speed timer](#timer1-is-a-high-speed-timer)
+  - [PWM frequency](#pwm-frequency)
+  - [I2C support](#i2c-support)
+  - [SPI support](#spi-support)
+  - [UART (Serial) support](#uart-serial-support)
+  - [Tone support](#tone-support)
+  - [Servo support](#servo-support)
+- [ADC features](#adc-features)
+  - [Differential ADC](#differential-adc)
+  - [ADC reference options](#adc-reference-options)
+  - [Internal sources](#internal-sources)
+  - [Differential ADC channel table](#differential-adc-channel-table)
+  - [Differential ADC channel layout](#differential-adc-channel-layout)
+  - [ADC differential pair matrix](#adc-differential-pair-matrix)
+  - [Temperature measurement](#temperature-measurement)
+
+
 ## Overview
 The ATtiny261/461/861 is a microcontroller designed with brushless DC (BLDC) motor control in mind. It features an on-chip PLL and a high-speed Timer1 capable of generating three complementary PWM signals with configurable dead time, as required for three-phase BLDC motor drives. It also includes a notably capable ADC, second only to the ATtiny441/841 in the number of differential pairs and programmable gain options.
 
@@ -102,7 +126,7 @@ Being a software implementation, `Serial` cannot transmit and receive simultaneo
 
 The TX pin can be reassigned to any pin on PORTA using `Serial.setTxBit(n)`, where n corresponds to the pin number in PAn notation. To disable the RX channel and use TX only, select TX only from the Software Serial menu under Tools. To disable TX, refrain from printing to Serial and configure the pin to the desired mode after calling `Serial.begin()`.
 
-### Tone
+### Tone support
 `tone()` is implemented using Timer1. If Timer1 has been configured for high-speed operation, `tone()` will produce frequencies two or four times higher than expected. Normal speed operation is recommended when using `tone()`.
 
 For best results, use pin PA1 or PA4 as the tone output pin. On these pins, `tone()` drives Timer1's output compare unit directly rather than toggling the pin via interrupt, which extends the usable frequency range into the MHz region. When `SoftwareSerial` or the built-in `Serial` is active, `tone()` remains functional on PWM pins but is unavailable on all other pins. As Timer1 is the only timer capable of hardware PWM on the ATtiny261/461/861, using `tone()` will disable all PWM functionality for the duration of its use.

@@ -23,6 +23,25 @@
 | Int. WDT Oscillator              | 128 kHz          | 128 kHz          | 128 kHz          |
 | LED_BUILTIN                      | PIN_PB2          | PIN_PB2          | PIN_PB2          |
 
+## Table of contents
+- [Urboot bootloader](#urboot-bootloader)
+- [Internal oscillator calibration](#internal-oscillator-calibration)
+- [Features](#features)
+  - [PWM frequency](#pwm-frequency)
+  - [I2C support](#i2c-support)
+  - [SPI support](#spi-support)
+  - [UART (Serial) support](#uart-serial-support)
+  - [Tone support](#tone-support)
+  - [Servo support](#servo-support)
+- [ADC features](#adc-features)
+  - [ADC reference options](#adc-reference-options)
+  - [Internal sources](#internal-sources)
+  - [Differential channels](#differential-channels)
+  - [Differential ADC channels](#differential-adc-channels)
+  - [ADC differential pair matrix](#adc-differential-pair-matrix)
+  - [Temperature measurement](#temperature-measurement)
+
+
 ### Urboot bootloader
 This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny24/44/84, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792, 3840, or 7936 bytes available for user code on the ATtiny24, 44, and 84 respectively. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
 
@@ -103,7 +122,7 @@ A built-in Servo library is included with this core, with full support for the A
 ## ADC features
 The ATtiny24/44/84 has a differential ADC. Gain of 1x or 20x is available, and two differential pairs are available. The ADC supports both bipolar mode (-512 to 511) and unipolar mode (0-1023) when taking differential measurements; you can set this using `setADCBipolarMode(true or false)`.
 
-### ADC Reference options
+### ADC reference options
 The ATtiny24/44/84 has both the 1.1V and 2.56V reference options, a rarity among the classic tinyAVR parts. It also supports an external reference.
 
 | Reference option   | Reference voltage           | Uses AREF pin        | Aliases/synonyms                         |
@@ -114,19 +133,17 @@ The ATtiny24/44/84 has both the 1.1V and 2.56V reference options, a rarity among
 | `INTERNAL2V56`     | Internal 2.56V reference    | No, pin available    | `INTERNAL2V56_NO_CAP` `INTERNAL2V56NOBP` |
 | `INTERNAL2V56_CAP` | Internal 2.56V reference    | Yes, w/cap. on AREF  |                                          |
 
-### Internal Sources
+### Internal sources
 | Voltage Source  | Description                            |
 |-----------------|----------------------------------------|
 | ADC_INTERNAL1V1 | Reads the INTERNAL1V1 reference        |
 | ADC_GROUND      | Measures ground (offset cal?)          |
 | ADC_TEMPERATURE | Internal temperature sensor            |
 
-### Differential Channels
+### Differential channels
 The ADC on the x5-series can act as a differential ADC with selectable 1x or 20x gain. It can operate in either unipolar or bipolar mode, and the polarity of the two differential pairs can be inverted in order to maximize the resolution available in unipolar mode. TinyCore wraps the IPR bit into the name of the differential ADC channel. Note the organization of the channels - there are two differential pairs A0/A1, and A2/A3 - but there is no way to take a differential measurement between A0 and A2 or A3 for example.
 
 ### Differential ADC
-
-
 The ATtiny24/44/84 provides 12 differential ADC pairs, all with selectable gain. On A0, A3, and A7, the positive and negative inputs can be set to the same pin, allowing the gain stage offset error to be measured and subtracted from subsequent readings. All pairs also support swapped inputs.
 
 Differential channels are read using `analogRead()` with the named constants listed below. When a channel must be referenced by its numeric value rather than a named constant, use the `ADC_CH()` macro. for example, `analogRead(ADC_CH(0x08))` is equivalent to `analogRead(DIFF_A0_A1_20X)`. This macro sets the high bit to distinguish analog channels from digital pin numbers (`#define ADC_CH(x) (0x80 | (x))`). Passing a raw channel number without this macro will cause it to be interpreted as a digital pin number.
@@ -164,7 +181,7 @@ Where a gain value has two possible configurations, the variant that does not us
 | ADC7 (PA7) | ADC6 (PA6) | 0x3E  |  0x3F  |  DIFF_A7_A6_1X |  DIFF_A7_A6_20X |
 | ADC7 (PA7) | ADC7 (PA7) | 0x26  |  0x27  |  DIFF_A7_A7_1X |  DIFF_A7_A7_20X |
 
-#### ADC Differential Pair Matrix
+#### ADC differential pair matrix
 
  | N\P |  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |
  |-----|----|----|----|----|----|----|----|----|
@@ -179,5 +196,5 @@ Where a gain value has two possible configurations, the variant that does not us
 
 By default, differential measurements are taken in unipolar mode, requiring the positive input to exceed the negative input. If the polarity is known in advance, this is generally the preferred mode. When the signal polarity cannot be guaranteed, bipolar mode is available, providing a signed 9-bit result that accommodates negative values.
 
-### Temperature Measurement
+### Temperature measurement
 To measure the temperature, select the 1.1v internal voltage reference, and `analogRead(ADC_TEMPERATURE)`; This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
