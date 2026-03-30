@@ -1,15 +1,17 @@
 # TinyCore
 
-An Arduino core for classic ATtiny chips, with the option of running the [Urboot](https://github.com/stefanrueger/urboot) bootloader.  
-Arduino IDE v1.8 and v2.x supported!
+TinyCore brings full Arduino IDE support to the classic ATtiny microcontroller family. It pairs these capable little chips with the modern and lean [Urboot](https://github.com/stefanrueger/urboot) bootloader and a clean, well-documented experience.
 
-TinyCore is a fork of the [ATTinyCore 2.0.0 branch](https://github.com/SpenceKonde/ATTinyCore). It focuses on improving the overall user experience and other quality-of-life improvements. Compared to ATtinyCore, TinyCore has:  
-* Improved and less cluttered Arduino IDE Tools menu
-* Rock-solid bootloader support using [Urboot](https://github.com/stefanrueger/urboot) in favour of Optiboot
-* Hardware debugging support using [PyAvrOCD](https://pyavrocd.io)
-* No Digispark (Micronucleus) support due to [USB timing costraints and the poor user experience caused by this](https://github.com/SpenceKonde/ATTinyCore?tab=readme-ov-file#vusb-is-not-supported-for-usb-functionality-within-the-sketch)
-* Revised and improved documentation
-* [Systematic testing of core functionality](/avr/extras/tests/README.md) on real hardware
+Arduino IDE v1.8 and v2.x are both supported.
+
+TinyCore is a fork of [ATTinyCore 2.0.0](https://github.com/SpenceKonde/ATTinyCore), with focus on a cleaner user experience, up-to-date tooling, and improved documentation. 
+Key improvements include:
+
+- **Cleaner Tools menu** - less clutter, more clarity in the Arduino IDE
+- **Urboot bootloader** - only 256 bytes, self-protecting, and far more reliable than Optiboot
+- **Hardware debugging** via [PyAvrOCD](https://pyavrocd.io)
+- **Revised and improved documentation** for every supported chip
+- **Systematic hardware testing** — core functionality is [tested on real silicon](/avr/extras/tests/README.md)
 
 # Table of contents
 * [Supported microcontrollers](#supported-microcontrollers)
@@ -80,33 +82,33 @@ For time-critical operations, an external crystal/oscillator is recommended. Urb
 
 Note that the ATtiny48/88 and ATtiny828 require an external clock signal and are not able to drive a resonator circuit themselves. You may use a dedicated quartz crystal oscillator or a crystal driver.
 
-| Frequency   | Oscillator type       | Urboot upload speed | Note                                              |
-|-------------|-----------------------|---------------------|---------------------------------------------------|
-| 16 MHz      | External crystal/osc. | 115200              |                                                   |
-| 20 MHz      | External crystal/osc. | 115200              |                                                   |
-| 18.4320 MHz | External crystal/osc. | 115200              |                                                   |
-| 14.7456 MHz | External crystal/osc. | 115200              |                                                   |
-| 12 MHz      | External crystal/osc. | 115200              |                                                   |
-| 11.0592 MHz | External crystal/osc. | 115200              |                                                   |
-| 9.216 MHz   | External crystal/osc. | 115200              |                                                   |
-| 8 MHz       | External crystal/osc. | 38400               |                                                   |
-| 7.3728 MHz  | External crystal/osc. | 115200              |                                                   |
-| 6 MHz       | External crystal/osc. | 57600               |                                                   |
-| 4 MHz       | External crystal/osc. | 57600               |                                                   |
-| 3.6864 MHz  | External crystal/osc. | 115200              |                                                   |
-| 2 MHz       | External crystal/osc. | 9600                |                                                   |
-| 1 MHz       | External crystal/osc. | 9600                |                                                   |
-| 16 MHz      | Internal osc. (PLL)   | 115200              | ATtiny25/45/85, 24/44/84, 261/461/861 and 26 only |
-| 8 MHz       | Internal osc.         | 38400               | Might cause UART upload issues. See comment above |
-| 4 MHz       | Internal osc.         | 9600                | Derived from the 8 MHz internal oscillator        |
-| 1 MHz       | Internal osc.         | 9600                | Derived from the 8 MHz internal oscillator        |
-| 128kHz      | Internal WDT osc.     | 1200                | 128kHz is not recommended for bootloader use      |
+| Frequency   | Oscillator type   | Urboot baud rate | Note                                              |
+|-------------|-------------------|------------------|---------------------------------------------------|
+| 16 MHz      | Ext. crystal/osc. | 115200           |                                                   |
+| 20 MHz      | Ext. crystal/osc. | 115200           |                                                   |
+| 18.4320 MHz | Ext. crystal/osc. | 115200           |                                                   |
+| 14.7456 MHz | Ext. crystal/osc. | 115200           |                                                   |
+| 12 MHz      | Ext. crystal/osc. | 115200           |                                                   |
+| 11.0592 MHz | Ext. crystal/osc. | 115200           |                                                   |
+| 9.216 MHz   | Ext. crystal/osc. | 115200           |                                                   |
+| 8 MHz       | Ext. crystal/osc. | 38400            |                                                   |
+| 7.3728 MHz  | Ext. crystal/osc. | 115200           |                                                   |
+| 6 MHz       | Ext. crystal/osc. | 57600            |                                                   |
+| 4 MHz       | Ext. crystal/osc. | 57600            |                                                   |
+| 3.6864 MHz  | Ext. crystal/osc. | 115200           |                                                   |
+| 2 MHz       | Ext. crystal/osc. | 9600             |                                                   |
+| 1 MHz       | Ext. crystal/osc. | 9600             |                                                   |
+| 16 MHz      | Int. osc. (PLL)   | 115200           | ATtiny25/45/85, 24/44/84, 261/461/861 and 26 only |
+| 8 MHz       | Int. osc.         | 38400            | Might cause UART upload issues. See comment above |
+| 4 MHz       | Int. osc.         | 9600             | Derived from the 8 MHz internal oscillator        |
+| 1 MHz       | Int. osc.         | 9600             | Derived from the 8 MHz internal oscillator        |
+| 128kHz      | Int. WDT osc.     | 1200             | 128kHz is not recommended for bootloader use      |
 
 
 ## Bootloader
-TinyCore supports the ultra-lightweight and efficient [Urboot](https://github.com/stefanrueger/urboot) bootloader, written by [Stefan Rueger](https://github.com/stefanrueger). The bootloader makes it trivial to upload sketches using a USB-to-serial adapter, just like with a traditional AVR-based Arduino board. But unlike other bootloaders, Urboot only occupies 256 bytes of flash and protects its patched reset vector, which means that, unlike Optiboot, it's practically impossible to mess up the reset vector and "brick" the chip. Give the bootloader option a try, and you'll be amazed at how well it works!
+TinyCore supports the ultra-lightweight and lean [Urboot](https://github.com/stefanrueger/urboot) bootloader, written by [Stefan Rueger](https://github.com/stefanrueger). The bootloader makes it trivial to upload sketches using a USB-to-serial adapter, just like with a traditional AVR-based Arduino board. But unlike other bootloaders, Urboot only occupies 256 bytes of flash and protects its patched reset vector, which means that, unlike Optiboot, it's practically impossible to mess up the reset vector and "brick" the chip. Give the bootloader option a try, and you'll be amazed at how well it works!
 
-The internal oscillator on the most ATtinys is usually slower than it should be according to the spec. Try burning the slower and faster ones (-1.25%, +1.25%, etc.) if the  "Bootloader: _Yes_" option doesn't work.
+The internal oscillator on the most ATtinys is usually slower than it should be according to the spec. Try burning the slower and faster ones (-1.25%, +1.25%, etc.) if the "Bootloader: _Yes_" option doesn't work.
 
 Note that the 128 kHz internal oscillator option is not recommended for use with a bootloader since the oscillator is too inaccurate for practical use with an asynchronous protocol like UART.
 
@@ -240,7 +242,7 @@ See the serial section below for additional details.
 | ATtiny1634            | USI           | USI         | Slave TWI | 2x Hardware **    |
 | ATtiny828             | Real SPI      | Software    | Slave TWI | 1x Hardware       |
 
-<b>*</b>  TX pin can be moved to any other pin on that port with Serial.setTxBit().  
+<b>*</b>  TX pin can be moved to any other pin on that port with Serial.setTxBit() on parts that uses software-based serial.  
 <b>**</b> UART1 shares pins with the USI and slave TWI interface, which basically means you have to choose between USI (SPI or I2C master) or I2C slave, or a second serial port.
 
 </details>
