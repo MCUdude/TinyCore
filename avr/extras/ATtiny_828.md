@@ -103,10 +103,10 @@ Phase correct PWM counts up to 255, turning the pin off as it passes the compare
 For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
 
 ### Tone support
-Tone() uses Timer1. For best results, use pin 21 or 22 (PC5, PC6), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins 21 and 22.
+Tone() uses Timer1. For best results, use pin 21 or 23 (PC5, PC7), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins 21 and 23.
 
 ### Servo support
-A built-in Servo library is included with this core, with full support for the ATtiny828. Note that any ongoing software serial activity, whether through `SoftwareSerial` or the built-in `Serial`, will cause glitches in the servo signal during transmission or reception. The Servo library disables PWM on PC5 and PC6, and cannot be used simultaneously with `tone()`. See the [the Servo/Servo_TinyCore library](../libraries/Servo/README.md) for further details.
+A built-in Servo library is included with this core, with full support for the ATtiny828. Note that any ongoing software serial activity, whether through `SoftwareSerial` or the built-in `Serial`, will cause glitches in the servo signal during transmission or reception. The Servo library disables PWM on PC5 and PC7, and cannot be used simultaneously with `tone()`. See the [the Servo/Servo_TinyCore library](../libraries/Servo/README.md) for further details.
 
 ### I2C support
 Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire.h library. **You must have external pullup resistors installed** in order for I2C functionality to work reliably. Furthermore, the slave functionality requires the WDT to be enabled, otherwise the SCL pin will be pulled low due to a silicon bug. Slave and master I2C use different pins because of this godawful bug. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
