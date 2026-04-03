@@ -24,10 +24,11 @@ if "%bootname%"=="" (
 REM Calculate maxflash
 set /a maxflash=%maxflash% - %boot%
 
+
 REM Calculate flash and RAM from avr-size output
 set flash=0
 set ram=0
-for /f "tokens=1,2" %%a in ('"%sizeprog%" -A "%sketch%"') do (
+for /f "tokens=1,2" %%a in ('%sizeprog% -A %sketch%') do (
     if "%%a"==".text"   set /a flash+=%%b
     if "%%a"==".data"   set /a flash+=%%b
     if "%%a"==".data"   set /a ram+=%%b

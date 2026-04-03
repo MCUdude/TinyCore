@@ -116,7 +116,7 @@ recipe.size.regex=^(?:\.text|\.data|\.bootloader)\s+([0-9]+).*
 recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 recipe.advanced_size.pattern="/bin/bash" "{runtime.platform.path}/scripts/size.sh" "{compiler.path}{compiler.size.cmd}" "{build.path}/{build.project_name}.elf" "{upload.maximum_size}" "{upload.maximum_data_size}"  "{tools.avrdude.cmd.path}" "{tools.avrdude.config.path}" "{build.mcu}" "{bootloader.str}"
-recipe.advanced_size.pattern.windows="{runtime.platform.path}\scripts\size.bat" "{compiler.path}{compiler.size.cmd}" "{build.path}\{build.project_name}.elf" "{upload.maximum_size}" "{upload.maximum_data_size}"  "{tools.avrdude.cmd.path}" "{tools.avrdude.config.path}" "{build.mcu}" "{bootloader.str}"
+recipe.advanced_size.pattern.windows="{runtime.platform.path}\scripts\size.bat" "{compiler.path}{compiler.size.cmd}.exe" "{build.path}\{build.project_name}.elf" "{upload.maximum_size}" "{upload.maximum_data_size}"  "{tools.avrdude.cmd.path}" "{tools.avrdude.config.path}" "{build.mcu}" "{bootloader.str}"
 
 ## Preprocessor
 preproc.includes.flags=-w -x c++ -M -MG -MP
