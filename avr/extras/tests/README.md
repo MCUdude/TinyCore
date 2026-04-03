@@ -22,7 +22,7 @@ The tests in this folder each check one particular basic functionality. They are
 | `analogRead()`on all supported pins         | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | ⚫️          | 🟢          | 🟢         | 🟢        | 🟢        |
 | SPI master                                  | 🟢        | 🟢        | 🟢         | 🟢         | 🔴        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
 | SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | 🟢         | ⚫️        | ⚫️        |
-| Wire master                                 | 🟢        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🟢        | 🔴        |
+| Wire master                                 | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🔴         | 🟢        | 🔴        |
 | Wire slave                                  | 🟢        | ⚪️        | ⚪️         | 🟢         | 🔴        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🔴        | 🔴        |
 | Neopixel library/libraries                  | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🔴        |
 | Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | ⚫️        | 🔴        |
