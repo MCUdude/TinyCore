@@ -189,7 +189,7 @@
 #define USI_DI_BIT            PINB5
 
 #define USI_START_VECTOR      USI_START_vect
-#define USI_OVERFLOW_VECTOR   USI_OVF_vect
+#define USI_OVERFLOW_VECTOR   USI_OVERFLOW_vect
 #ifndef USI_START_COND_INT
   #define USI_START_COND_INT  USISIF
 #endif
