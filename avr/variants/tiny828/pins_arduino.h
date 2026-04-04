@@ -250,20 +250,32 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 
 #if defined(WIRE_MASTER_ONLY)
   /* Software I2C Master */
-  #define SDA PIN_PA4
-  #define SCL PIN_PA5
-  #define BIT_SDA 4
-  #define PORT_SDA PORTA
-  #define BIT_SCL 5
-  #define PORT_SCL PORTA
+  #ifndef SCL
+    #define SCL PIN_PA5
+  #endif
+  #ifndef SCL_PORT
+    #define SCL_PORT (PORTA)
+  #endif
+  #ifndef SCL_PIN
+    #define SCL_PIN (5)
+  #endif
+  #ifndef SDA
+    #define SDA PIN_PA4
+  #endif
+  #ifndef SDA_PORT
+    #define SDA_PORT (PORTA)
+  #endif
+  #ifndef SDA_PIN
+    #define SDA_PIN (4)
+  #endif
 #else
   /* Hardware I2C Slave with or without Software I2C Master */
-  #define SCL  PIN_PD3
-  #define SDA  PIN_PD0
-  #define BIT_SDA 0
-  #define PORT_SDA PORTD
-  #define BIT_SCL 3
-  #define PORT_SCL PORTD
+  #define SCL PIN_PD3
+  #define SCL_PORT (PORTD)
+  #define SCL_PIN (3)
+  #define SDA PIN_PD0
+  #define SDA_PORT (PORTD)
+  #define SDA_PIN (0)
 #endif
 
 /* Hardware SPI */

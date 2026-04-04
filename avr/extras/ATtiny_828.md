@@ -111,6 +111,11 @@ A built-in Servo library is included with this core, with full support for the A
 ### I2C support
 Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire.h library. **You must have external pullup resistors installed** in order for I2C functionality to work reliably. Furthermore, the slave functionality requires the WDT to be enabled, otherwise the SCL pin will be pulled low due to a silicon bug. Slave and master I2C use different pins because of this godawful bug. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
+| Pins | I2C master | I2C slave          |
+|------|------------|--------------------|
+| SDA  | PA4        | PD0                |
+| SCL  | PA5        | PD3 (WDT required) |
+
 ### SPI support
 There is full Hardware SPI support. However, PD3 is one of the pins used by the hardware SPI; you must use the WDT workaround for the PD3 silicon bug if using SPI. Third party SPI libraries designed for tinyAVRs are not supported by the hardware and will not work.
 
