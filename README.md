@@ -1,4 +1,5 @@
 # TinyCore
+[![TinyCore forum thread](https://img.shields.io/badge/support-forum-blue.svg)](https://forum.arduino.cc/t/tinycore-a-new-arduino-core-for-classic-attiny-chips/1438547)
 
 TinyCore brings full Arduino IDE support to the classic ATtiny microcontroller family. It pairs these capable little chips with the modern and lean [Urboot](https://github.com/stefanrueger/urboot) bootloader and a clean, well-documented experience.
 
