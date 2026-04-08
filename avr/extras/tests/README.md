@@ -23,7 +23,7 @@ The tests in this folder each check one particular basic functionality. They are
 | SPI master                                  | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🟢         | 🟢        | 🟢        |
 | SPI slave                                   | ⚫️        | ⚫️        | ⚪️         | ⚫️         | 🟢        | 🟢        | ⚫️          | ⚫️          | 🟢         | ⚫️        | ⚫️        |
 | Wire master                                 | 🟢        | 🟢        | 🟢         | 🟢         | 🟢        | 🟢        | 🟢          | 🟢          | 🔴         | 🟢        | 🔴        |
-| Wire slave                                  | 🟢        | ⚪️        | ⚪️         | 🟢         | 🔴        | 🟢        | ⚪️          | ⚪️          | 🔴         | 🔴        | 🔴        |
+| Wire slave                                  | 🟢        | 🟢        | 🔴         | 🟢         | 🔴        | 🟢        | 🔴          | 🟢          | 🔴         | 🔴        | 🔴        |
 | Neopixel library/libraries                  | 🟢        | 🟢        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | 🟢        | 🔴        |
 | Servo library/libraries                     | ⚪️        | ⚪️        | ⚪️         | 🟢         | 🟢        | 🟢        | ⚪️          | ⚪️          | 🟢         | ⚫️        | 🔴        |
 | `tone()` (using timer1)                     | ⚪️        | ⚪️        | ⚪️         | ⚪️         | ⚪️        | ⚪️        | ⚪️          | ⚪️          | ⚪️         | ⚪️        | ⚫️        |
@@ -54,4 +54,12 @@ ATtiny43U:
 ATtiny828:
 
 - **Note**: When PD3 (D27) is used as an input (also for TWI/SPI slave clock), WDT has to be activated!
-- Wire Master & Slave fail with a compilation error (pins need to be defined in pins_arduino.h)
+- ~~Wire Master & Slave fail with a compilation error (pins need to be defined in pins_arduino.h)~~ Needs retesting
+
+ATtiny4313:
+
+- TWI slave: Stops after a few interactions. Possibly the same issue as with the ATtiny87/167
+
+ATtiny841:
+
+- TWI slave: Slave mode compiles but doesn't work. It works with ATtinyCore 1.5.2. However, the Wire library bundled with ATtinyCore 1.5.2 does not work with TinyCore. So maybe this is related to the initialization of the core?
