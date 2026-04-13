@@ -10,15 +10,7 @@
     ring_buffer tx_buffer  =  { { 0 }, 0, 0 };
     #if defined(USART0_UDRE_vect)
       ISR(USART0_UDRE_vect) {
-        if (tx_buffer.head == tx_buffer.tail) {
-          // Buffer empty, so disable interrupts]
-            UCSR0B &= ~(1 << UDRIE);
-        } else {
-          // There is more data in the output buffer. Send the next byte
-          unsigned char c = tx_buffer.buffer[tx_buffer.tail];
-          tx_buffer.tail = (tx_buffer.tail + 1) % SERIAL_BUFFER_SIZE;
-          UDR0 = c;
-        }
+         Serial._tx_udr_empty_irq();
       }
     #endif
   #endif

@@ -59,8 +59,22 @@
   }
   #endif
 
+// Interrupt handler //////////////////////////////////////////////////////////////
 
-  // Public Methods //////////////////////////////////////////////////////////////
+void HardwareSerial::_tx_udr_empty_irq(void)
+{
+  if (_tx_buffer->head == _tx_buffer->tail) {
+    // Buffer empty, so disable interrupts
+    *_ucsrb &= ~(1 << UDRIE);
+  } else {
+    // There is more data in the output buffer. Send the next byte
+    unsigned char c = _tx_buffer->buffer[_tx_buffer->tail];
+    _tx_buffer->tail = (_tx_buffer->tail + 1) % SERIAL_BUFFER_SIZE;
+    *_udr = c;
+  }
+}
+
+// Public Methods //////////////////////////////////////////////////////////////
 
   void HardwareSerial::begin(long baud) {
   #if (defined(UBRR0H) || defined(UBRR1H))
@@ -159,8 +173,16 @@
   }
 
   void HardwareSerial::flush() {
-    while (_tx_buffer->head != _tx_buffer->tail)
-      ;
+    while (_tx_buffer->head != _tx_buffer->tail || (bit_is_set(*_ucsra, UDRIE))) {
+      if (bit_is_clear(SREG, SREG_I) && bit_is_set(*_ucsrb, UDRIE))
+        // Interrupts are globally disabled, but the DR empty
+        // interrupt should be enabled, so poll the DR empty flag to
+        // prevent deadlock
+        if (bit_is_set(*_ucsra, UDRE))
+            _tx_udr_empty_irq();
+      // If interrupts are enabled, the buffer will be emptied in an interrupt driven way
+    }
+    // buffer is empty now
   }
 
   size_t HardwareSerial::write(uint8_t c) {
@@ -168,9 +190,16 @@
 
     // If the output buffer is full, there's nothing for it other than to
     // wait for the interrupt handler to empty it a bit
-    // ???: return 0 here instead?
-    while (i == _tx_buffer->tail)
-      ;
+    while (i == _tx_buffer->tail) {
+      if (bit_is_clear(SREG, SREG_I)) {
+        // Interrupts are disabled, so we'll have to poll the data
+        // register empty flag ourselves. If it is set, pretend an
+        // interrupt has happened and call the handler to free up
+        // space for us.
+        if(bit_is_set(*_ucsra, UDRE))
+          _tx_udr_empty_irq();
+      }
+    }
 
     _tx_buffer->buffer[_tx_buffer->head] = c;
     _tx_buffer->head = i;

@@ -56,8 +56,9 @@
     #define RXEN  RXEN0
     #define TXEN  TXEN0
     #define RXCIE RXCIE0
-    #define UDRIE  UDRIE0
+    #define UDRIE UDRIE0
     #define U2X   U2X0
+    #define UDRE  UDRE0
   #endif
   #if defined (UBRR0H)
     const uint8_t _rxen   = (1 << RXEN);
@@ -146,6 +147,9 @@
       virtual size_t write(uint8_t);
       using Print::write; // pull in write(str) and write(buf, size) from Print
       operator bool();
+
+      // Interrupt handler - Not intended to be called externally
+      void _tx_udr_empty_irq(void);
   };
 
   #endif

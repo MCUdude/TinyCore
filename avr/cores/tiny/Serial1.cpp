@@ -24,17 +24,7 @@
   #ifdef USART1_UDRE_vect
     ISR(USART1_UDRE_vect)
     {
-      if (tx_buffer1.head == tx_buffer1.tail) {
-      // Buffer empty, so disable interrupts
-        UCSR1B &= ~(1 << UDRIE1);
-      }
-      else {
-        // There is more data in the output buffer. Send the next byte
-        unsigned char c = tx_buffer1.buffer[tx_buffer1.tail];
-        tx_buffer1.tail = (tx_buffer1.tail + 1) % SERIAL_BUFFER_SIZE;
-
-        UDR1 = c;
-      }
+      Serial._tx_udr_empty_irq();
     }
   #endif
 #endif
