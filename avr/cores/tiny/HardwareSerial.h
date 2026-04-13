@@ -79,42 +79,29 @@
    * I couldn't justify not explicitly optimizing the % SERIAL_BUFFER_SIZE to a & (SERIAL_BUFFER_SIZE -1))
    */
 
-
-
-  struct ring_buffer;
-
-  struct ring_buffer
-    {
-      unsigned char buffer[SERIAL_BUFFER_SIZE];
-      byte head;
-      byte tail;
-    };
-  inline void store_char(unsigned char c, ring_buffer *buffer) {
-    byte i = (buffer->head + 1) % SERIAL_BUFFER_SIZE;
-
-    // if we should be storing the received character into the location
-    // just before the tail (meaning that the head would advance to the
-    // current location of the tail), we're about to overflow the buffer
-    // and so we don't write the character or advance the head.
-    if (i != buffer->tail) {
-      buffer->buffer[buffer->head] = c;
-      buffer->head = i;
-    }
-  }
   class HardwareSerial : public Stream
   {
     private:
-      volatile ring_buffer *_rx_buffer;
-      volatile ring_buffer *_tx_buffer;
       volatile uint8_t *_ubrrh;
       volatile uint8_t *_ubrrl;
       volatile uint8_t *_ucsra;
       volatile uint8_t *_ucsrb;
       volatile uint8_t *_udr;
+
+      volatile byte _rx_buffer_head;
+      volatile byte _rx_buffer_tail;
+      volatile byte _tx_buffer_head;
+      volatile byte _tx_buffer_tail;
+
+      // Don't put any members after these buffers, since only the first
+      // 32 bytes of this struct can be accessed quickly using the ldd
+      // instruction.
+      unsigned char _rx_buffer[SERIAL_BUFFER_SIZE];
+      unsigned char _tx_buffer[SERIAL_BUFFER_SIZE];
+    
     public:
-      HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer
+      HardwareSerial(
       #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
-        ,
         volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
         volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
         volatile uint8_t *udr);
@@ -148,8 +135,9 @@
       using Print::write; // pull in write(str) and write(buf, size) from Print
       operator bool();
 
-      // Interrupt handler - Not intended to be called externally
+      // called insíde interrupt handlers - not intended to be called externally
       void _tx_udr_empty_irq(void);
+      void _store_rx_char(unsigned char c);
   };
 
   #endif

@@ -39,13 +39,11 @@
 
   // Constructors ////////////////////////////////////////////////////////////////
 
-  HardwareSerial::HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer
+  HardwareSerial::HardwareSerial(
   #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
-    ,volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
+    volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
     volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
     volatile uint8_t *udr) {
-    _rx_buffer = rx_buffer;
-    _tx_buffer = tx_buffer;
     _ubrrh = ubrrh;
     _ubrrl = ubrrl;
     _ucsra = ucsra;
@@ -59,20 +57,33 @@
   }
   #endif
 
-// Interrupt handler //////////////////////////////////////////////////////////////
+// Interrupt handler helpers //////////////////////////////////////////////////////////////
 
-void HardwareSerial::_tx_udr_empty_irq(void)
-{
-  if (_tx_buffer->head == _tx_buffer->tail) {
-    // Buffer empty, so disable interrupts
-    *_ucsrb &= ~(1 << UDRIE);
-  } else {
-    // There is more data in the output buffer. Send the next byte
-    unsigned char c = _tx_buffer->buffer[_tx_buffer->tail];
-    _tx_buffer->tail = (_tx_buffer->tail + 1) % SERIAL_BUFFER_SIZE;
-    *_udr = c;
+  void HardwareSerial::_tx_udr_empty_irq(void)
+  {
+    if (_tx_buffer_head == _tx_buffer_tail) {
+      // Buffer empty, so disable interrupts
+      *_ucsrb &= ~(1 << UDRIE);
+    } else {
+      // There is more data in the output buffer. Send the next byte
+      unsigned char c = _tx_buffer[_tx_buffer_tail];
+      _tx_buffer_tail = (_tx_buffer_tail + 1) % SERIAL_BUFFER_SIZE;
+      *_udr = c;
+    }
   }
-}
+
+  void HardwareSerial::_store_rx_char(unsigned char c) {
+    byte i = (_rx_buffer_head + 1) % SERIAL_BUFFER_SIZE;
+
+    // if we should be storing the received character into the location
+    // just before the tail (meaning that the head would advance to the
+    // current location of the tail), we're about to overflow the buffer
+    // and so we don't write the character or advance the head.
+    if (i != _rx_buffer_tail) {
+      _rx_buffer[_rx_buffer_head] = c;
+      _rx_buffer_head = i;
+    }
+  }
 
 // Public Methods //////////////////////////////////////////////////////////////
 
@@ -121,9 +132,8 @@ void HardwareSerial::_tx_udr_empty_irq(void)
   }
 
   void HardwareSerial::end() {
-    while (_tx_buffer->head != _tx_buffer->tail) {
-      ; // wait for buffer to end.
-    }
+    flush();
+    
     #if (defined(UBRR0H) || defined(UBRR1H))
      /*
       cbi(*_ucsrb, _rxen);
@@ -146,34 +156,34 @@ void HardwareSerial::_tx_udr_empty_irq(void)
 
 
     #endif
-    _rx_buffer->head = _rx_buffer->tail;
+      // _rx_buffer_head = _rx_buffer_tail; // This is true after flush anyways
   }
 
   int HardwareSerial::available(void) {
-    return (unsigned int)(SERIAL_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) & (SERIAL_BUFFER_SIZE - 1);
+    return (unsigned int)(SERIAL_BUFFER_SIZE + _rx_buffer_head - _rx_buffer_tail) & (SERIAL_BUFFER_SIZE - 1);
   }
 
   int HardwareSerial::peek(void) {
-    if (_rx_buffer->head == _rx_buffer->tail) {
+    if (_rx_buffer_head == _rx_buffer_tail) {
       return -1;
     } else {
-      return _rx_buffer->buffer[_rx_buffer->tail];
+      return _rx_buffer[_rx_buffer_tail];
     }
   }
 
   int HardwareSerial::read(void) {
     // if the head isn't ahead of the tail, we don't have any characters
-    if (_rx_buffer->head == _rx_buffer->tail) {
+    if (_rx_buffer_head == _rx_buffer_tail) {
       return -1;
     } else {
-      unsigned char c = _rx_buffer->buffer[_rx_buffer->tail];
-      _rx_buffer->tail = (_rx_buffer->tail + 1)  & (SERIAL_BUFFER_SIZE - 1);
+      unsigned char c = _rx_buffer[_rx_buffer_tail];
+      _rx_buffer_tail = (_rx_buffer_tail + 1)  & (SERIAL_BUFFER_SIZE - 1);
       return c;
     }
   }
 
   void HardwareSerial::flush() {
-    while (_tx_buffer->head != _tx_buffer->tail || (bit_is_set(*_ucsra, UDRIE))) {
+    while (_tx_buffer_head != _tx_buffer_tail || (bit_is_set(*_ucsra, UDRIE))) {
       if (bit_is_clear(SREG, SREG_I) && bit_is_set(*_ucsrb, UDRIE))
         // Interrupts are globally disabled, but the DR empty
         // interrupt should be enabled, so poll the DR empty flag to
@@ -186,11 +196,11 @@ void HardwareSerial::_tx_udr_empty_irq(void)
   }
 
   size_t HardwareSerial::write(uint8_t c) {
-    byte i = (_tx_buffer->head + 1)  & (SERIAL_BUFFER_SIZE - 1);
+    byte i = (_tx_buffer_head + 1)  & (SERIAL_BUFFER_SIZE - 1);
 
     // If the output buffer is full, there's nothing for it other than to
     // wait for the interrupt handler to empty it a bit
-    while (i == _tx_buffer->tail) {
+    while (i == _tx_buffer_tail) {
       if (bit_is_clear(SREG, SREG_I)) {
         // Interrupts are disabled, so we'll have to poll the data
         // register empty flag ourselves. If it is set, pretend an
@@ -201,8 +211,8 @@ void HardwareSerial::_tx_udr_empty_irq(void)
       }
     }
 
-    _tx_buffer->buffer[_tx_buffer->head] = c;
-    _tx_buffer->head = i;
+    _tx_buffer[_tx_buffer_head] = c;
+    _tx_buffer_head = i;
 
     #if (defined(UBRR0H) || defined(UBRR1H) )
       *_ucsrb |= _udrie;
@@ -210,8 +220,8 @@ void HardwareSerial::_tx_udr_empty_irq(void)
       if(!(LINENIR & _BV(LENTXOK))){
         // The buffer was previously empty, so load the first byte, then enable 
         // the TX Complete interrupt
-        unsigned char c = _tx_buffer->buffer[_tx_buffer->tail];
-        _tx_buffer->tail = (_tx_buffer->tail + 1) & (SERIAL_BUFFER_SIZE - 1);
+        unsigned char c = _tx_buffer[_tx_buffer_tail];
+        _tx_buffer_tail = (_tx_buffer_tail + 1) & (SERIAL_BUFFER_SIZE - 1);
         LINDAT = c;
         LINENIR = _BV(LENTXOK) | _BV(LENRXOK);
       }

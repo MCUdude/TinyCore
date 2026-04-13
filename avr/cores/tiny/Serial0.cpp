@@ -6,8 +6,6 @@
     #if !defined(USART0_UDRE_vect) && !defined(LIN_TC_vect)
       #error "Don't know what the Data Register Empty vector is called for the first UART"
     #endif
-    ring_buffer rx_buffer  =  { { 0 }, 0, 0 };
-    ring_buffer tx_buffer  =  { { 0 }, 0, 0 };
     #if defined(USART0_UDRE_vect)
       ISR(USART0_UDRE_vect) {
          Serial._tx_udr_empty_irq();
@@ -17,14 +15,14 @@
   #if defined(USART0_RX_vect)
     ISR(USART0_RX_vect) {
       unsigned char c  =  UDR0;
-      store_char(c, &rx_buffer);
+      Serial._store_rx_char(c);
     }
   #elif defined(LIN_TC_vect)
     // this is for attinyX7
     ISR(LIN_TC_vect) {
       if(LINSIR & _BV(LRXOK)) {
           unsigned char c  =  LINDAT;
-          store_char(c, &rx_buffer);
+          Serial._store_rx_char(c);
       }
       if(LINSIR & _BV(LTXOK)) {
         //PINA |= _BV(PINA5); //debug
@@ -41,8 +39,8 @@
     }
   #endif
   #if defined(UBRR0H)
-    HardwareSerial Serial(&rx_buffer, &tx_buffer, &UBRR0H, &UBRR0L, &UCSR0A, &UCSR0B, &UDR0);
+    HardwareSerial Serial(&UBRR0H, &UBRR0L, &UCSR0A, &UCSR0B, &UDR0);
   #elif defined(LINBRRH)
-    HardwareSerial Serial(&rx_buffer, &tx_buffer);
+    HardwareSerial Serial;
   #endif
 #endif
