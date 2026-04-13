@@ -237,7 +237,7 @@ static const uint8_t A10 = ADC_CH(10);
 #define USI_DO_BIT            PINB1
 #define USI_DI_BIT            PINB0
 
-#define USI_START_VECTOR      USI_START_vect
+#define USI_START_VECTOR      USI_STRT_vect
 #define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
   #define USI_START_COND_INT  USISIF

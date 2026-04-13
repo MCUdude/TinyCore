@@ -68,6 +68,7 @@ void init_timer1() {
   #elif defined(__AVR_ATtiny26__)
     TCCR1A = (1 << PWM1A) | (1 << PWM1B);
     TCCR1B = ToneTimer_Prescale_Index;
+    OCR1C = 0xFE; // Top count
   #else // ATtiny24/44/84, ATtiny48/88, ATtiny2313/4313
       TCCR1A = (1 << WGM10);
     #if !defined(TIMER1_USE_FAST_PWM)

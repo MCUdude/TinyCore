@@ -627,7 +627,10 @@
     #error "Variant files have failed to define the pins to be used for I2C, this is a bug in ATTinyCore that should be reported promptly"
   #endif
 
-  #define I2C_TIMEOUT 100
+  #ifndef I2C_TIMEOUT
+    #define I2C_TIMEOUT 100
+  #endif
+
   // Constructor
   TwoWire::TwoWire() : slaveMode(false) {
   }

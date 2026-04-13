@@ -61,6 +61,8 @@ A software workaround is available, but the pin remains less capable than it sho
 
 This errata is particularly unfortunate because PD3 is the USI clock pin, used by both I2C slave and SPI interfaces. The unwanted pull-down renders I2C inoperable when the WDT is disabled, as the open-drain bus cannot be driven high reliably. For this reason, when the Wire library is used in master-only mode (which uses a software I2C implementation), the I2C pins are remapped to PA4 and PA5, avoiding PORTD entirely and sidestepping this issue.
 
+**The workaround code snippet can be found [here](#pd3-silicon-errata)**
+
 ### Internal oscillator calibration
 The internal 8 MHz oscillator is not highly accurate, which is acceptable for many applications but insufficient for asynchronous protocols such as UART, where a frequency error of ±3-4% will cause communication to fail.
 
@@ -149,20 +151,21 @@ As mentioned above, the t828 has a serious silicon bug PD3, made all the worse b
 If you have no need to use the WDT, but do have a need to use PD3 as an input, you can keep the WDT running by putting it into interrupt mode, with an empty interrupt, at the cost of just 10b of flash, an ISR that executes in 11 clock cycles every 8 seconds, and an extra 1-4uA of power consumption (negligible compared to what the chip consumes when not sleeping, and you'll turn it off while sleeping anyway - see below) - so the real impact of this issue is in fact very low, assuming you know about it and don't waste hours or days trying to figure out what is going on.
 
 ```c
-//put these lines in setup
-CCP=0xD8; //write key to configuration change protection register
-WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt with longest prescale option (8 seconds)
-//put this empty WDT ISR outside of all functions
-EMPTY_INTERRUPT(WDT_vect) //empty ISR to work around bug with PB3. EMPTY_INTERRUPT uses 26 bytes less than ISR(WDT_vect){;}
+// Put these lines in setup
+CCP = 0xD8; // Write key to configuration change protection register
+WDTCSR = (1<<WDP3) | (1<<WDP0) | (1<<WDIE); // Enable WDT interrupt with longest prescale option (8 seconds)
+
+// Put this empty WDT ISR outside of all functions
+EMPTY_INTERRUPT(WDT_vect) //Empty ISR to work around bug with PB3
 ```
 If you are using sleep modes, you also need to turn the WDT off while sleeping (both because the interrupts would wake it, and because the WDT is consuming power, and presumably that's what you're trying to avoid by sleeping). Doing so as shown below only uses an extra 12-16 bytes if you call it from a single place, 20 if called from two places, and 2 bytes when you call it thereafter, compared to calling sleep_cpu() directly in those places, as you would on a part that didn't need this workaround.
 ```c
-void startSleep() { //call instead of sleep_cpu()
-  CCP=0xD8; //write key to configuration change protection register
-  WDTCSR=0; //disable WDT interrupt
+void startSleep() { // Call instead of sleep_cpu()
+  CCP = 0xD8; // Write key to configuration change protection register
+  WDTCSR = 0; // Disable WDT interrupt
   sleep_cpu();
-  CCP=0xD8; //write key to configuration change protection register
-  WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt
+  CCP = 0xD8; // Write key to configuration change protection register
+  WDTCSR = (1<<WDP3) | (1<<WDP0) | (1<<WDIE); // Enable WDT interrupt
 }
 ```
 
@@ -171,7 +174,7 @@ void startSleep() { //call instead of sleep_cpu()
 All pins on PORTC have unusually high sink capability - when sinking a given amount of current, the voltage on these pins is about half that of typical pins. Using the `PHDE` register, these can be set to sink even more aggressively.
 
 ```c
-PHDE=(1<<PHDEC);
+PHDE = (1<<PHDEC);
 ```
 
 This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts. The PWM outputs of go on this this port as well, making it of obvious utility for driving LEDs and similar. This also means that, if you are attempting to generate an analog voltage with a PWM pin and an RC filter, your result may be lower than expected, as the pin drivers are not symmetric.

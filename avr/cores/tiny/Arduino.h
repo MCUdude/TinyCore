@@ -21,6 +21,7 @@
 #ifndef ATTINYCORE
   #define ATTINYCORE "2.x.x+ unknown"
 #endif
+#define ATTINY_CORE
 
 void yield(void);
 

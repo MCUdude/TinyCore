@@ -77,7 +77,9 @@ size_t i2c_tinyS::write(const uint8_t* data, size_t quantity) {
         if (quantity > avail) quantity = avail;
         for (size_t count = quantity; count; count--) *dest++ = *data++;
         i2c->txBufferLength += quantity;
+        return 1;
     }
+    return 0;
 }
 
 int i2c_tinyS::read_(struct i2cStruct* i2c) {

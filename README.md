@@ -8,11 +8,11 @@ Arduino IDE v1.8 and v2.x are both supported.
 TinyCore is a fork of [ATTinyCore 2.0.0](https://github.com/SpenceKonde/ATTinyCore), with focus on a cleaner user experience, up-to-date tooling, and improved documentation. 
 Key improvements include:
 
-- **Cleaner Tools menu** - less clutter, more clarity in the Arduino IDE
+- **Cleaner Tools menu** - fewer options, as core functionality is automatically optimized away if not used
 - **Urboot bootloader** - only 256 bytes, self-protecting, and far more reliable than Optiboot
 - **Hardware debugging** via [PyAvrOCD](https://pyavrocd.io)
 - **Revised and improved documentation** for every supported chip
-- **Systematic hardware testing** — core functionality is [tested on real silicon](/avr/extras/tests/README.md)
+- **Systematic hardware testing** - core functionality is [tested on real silicon](/avr/extras/tests/README.md)
 
 # Table of contents
 * [Supported microcontrollers](#supported-microcontrollers)

@@ -97,7 +97,7 @@ class i2c_tinyS : public Stream {
         inline size_t write(unsigned int n)  { return write((uint8_t)n); }
         inline size_t write(int n)           { return write((uint8_t)n); }
         size_t write(const uint8_t* data, size_t quantity);
-        inline size_t write(const char* str) { write((const uint8_t*)str, strlen(str)); }
+        inline size_t write(const char* str) { return write((const uint8_t*)str, strlen(str)); }
         inline int available(void) { return i2c->rxBufferLength - i2c->rxBufferIndex; }
         static int read_(struct i2cStruct* i2c);
         inline int read(void) { return read_(i2c); }
