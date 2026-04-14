@@ -57,6 +57,7 @@ typedef enum { _timer3, _timer1, _Nbr_16timers } timer16_Sequence_t;
 
 #ifdef __AVR_ATtinyx41__
 #define _useTimer2
+#else
 #define _useTimer1
 typedef enum { _timer1, _Nbr_16timers } timer16_Sequence_t;
 #endif

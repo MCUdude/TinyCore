@@ -1012,7 +1012,7 @@ ISR(TIMER1_COMPA_vect) {
 }
 
 
-static void initISR(timer16_Sequence_t timer) {
+static void initISR(__attribute__ ((unused)) timer16_Sequence_t timer) {
   TCCR1A = 0;             // normal counting mode
   TCCR1B = _BV(CS11);     // set prescaler of 8
   TCNT1 = 0;              // clear the timer count
@@ -1025,7 +1025,7 @@ static void initISR(timer16_Sequence_t timer) {
   #endif
 }
 
-static void finISR(timer16_Sequence_t timer) {
+static void finISR(__attribute__ ((unused)) timer16_Sequence_t timer) {
   //The stuff here was all duplicating stuff that's in initToneTimer() - so let's just use that, and it'll clean up the timer state for PWM too!
   initToneTimer(); //reset timer1 - this will fail if timer1 isn't used for tone, but timer1 is always used for tone in ATTinyCore!
 }
