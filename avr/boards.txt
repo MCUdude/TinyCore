@@ -17,7 +17,8 @@ menu.bootloader=Bootloader
 menu.baudrate=Baud rate
 menu.wiremode=Wire mode
 menu.resetpin=Reset pin
-menu.softserial=Software serial
+menu.softwareserial=Software serial
+menu.hardwareserial=Serial
 menu.pinout=Pinout
 
 
@@ -37,7 +38,7 @@ x5.bootloader.pins=swio_rxb1_txb0
 x5.build.core=tiny
 x5.build.variant=tinyx5
 x5.build.board=AVR_ATTINYX5
-x5.build.extra_flags={build.softser}
+x5.build.extra_flags={build.serialrxtx}
 
 # Upload port select / Bootloader
 x5.menu.bootloader.no_bootloader=No bootloader
@@ -122,10 +123,10 @@ x5.menu.chip.25.upload.maximum_size=2048
 x5.menu.chip.25.upload.maximum_data_size=128
 
 # Software serial
-x5.menu.softserial.rxtx=RX and TX
-x5.menu.softserial.rxtx.build.softser=
-x5.menu.softserial.tx=TX only
-x5.menu.softserial.tx.build.softser=-DSOFT_TX_ONLY
+x5.menu.softwareserial.rxtx=RX and TX
+x5.menu.softwareserial.rxtx.build.serialrxtx=
+x5.menu.softwareserial.tx=TX only
+x5.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
 
 # Brown out detection
 x5.menu.bod.2v7=BOD 2.7V
@@ -299,7 +300,7 @@ x4.bootloader.pins=swio_rxa2_txa1
 x4.build.core=tiny
 x4.build.variant=tinyx4_cw
 x4.build.board=AVR_ATTINYX4
-x4.build.extra_flags={build.softser}
+x4.build.extra_flags={build.serialrxtx}
 
 # Upload port select / Bootloader
 x4.menu.bootloader.no_bootloader=No bootloader
@@ -384,10 +385,10 @@ x4.menu.chip.24.upload.maximum_size=2048
 x4.menu.chip.24.upload.maximum_data_size=128
 
 # Software serial
-x4.menu.softserial.rxtx=RX and TX
-x4.menu.softserial.rxtx.build.softser=
-x4.menu.softserial.tx=TX only
-x4.menu.softserial.tx.build.softser=-DSOFT_TX_ONLY
+x4.menu.softwareserial.rxtx=RX and TX
+x4.menu.softwareserial.rxtx.build.serialrxtx=
+x4.menu.softwareserial.tx=TX only
+x4.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
 
 # Brown out detection
 x4.menu.bod.2v7=BOD 2.7V
@@ -553,7 +554,7 @@ x7.bootloader.pins=uart0
 x7.build.core=tiny
 x7.build.variant=tinyx7
 x7.build.board=AVR_ATTINYX7
-x7.build.extra_flags=
+x7.build.extra_flags={build.serialrxtx}
 
 # Upload port select / Bootloader
 x7.menu.bootloader.no_bootloader=No bootloader
@@ -583,6 +584,12 @@ x7.menu.chip.87=ATtiny87
 x7.menu.chip.87.build.mcu=attiny87
 x7.menu.chip.87.upload.maximum_size=8192
 x7.menu.chip.87.upload.maximum_data_size=512
+
+# Hardware serial
+x7.menu.hardwareserial.rxtx=RX and TX
+x7.menu.hardwareserial.rxtx.build.serialrxtx=
+x7.menu.hardwareserial.tx=TX only
+x7.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 x7.menu.bod.2v7=BOD 2.7V
@@ -713,7 +720,7 @@ x8.bootloader.high_fuses=0b1101{bootloader.eesave_bit}{bootloader.bod_bits}
 x8.bootloader.pins=swio_rxd7_txd6
 x8.build.core=tiny
 x8.build.board=AVR_ATTINYX8
-x8.build.extra_flags={build.softser}
+x8.build.extra_flags={build.serialrxtx}
 
 # Upload port select / Bootloader
 x8.menu.bootloader.no_bootloader=No bootloader
@@ -799,10 +806,10 @@ x8.menu.chip.48.upload.maximum_size=4096
 x8.menu.chip.48.upload.maximum_data_size=256
 
 # Software serial
-x8.menu.softserial.rxtx=RX and TX
-x8.menu.softserial.rxtx.build.softser=
-x8.menu.softserial.tx=TX only
-x8.menu.softserial.tx.build.softser=-DSOFT_TX_ONLY
+x8.menu.softwareserial.rxtx=RX and TX
+x8.menu.softwareserial.rxtx.build.serialrxtx=
+x8.menu.softwareserial.tx=TX only
+x8.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
 
 # Brown out detection
 x8.menu.bod.2v7=BOD 2.7V
@@ -888,7 +895,7 @@ x41.bootloader.extended_fuses=0b{bootloader.ulp_bits}{bootloader.bodpd_bits}{boo
 x41.build.core=tiny
 x41.build.variant=tinyx41_cw
 x41.build.board=AVR_ATTINYX41
-x41.build.extra_flags={build.wiremode} {build.speedfix}
+x41.build.extra_flags={build.serialrxtx} {build.wiremode} {build.speedfix}
 
 # Upload port select / Bootloader
 x41.menu.bootloader.no_bootloader=No bootloader
@@ -924,6 +931,12 @@ x41.menu.chip.441=ATtiny441
 x41.menu.chip.441.build.mcu=attiny441
 x41.menu.chip.441.upload.maximum_size=4096
 x41.menu.chip.441.upload.maximum_data_size=256
+
+# Hardware serial
+x41.menu.hardwareserial.rxtx=RX and TX
+x41.menu.hardwareserial.rxtx.build.serialrxtx=
+x41.menu.hardwareserial.tx=TX only
+x41.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 x41.menu.bod.2v7=BOD 2.7V
@@ -1105,7 +1118,7 @@ x61.bootloader.pins=swio_rxa7_txa6
 x61.build.core=tiny
 x61.build.variant=tinyx61
 x61.build.board=AVR_ATTINYX61
-x61.build.extra_flags={build.softser}
+x61.build.extra_flags={build.serialrxtx}
 
 # Upload port select / Bootloader
 x61.menu.bootloader.no_bootloader=No bootloader
@@ -1190,10 +1203,10 @@ x61.menu.chip.261.upload.maximum_size=2048
 x61.menu.chip.261.upload.maximum_data_size=128
 
 # Software serial
-x61.menu.softserial.rxtx=RX and TX
-x61.menu.softserial.rxtx.build.softser=
-x61.menu.softserial.tx=TX only
-x61.menu.softserial.tx.build.softser=-DSOFT_TX_ONLY
+x61.menu.softwareserial.rxtx=RX and TX
+x61.menu.softwareserial.rxtx.build.serialrxtx=
+x61.menu.softwareserial.tx=TX only
+x61.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
 
 # Brown out detection
 x61.menu.bod.2v7=BOD 2.7V
@@ -1404,6 +1417,12 @@ x313.menu.chip.2313.build.mcu=attiny2313
 x313.menu.chip.2313.upload.maximum_size=2048
 x313.menu.chip.2313.upload.maximum_data_size=128
 
+# Hardware serial
+x313.menu.hardwareserial.rxtx=RX and TX
+x313.menu.hardwareserial.rxtx.build.serialrxtx=
+x313.menu.hardwareserial.tx=TX only
+x313.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
+
 # Brown out detection
 x313.menu.bod.2v7=BOD 2.7V
 x313.menu.bod.2v7.bootloader.bod_bits=101
@@ -1537,7 +1556,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 1634.build.core=tiny
 1634.build.variant=tiny1634_cw
 1634.build.board=AVR_ATTINY1634
-1634.build.extra_flags={build.speedfix}
+1634.build.extra_flags={build.speedfix} {build.serialrxtx}
 
 # Upload port select / Bootloader
 1634.menu.bootloader.no_bootloader=No bootloader
@@ -1562,6 +1581,12 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 1634.menu.eeprom.keep.bootloader.eesave_bit=0
 1634.menu.eeprom.erase=EEPROM not retained
 1634.menu.eeprom.erase.bootloader.eesave_bit=1
+
+# Hardware serial
+1634.menu.hardwareserial.rxtx=RX and TX
+1634.menu.hardwareserial.rxtx.build.serialrxtx=
+1634.menu.hardwareserial.tx=TX only
+1634.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 1634.menu.bod.2v7=BOD 2.7V
@@ -1707,7 +1732,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 828.build.core=tiny
 828.build.variant=tiny828
 828.build.board=AVR_ATTINY828
-828.build.extra_flags={build.wiremode} {build.speedfix}
+828.build.extra_flags={build.wiremode} {build.speedfix} {build.serialrxtx}
 
 # Upload port select / Bootloader
 828.menu.bootloader.no_bootloader=No bootloader
@@ -1726,6 +1751,12 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 828.menu.eeprom.keep.bootloader.eesave_bit=0
 828.menu.eeprom.erase=EEPROM not retained
 828.menu.eeprom.erase.bootloader.eesave_bit=1
+
+# Hardware serial
+828.menu.hardwareserial.rxtx=RX and TX
+828.menu.hardwareserial.rxtx.build.serialrxtx=
+828.menu.hardwareserial.tx=TX only
+828.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 828.menu.bod.2v7=BOD 2.7V
@@ -1844,7 +1875,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 43.build.core=tiny
 43.build.variant=tiny43
 43.build.board=AVR_ATTINY43
-43.build.extra_flags={build.softser}
+43.build.extra_flags={build.serialrxtx}
 
 # Upload port select / Bootloader
 43.menu.bootloader.no_bootloader=No bootloader
@@ -1913,10 +1944,10 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 43.menu.eeprom.erase.bootloader.eesave_bit=1
 
 # Software serial
-43.menu.softserial.rxtx=RX and TX
-43.menu.softserial.rxtx.build.softser=
-43.menu.softserial.tx=TX only
-43.menu.softserial.tx.build.softser=-DSOFT_TX_ONLY
+43.menu.softwareserial.rxtx=RX and TX
+43.menu.softwareserial.rxtx.build.serialrxtx=
+43.menu.softwareserial.tx=TX only
+43.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
 
 # Brown out detection
 43.menu.bod.2v7=BOD 2.7V
@@ -1987,7 +2018,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 26.build.core=tiny
 26.build.variant=tiny26
 26.build.board=AVR_ATTINY26
-26.build.extra_flags={build.softser}
+26.build.extra_flags={build.serialrxtx}
 26.debug.executable=
 
 # Upload port select / Bootloader
@@ -2003,10 +2034,10 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 26.menu.eeprom.erase.bootloader.eesave_bit=1
 
 # Software serial
-26.menu.softserial.rxtx=RX and TX
-26.menu.softserial.rxtx.build.softser=
-26.menu.softserial.tx=TX only
-26.menu.softserial.tx.build.softser=-DSOFT_TX_ONLY
+26.menu.softwareserial.rxtx=RX and TX
+26.menu.softwareserial.rxtx.build.serialrxtx=
+26.menu.softwareserial.tx=TX only
+26.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
 
 # Brown out detection
 26.menu.bod.2v7=BOD 2.7V
