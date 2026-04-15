@@ -19,7 +19,7 @@
   #else
     //no UART1
   #endif
-  #ifdef USART1_UDRE_vect
+  #if defined(USART1_UDRE_vect) && defined(TXBUFFER)
     ISR(USART1_UDRE_vect)
     {
       Serial1._tx_reg_empty_irq();

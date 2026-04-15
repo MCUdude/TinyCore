@@ -57,6 +57,7 @@
 
 // Interrupt handler helpers //////////////////////////////////////////////////////////////
 
+#ifdef TXBUFFER
   void HardwareSerial::_tx_reg_empty_irq(void)
   {
     if (_tx_buffer_head == _tx_buffer_tail) {
@@ -77,6 +78,7 @@
 #endif
     }
   }
+#endif
 
   void HardwareSerial::_store_rx_char(unsigned char c) {
     byte i = (_rx_buffer_head + 1) % SERIAL_BUFFER_SIZE;
@@ -189,28 +191,37 @@
   }
 
   void HardwareSerial::flush() {
-#ifdef LINENIR
+  #ifdef TXBUFFER
+    #ifdef LINENIR
     while (_tx_buffer_head != _tx_buffer_tail || (bit_is_set(LINENIR, LENTXOK))) {
       if (bit_is_clear(SREG, SREG_I) && bit_is_set(LINENIR, LENTXOK))
         // Interrupts are globally disabled, but the DR empty
         // interrupt should be enabled, so poll the DR empty flag to
         // prevent deadlock
         if (bit_is_set(LINSIR, LTXOK))
-#else
+    #else
     while (_tx_buffer_head != _tx_buffer_tail || (bit_is_set(*_ucsrb, UDRIE))) {
       if (bit_is_clear(SREG, SREG_I) && bit_is_set(*_ucsrb, UDRIE))
         // Interrupts are globally disabled, but the DR empty
         // interrupt should be enabled, so poll the DR empty flag to
         // prevent deadlock
         if (bit_is_set(*_ucsra, UDRE))
-#endif
+    #endif
             _tx_reg_empty_irq();
       // If interrupts are enabled, the buffer will be emptied in an interrupt driven way
     }
+  #else // without ring buffer
+    #ifdef LINSIR
+    while (bit_is_set(LINSIR, LTXOK));
+    #else
+    while (bit_is_set(*_ucsra, UDRE));
+    #endif
+  #endif
     // buffer is empty now
   }
 
   size_t HardwareSerial::write(uint8_t c) {
+  #ifdef TXBUFFER
     byte i = (_tx_buffer_head + 1)  & (SERIAL_BUFFER_SIZE - 1);
 
     // If the output buffer is full, there's nothing for it other than to
@@ -221,11 +232,11 @@
         // register empty flag ourselves. If it is set, pretend an
         // interrupt has happened and call the handler to free up
         // space for us.
-#ifdef LINSIR
+    #ifdef LINSIR
         if (bit_is_set(LINSIR, LTXOK))
-#else
+    #else
         if(bit_is_set(*_ucsra, UDRE))
-#endif
+    #endif
           _tx_reg_empty_irq();
       }
     }
@@ -245,8 +256,19 @@
         LINENIR = _BV(LENTXOK) | _BV(LENRXOK);
       }
     #endif
-
-
+  #else // without ring buffer
+    #ifdef LINSIR
+      if (bit_is_clear(LINENIR, LENTXOK)) // nothing written yet
+         LINENIR = _BV(LENTXOK) | _BV(LENRXOK);
+      else
+        while (bit_is_clear(LINSIR, LTXOK)); // wait for output register to empty
+    LINDAT = c;
+    #else
+    while (bit_is_clear(*_ucsra, UDRE));
+    *_udr = c;
+    #endif
+  #endif
+    
     return 1;
   }
 

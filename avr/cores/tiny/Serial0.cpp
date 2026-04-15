@@ -6,7 +6,7 @@
     #if !defined(USART0_UDRE_vect) && !defined(LIN_TC_vect)
       #error "Don't know what the Data Register Empty vector is called for the first UART"
     #endif
-    #if defined(USART0_UDRE_vect)
+    #if defined(USART0_UDRE_vect) && defined(TXBUFFER)
       ISR(USART0_UDRE_vect) {
          Serial._tx_reg_empty_irq();
       }
@@ -25,8 +25,12 @@
           Serial._store_rx_char(c);
       }
       if(LINSIR & _BV(LTXOK)) {
+      #ifdef TXBUFFER
         //PINA |= _BV(PINA5); //debug
         Serial._tx_reg_empty_irq();
+      #else
+        // nothing to do because we check in the write routine for empty output buffer
+      #endif
       }
     }
   #endif
