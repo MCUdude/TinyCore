@@ -32,7 +32,7 @@
 #include "TinySoftwareSerial.h"
 extern "C"{
 
-  #ifndef SOFT_TX_ONLY
+  #ifndef TX_ONLY
     #define RXMASK (1 << SOFTSERIAL_RXBIT)
     soft_ring_buffer rx_buffer = {{ 0 }, 0, 0};
     ISR(SOFTSERIAL_vect) {
@@ -107,7 +107,7 @@ extern "C"{
     );
   }
 }
-#if defined(SOFT_TX_ONLY)
+#if defined(TX_ONLY)
   TinySoftwareSerial::TinySoftwareSerial() {
     _txmask   = _BV(SOFTSERIAL_TXBIT);
     _delayCount = 0;
@@ -130,7 +130,7 @@ void TinySoftwareSerial::begin(long baud) {
     return; //Cannot start - baud rate out of range.
   }
   _delayCount = (uint8_t)tempDelay;
-  #ifndef SOFT_TX_ONLY
+  #ifndef TX_ONLY
     //Straight assignment, we need to configure all bits
     // ACBR connects the 1.1v bandgap reference the positive side of the analog comparator. ACO is high when AINp > AINn.
     // since AINn is our RX line, not AINp, ACO goes high when the RX line falls below 1.1v (ie, ACO is inverted relative to
@@ -167,7 +167,7 @@ void TinySoftwareSerial::begin(long baud) {
 }
 
 void TinySoftwareSerial::end() {
-  #ifndef SOFT_TX_ONLY
+  #ifndef TX_ONLY
     ACSR = (1 << ACD) | (1 << ACI); // turn off the analog comparator, clearing the flag while we're at it.
     _rx_buffer->head = _rx_buffer->tail;
   #endif
@@ -175,7 +175,7 @@ void TinySoftwareSerial::end() {
 }
 
 int TinySoftwareSerial::available(void) {
-  #ifndef SOFT_TX_ONLY
+  #ifndef TX_ONLY
     if (_delayCount) {
       return (uint8_t)(SERIAL_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) & (SERIAL_BUFFER_SIZE-1);
     }
@@ -185,7 +185,7 @@ int TinySoftwareSerial::available(void) {
 
 
 int TinySoftwareSerial::peek(void) {
-  #ifndef SOFT_TX_ONLY
+  #ifndef TX_ONLY
     if (_rx_buffer->head == _rx_buffer->tail) {
       return -1;
     } else {
@@ -197,7 +197,7 @@ int TinySoftwareSerial::peek(void) {
 }
 
 int TinySoftwareSerial::read(void) {
-  #ifndef SOFT_TX_ONLY
+  #ifndef TX_ONLY
     // if the head isn't ahead of the tail, we don't have any characters
     if (_rx_buffer->head == _rx_buffer->tail || _begun != 0) {
       return -1;
@@ -211,7 +211,7 @@ int TinySoftwareSerial::read(void) {
   #endif
 }
 bool TinySoftwareSerial::listen() {
-  #ifndef SOFT_TX_ONLY
+  #ifndef TX_ONLY
     if (!_delayCount) {
       return false;
     }
@@ -233,7 +233,7 @@ bool TinySoftwareSerial::listen() {
 
 // Stop listening. Returns true if we were actually listening.
 bool TinySoftwareSerial::stopListening() {
-  #ifndef SOFT_TX_ONLY
+  #ifndef TX_ONLY
     if (ACSR & (1 << ACD)) {
       ACSR = (1 << ACD) | (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI);
       return true;
@@ -340,7 +340,7 @@ TinySoftwareSerial::operator bool() {
   return !!_delayCount;
 }
 
-#if defined(SOFT_TX_ONLY)
+#if defined(TX_ONLY)
   TinySoftwareSerial Serial;
 #else
   TinySoftwareSerial Serial(&rx_buffer);

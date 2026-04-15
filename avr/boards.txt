@@ -17,8 +17,7 @@ menu.bootloader=Bootloader
 menu.baudrate=Baud rate
 menu.wiremode=Wire mode
 menu.resetpin=Reset pin
-menu.softwareserial=Software serial
-menu.hardwareserial=Serial
+menu.serial=Serial
 menu.pinout=Pinout
 
 
@@ -123,10 +122,10 @@ x5.menu.chip.25.upload.maximum_size=2048
 x5.menu.chip.25.upload.maximum_data_size=128
 
 # Software serial
-x5.menu.softwareserial.rxtx=RX and TX
-x5.menu.softwareserial.rxtx.build.serialrxtx=
-x5.menu.softwareserial.tx=TX only
-x5.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
+x5.menu.serial.rxtx=RX and TX
+x5.menu.serial.rxtx.build.serialrxtx=
+x5.menu.serial.tx=TX only
+x5.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 x5.menu.bod.2v7=BOD 2.7V
@@ -385,10 +384,10 @@ x4.menu.chip.24.upload.maximum_size=2048
 x4.menu.chip.24.upload.maximum_data_size=128
 
 # Software serial
-x4.menu.softwareserial.rxtx=RX and TX
-x4.menu.softwareserial.rxtx.build.serialrxtx=
-x4.menu.softwareserial.tx=TX only
-x4.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
+x4.menu.serial.rxtx=RX and TX
+x4.menu.serial.rxtx.build.serialrxtx=
+x4.menu.serial.tx=TX only
+x4.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 x4.menu.bod.2v7=BOD 2.7V
@@ -586,10 +585,10 @@ x7.menu.chip.87.upload.maximum_size=8192
 x7.menu.chip.87.upload.maximum_data_size=512
 
 # Hardware serial
-x7.menu.hardwareserial.rxtx=RX and TX
-x7.menu.hardwareserial.rxtx.build.serialrxtx=
-x7.menu.hardwareserial.tx=TX only
-x7.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
+x7.menu.serial.rxtx=RX and TX
+x7.menu.serial.rxtx.build.serialrxtx=
+x7.menu.serial.tx=TX only
+x7.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 x7.menu.bod.2v7=BOD 2.7V
@@ -806,10 +805,10 @@ x8.menu.chip.48.upload.maximum_size=4096
 x8.menu.chip.48.upload.maximum_data_size=256
 
 # Software serial
-x8.menu.softwareserial.rxtx=RX and TX
-x8.menu.softwareserial.rxtx.build.serialrxtx=
-x8.menu.softwareserial.tx=TX only
-x8.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
+x8.menu.serial.rxtx=RX and TX
+x8.menu.serial.rxtx.build.serialrxtx=
+x8.menu.serial.tx=TX only
+x8.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 x8.menu.bod.2v7=BOD 2.7V
@@ -933,10 +932,10 @@ x41.menu.chip.441.upload.maximum_size=4096
 x41.menu.chip.441.upload.maximum_data_size=256
 
 # Hardware serial
-x41.menu.hardwareserial.rxtx=RX and TX
-x41.menu.hardwareserial.rxtx.build.serialrxtx=
-x41.menu.hardwareserial.tx=TX only
-x41.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
+x41.menu.serial.rxtx=RX and TX
+x41.menu.serial.rxtx.build.serialrxtx=
+x41.menu.serial.tx=TX only
+x41.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 x41.menu.bod.2v7=BOD 2.7V
@@ -1203,10 +1202,10 @@ x61.menu.chip.261.upload.maximum_size=2048
 x61.menu.chip.261.upload.maximum_data_size=128
 
 # Software serial
-x61.menu.softwareserial.rxtx=RX and TX
-x61.menu.softwareserial.rxtx.build.serialrxtx=
-x61.menu.softwareserial.tx=TX only
-x61.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
+x61.menu.serial.rxtx=RX and TX
+x61.menu.serial.rxtx.build.serialrxtx=
+x61.menu.serial.tx=TX only
+x61.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 x61.menu.bod.2v7=BOD 2.7V
@@ -1418,10 +1417,10 @@ x313.menu.chip.2313.upload.maximum_size=2048
 x313.menu.chip.2313.upload.maximum_data_size=128
 
 # Hardware serial
-x313.menu.hardwareserial.rxtx=RX and TX
-x313.menu.hardwareserial.rxtx.build.serialrxtx=
-x313.menu.hardwareserial.tx=TX only
-x313.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
+x313.menu.serial.rxtx=RX and TX
+x313.menu.serial.rxtx.build.serialrxtx=
+x313.menu.serial.tx=TX only
+x313.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 x313.menu.bod.2v7=BOD 2.7V
@@ -1583,10 +1582,10 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 1634.menu.eeprom.erase.bootloader.eesave_bit=1
 
 # Hardware serial
-1634.menu.hardwareserial.rxtx=RX and TX
-1634.menu.hardwareserial.rxtx.build.serialrxtx=
-1634.menu.hardwareserial.tx=TX only
-1634.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
+1634.menu.serial.rxtx=RX and TX
+1634.menu.serial.rxtx.build.serialrxtx=
+1634.menu.serial.tx=TX only
+1634.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 1634.menu.bod.2v7=BOD 2.7V
@@ -1753,10 +1752,10 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 828.menu.eeprom.erase.bootloader.eesave_bit=1
 
 # Hardware serial
-828.menu.hardwareserial.rxtx=RX and TX
-828.menu.hardwareserial.rxtx.build.serialrxtx=
-828.menu.hardwareserial.tx=TX only
-828.menu.hardwareserial.tx.build.serialrxtx=-DTX_ONLY
+828.menu.serial.rxtx=RX and TX
+828.menu.serial.rxtx.build.serialrxtx=
+828.menu.serial.tx=TX only
+828.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 828.menu.bod.2v7=BOD 2.7V
@@ -1944,10 +1943,10 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 43.menu.eeprom.erase.bootloader.eesave_bit=1
 
 # Software serial
-43.menu.softwareserial.rxtx=RX and TX
-43.menu.softwareserial.rxtx.build.serialrxtx=
-43.menu.softwareserial.tx=TX only
-43.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
+43.menu.serial.rxtx=RX and TX
+43.menu.serial.rxtx.build.serialrxtx=
+43.menu.serial.tx=TX only
+43.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 43.menu.bod.2v7=BOD 2.7V
@@ -2034,10 +2033,10 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 26.menu.eeprom.erase.bootloader.eesave_bit=1
 
 # Software serial
-26.menu.softwareserial.rxtx=RX and TX
-26.menu.softwareserial.rxtx.build.serialrxtx=
-26.menu.softwareserial.tx=TX only
-26.menu.softwareserial.tx.build.serialrxtx=-DSOFT_TX_ONLY
+26.menu.serial.rxtx=RX and TX
+26.menu.serial.rxtx.build.serialrxtx=
+26.menu.serial.tx=TX only
+26.menu.serial.tx.build.serialrxtx=-DTX_ONLY
 
 # Brown out detection
 26.menu.bod.2v7=BOD 2.7V

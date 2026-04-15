@@ -248,6 +248,36 @@ See the serial section below for additional details.
 
 </details>
 
+
+### Serial/UART
+All devices provide a `Serial` object. On parts with hardware UART, `Serial` behaves as a standard full-duplex AVR serial interface. Devices with two UARTs also provide `Serial1`. Most supported devices do not include hardware UART and instead use software serial.
+
+The built-in serial implementation makes it possible to only enable transmission only. This can be done in the Tools menu, or adding `-DTX_ONLY` as a build flag in PlatformIO. TX only will exclude everything except the transmit functionality.
+
+<details>
+<summary><b>Hardware and software serial</b></summary>
+
+This core is compatible with the standard `SoftwareSerial` library, but that implementation uses all PCINT vectors. To avoid this, TinyCore provides a built-in software serial implementation that uses the analog comparator interrupt instead of PCINT. The RX pin is fixed to **AIN1**, while TX defaults to **AIN0** and can be moved to a limited set of pins.
+
+Software serial can operate only one instance at a time. Transmission is always blocking: data is sent immediately rather than buffered as with hardware UART. Calls such as `Serial.print()` therefore return only after transmission completes.
+
+```c
+Serial.print("Hello World\n");
+// On parts without hardware UART this is equivalent to:
+Serial.print("Hello World\n");
+Serial.flush();
+```
+
+##### Moving builtin soft-serial TX pin
+On parts without hardware serial, the TX pin can be moved to another pin *on the same port* using `Serial.setTxBit(bit)`. The bit value must be between 0 and 7 and corresponds to the bit position within the port. This must be called before `Serial.begin()`.
+
+##### Internal oscillator and Serial
+Reliable UART communication requires accurate clock timing. The internal oscillator on many classic ATtiny devices is calibrated to approximately ±10%, which may be insufficient for serial communication. Some devices operate correctly without tuning, but others require calibration using OSCCAL.
+The ATtiny x41 family, ATtiny1634R, and ATTiny828R include an oscillator calibrated to ±2%, but only below 4 V. At higher voltages the oscillator frequency increases, which can cause UART timing errors depending on baud configuration. Clock menu options are provided to compensate when operating above 4 V.
+Because of these limitations, applications that rely on serial communication are generally best served by using an external crystal, except on devices with tighter oscillator calibration.
+</details>
+
+
 ### SPI
 On parts with hardware SPI, `SPI.h` behaves the same as on classic AVR devices. On USI-based parts, the interface differs slightly.
 
@@ -281,40 +311,10 @@ A few devices support hardware i2c slave mode only, with neither USI nor hardwar
 * Alternate or masked slave addresses can be configured via the `TWSAM` register. This register functions as on newer AVRs, but no wrapper API is provided.
 * On the ATtiny828, the watchdog timer must be enabled for i2c operation due to a silicon erratum. Enabling the WDT in interrupt mode with an empty handler is sufficient.
 
-Software i2c master implementations on these devices are unreliable. In particular, timeouts cannot be distinguished from slaves returning zero data, and clock configuration is not supported. Simultaneous master and slave operation is not supported on any of these devices.
+Software i2c master implementations on these devices may be unreliable. In particular, timeouts cannot be distinguished from slaves returning zero data, and clock configuration is not supported. Simultaneous master and slave operation is not supported on any of these devices.
 
 ##### Buffer size
 Devices with more than 128 bytes of SRAM use a **32-byte buffer**. Smaller devices use **16 bytes**. However, most libraries assume a 32-byte buffer, so TinyCore uses a 32-byte buffer on larger devices even when this consumes a significant portion of available RAM.
-</details>
-
-
-### Serial/UART
-All devices provide a `Serial` object. On parts with hardware UART, `Serial` behaves as a standard full-duplex AVR serial interface. Devices with two UARTs also provide `Serial1`. Most supported devices do not include hardware UART and instead use software serial.
-
-<details>
-<summary><b>Hardware and software serial</b></summary>
-
-This core is compatible with the standard `SoftwareSerial` library, but that implementation uses all PCINT vectors. To avoid this, TinyCore provides a built-in software serial implementation that uses the analog comparator interrupt instead of PCINT. The RX pin is fixed to **AIN1**, while TX defaults to **AIN0** and can be moved to a limited set of pins.
-
-Software serial can operate only one instance at a time. Transmission is always blocking: data is sent immediately rather than buffered as with hardware UART. Calls such as `Serial.print()` therefore return only after transmission completes.
-
-```c
-Serial.print("Hello World\n");
-// On parts without hardware UART this is equivalent to:
-Serial.print("Hello World\n");
-Serial.flush();
-```
-
-##### Moving builtin soft-serial TX pin
-On parts without hardware serial, the TX pin can be moved to another pin *on the same port* using `Serial.setTxBit(bit)`. The bit value must be between 0 and 7 and corresponds to the bit position within the port. This must be called before `Serial.begin()`.
-
-##### TX only soft serial
-The built-in software serial implementation makes it possible to only enable the TX only. This can be done in the Tools menu, or adding `-DSOFT_TX_ONLY` as a build flag in PlatformIO. TX only will exclude everything except the transmit functionality. read() and peek() will always return -1, and available() will always return 0.
-
-##### Internal oscillator and Serial
-Reliable UART communication requires accurate clock timing. The internal oscillator on many classic ATtiny devices is calibrated to approximately ±10%, which may be insufficient for serial communication. Some devices operate correctly without tuning, but others require calibration using OSCCAL.
-The ATtiny x41 family, ATtiny1634R, and ATTiny828R include an oscillator calibrated to ±2%, but only below 4 V. At higher voltages the oscillator frequency increases, which can cause UART timing errors depending on baud configuration. Clock menu options are provided to compensate when operating above 4 V.
-Because of these limitations, applications that rely on serial communication are generally best served by using an external crystal, except on devices with tighter oscillator calibration.
 </details>
 
 

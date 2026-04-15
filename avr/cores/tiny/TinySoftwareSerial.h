@@ -58,7 +58,7 @@
   #if !defined(ACSR) && defined(ACSRA)
     #define ACSR ACSRA
   #endif
-  #ifndef SOFT_TX_ONLY
+  #ifndef TX_ONLY
     #if (RAMEND < 250)
       #define SERIAL_BUFFER_SIZE 8
     #elif (RAMEND < 500)
@@ -91,7 +91,7 @@
   #endif
   extern "C"{
     void uartDelay() __attribute__ ((naked, used)); //used attribute needed to prevent LTO from throwing it out.
-    #ifndef SOFT_TX_ONLY
+    #ifndef TX_ONLY
       // manually inlined because the compiler refused to do it.
       //uint8_t getch();
       //void store_char(unsigned char c, soft_ring_buffer *buffer);
@@ -101,12 +101,12 @@
   {
     public: //should be private but needed by extern "C" {} functions.
       uint8_t _txmask;
-    #if !defined(SOFT_TX_ONLY)
+    #if !defined(TX_ONLY)
       soft_ring_buffer *_rx_buffer;
     #endif
     uint8_t _delayCount;
     public:
-      #if !defined(SOFT_TX_ONLY)
+      #if !defined(TX_ONLY)
         TinySoftwareSerial(soft_ring_buffer *rx_buffer);
       #else
         TinySoftwareSerial();
