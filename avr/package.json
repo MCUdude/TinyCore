@@ -1,0 +1,16 @@
+{
+  "name": "framework-arduino-avr-tinycore",
+  "version": "0.5.0",
+  "description": "TinyCure - An Arduino core for classic AVR ATtiny chips",
+  "keywords": [
+    "framework",
+    "arduino",
+    "microchip",
+    "avr",
+    "mcudude"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MCUdude/TinyCore"
+  }
+}
