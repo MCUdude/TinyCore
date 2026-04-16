@@ -1,7 +1,7 @@
 {
   "name": "framework-arduino-avr-tinycore",
   "version": "0.5.0",
-  "description": "TinyCure - An Arduino core for classic AVR ATtiny chips",
+  "description": "TinyCore - An Arduino core for classic AVR ATtiny chips",
   "keywords": [
     "framework",
     "arduino",
