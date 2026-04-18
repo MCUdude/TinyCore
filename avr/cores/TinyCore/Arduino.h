@@ -486,7 +486,7 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
   #if defined(__AVR_ATtinyX41__)      //Uniquely bad
     volatile uint8_t *pue, *mode;     //
     pue = portPullupRegister(port);   //
-    mode = out + 1;
+    mode = out - 1;
     if (val == LOW) {                 // 2 instructions
 
       if (*mode & mask) {
@@ -499,11 +499,11 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
       }
     } else {                          // total subtotal 8/10 in 5/9
       if (*mode & mask) {             // 1/1
-        *out &= ~mask;                // 1/1
+        *out |= mask;                 // 1/1
       } else {                        // 1/1 in 2
         uint8_t oldSREG = SREG;       // 1/1
         cli();                        // 1/1
-        *pue &= ~mask;                // 3/5 in 5
+        *pue |= mask;                 // 3/5 in 5
         SREG = oldSREG;               // 1/1
       }                               // 17 instruction, 21 word, and and execution time of 8-12 clocks?
                                       // A whole new definition of fast (now it means "slow") - who wants to inline that!?
@@ -516,8 +516,8 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
       *pue &= ~mask;                  // 1/1
       *out &= ~mask;                  // 1/1
     } else {                          // 1/1
-      *pue &= ~mask;                  // 1/1
-      *out &= ~mask;                  // 1/1
+      *pue |= mask;                   // 1/1
+      *out |= mask;                   // 1/1
     }
       // constant pin -> constant out register.
       // constant val -> constant mask. Combined with above means we will get CBI/SBI (only one bit at a time will be set in the mask
@@ -525,7 +525,7 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
     if (val == LOW) {
       *out &= ~mask;                  // 1/1
     } else {                          // 1/1
-      *out &= ~mask;                  // 1/1
+      *out |= mask;                   // 1/1
     }   // and we know which one at compile time, so
   #endif
 }
