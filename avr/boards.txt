@@ -158,7 +158,7 @@ x5.menu.clock.4MHz_internal=4 MHz internal osc.
 x5.menu.clock.4MHz_internal.bootloader.clock=4MHz
 x5.menu.clock.4MHz_internal.bootloader.osc=i
 x5.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
-x5.menu.clock.4MHz_internal.bootloader.baudrate=38400
+x5.menu.clock.4MHz_internal.bootloader.baudrate=9600
 x5.menu.clock.4MHz_internal.build.clocksource=0
 x5.menu.clock.4MHz_internal.build.f_cpu=4000000L
 
@@ -412,7 +412,7 @@ x4.menu.clock.4MHz_internal=4 MHz internal osc.
 x4.menu.clock.4MHz_internal.bootloader.clock=4MHz
 x4.menu.clock.4MHz_internal.bootloader.osc=i
 x4.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
-x4.menu.clock.4MHz_internal.bootloader.baudrate=38400
+x4.menu.clock.4MHz_internal.bootloader.baudrate=9600
 x4.menu.clock.4MHz_internal.build.clocksource=0
 x4.menu.clock.4MHz_internal.build.f_cpu=4000000L
 
@@ -833,7 +833,7 @@ x8.menu.clock.4MHz_internal=4 MHz internal osc.
 x8.menu.clock.4MHz_internal.bootloader.clock=4MHz
 x8.menu.clock.4MHz_internal.bootloader.osc=i
 x8.menu.clock.4MHz_internal.bootloader.low_fuses=0x6e
-x8.menu.clock.4MHz_internal.bootloader.baudrate=38400
+x8.menu.clock.4MHz_internal.bootloader.baudrate=9600
 x8.menu.clock.4MHz_internal.build.clocksource=0
 x8.menu.clock.4MHz_internal.build.f_cpu=4000000L
 
@@ -1221,7 +1221,7 @@ x61.menu.clock.4MHz_internal=4 MHz internal osc.
 x61.menu.clock.4MHz_internal.bootloader.clock=4MHz
 x61.menu.clock.4MHz_internal.bootloader.osc=i
 x61.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
-x61.menu.clock.4MHz_internal.bootloader.baudrate=38400
+x61.menu.clock.4MHz_internal.bootloader.baudrate=9600
 x61.menu.clock.4MHz_internal.build.clocksource=0
 x61.menu.clock.4MHz_internal.build.f_cpu=4000000L
 
