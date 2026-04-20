@@ -158,7 +158,7 @@ x5.menu.clock.4MHz_internal=4 MHz internal osc.
 x5.menu.clock.4MHz_internal.bootloader.clock=4MHz
 x5.menu.clock.4MHz_internal.bootloader.osc=i
 x5.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
-x5.menu.clock.4MHz_internal.bootloader.baudrate=9600
+x5.menu.clock.4MHz_internal.bootloader.baudrate=38400
 x5.menu.clock.4MHz_internal.build.clocksource=0
 x5.menu.clock.4MHz_internal.build.f_cpu=4000000L
 
@@ -262,7 +262,7 @@ x5.menu.clock.4MHz_external=4 MHz external osc.
 x5.menu.clock.4MHz_external.bootloader.clock=4MHz
 x5.menu.clock.4MHz_external.bootloader.osc=x
 x5.menu.clock.4MHz_external.bootloader.low_fuses=0xfd
-x5.menu.clock.4MHz_external.bootloader.baudrate=57600
+x5.menu.clock.4MHz_external.bootloader.baudrate=38400
 x5.menu.clock.4MHz_external.build.clocksource=1
 x5.menu.clock.4MHz_external.build.f_cpu=4000000L
 
@@ -412,7 +412,7 @@ x4.menu.clock.4MHz_internal=4 MHz internal osc.
 x4.menu.clock.4MHz_internal.bootloader.clock=4MHz
 x4.menu.clock.4MHz_internal.bootloader.osc=i
 x4.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
-x4.menu.clock.4MHz_internal.bootloader.baudrate=9600
+x4.menu.clock.4MHz_internal.bootloader.baudrate=38400
 x4.menu.clock.4MHz_internal.build.clocksource=0
 x4.menu.clock.4MHz_internal.build.f_cpu=4000000L
 
@@ -516,7 +516,7 @@ x4.menu.clock.4MHz_external=4 MHz external osc.
 x4.menu.clock.4MHz_external.bootloader.clock=4MHz
 x4.menu.clock.4MHz_external.bootloader.osc=x
 x4.menu.clock.4MHz_external.bootloader.low_fuses=0xfd
-x4.menu.clock.4MHz_external.bootloader.baudrate=57600
+x4.menu.clock.4MHz_external.bootloader.baudrate=38400
 x4.menu.clock.4MHz_external.build.clocksource=1
 x4.menu.clock.4MHz_external.build.f_cpu=4000000L
 
@@ -651,7 +651,7 @@ x7.menu.clock.14_7456MHz_external.build.f_cpu=14745600L
 
 x7.menu.clock.12MHz_external=12 MHz external osc.
 x7.menu.clock.12MHz_external.bootloader.low_fuses=0xff
-x7.menu.clock.12MHz_external.bootloader.baudrate=115200
+x7.menu.clock.12MHz_external.bootloader.baudrate=57600
 x7.menu.clock.12MHz_external.build.clocksource=1
 x7.menu.clock.12MHz_external.build.f_cpu=12000000L
 
@@ -687,7 +687,7 @@ x7.menu.clock.6MHz_external.build.f_cpu=6000000L
 
 x7.menu.clock.4MHz_external=4 MHz external osc.
 x7.menu.clock.4MHz_external.bootloader.low_fuses=0xfd
-x7.menu.clock.4MHz_external.bootloader.baudrate=57600
+x7.menu.clock.4MHz_external.bootloader.baudrate=9600
 x7.menu.clock.4MHz_external.build.clocksource=1
 x7.menu.clock.4MHz_external.build.f_cpu=4000000L
 
@@ -833,7 +833,7 @@ x8.menu.clock.4MHz_internal=4 MHz internal osc.
 x8.menu.clock.4MHz_internal.bootloader.clock=4MHz
 x8.menu.clock.4MHz_internal.bootloader.osc=i
 x8.menu.clock.4MHz_internal.bootloader.low_fuses=0x6e
-x8.menu.clock.4MHz_internal.bootloader.baudrate=9600
+x8.menu.clock.4MHz_internal.bootloader.baudrate=38400
 x8.menu.clock.4MHz_internal.build.clocksource=0
 x8.menu.clock.4MHz_internal.build.f_cpu=4000000L
 
@@ -1014,7 +1014,7 @@ x41.menu.clock.14_7456MHz_external.build.f_cpu=14745600L
 
 x41.menu.clock.12MHz_external=12 MHz external osc.
 x41.menu.clock.12MHz_external.bootloader.low_fuses=0xee
-x41.menu.clock.12MHz_external.bootloader.baudrate=115200
+x41.menu.clock.12MHz_external.bootloader.baudrate=57600
 x41.menu.clock.12MHz_external.build.clocksource=1
 x41.menu.clock.12MHz_external.build.speedfix=
 x41.menu.clock.12MHz_external.build.f_cpu=12000000L
@@ -1056,7 +1056,7 @@ x41.menu.clock.6MHz_external.build.f_cpu=6000000L
 
 x41.menu.clock.4MHz_external=4 MHz external osc.
 x41.menu.clock.4MHz_external.bootloader.low_fuses=0xed
-x41.menu.clock.4MHz_external.bootloader.baudrate=57600
+x41.menu.clock.4MHz_external.bootloader.baudrate=9600
 x41.menu.clock.4MHz_external.build.clocksource=1
 x41.menu.clock.4MHz_external.build.speedfix=
 x41.menu.clock.4MHz_external.build.f_cpu=4000000L
@@ -1221,7 +1221,7 @@ x61.menu.clock.4MHz_internal=4 MHz internal osc.
 x61.menu.clock.4MHz_internal.bootloader.clock=4MHz
 x61.menu.clock.4MHz_internal.bootloader.osc=i
 x61.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
-x61.menu.clock.4MHz_internal.bootloader.baudrate=9600
+x61.menu.clock.4MHz_internal.bootloader.baudrate=38400
 x61.menu.clock.4MHz_internal.build.clocksource=0
 x61.menu.clock.4MHz_internal.build.f_cpu=4000000L
 
@@ -1325,7 +1325,7 @@ x61.menu.clock.4MHz_external=4 MHz external osc.
 x61.menu.clock.4MHz_external.bootloader.clock=4MHz
 x61.menu.clock.4MHz_external.bootloader.osc=x
 x61.menu.clock.4MHz_external.bootloader.low_fuses=0xfd
-x61.menu.clock.4MHz_external.bootloader.baudrate=57600
+x61.menu.clock.4MHz_external.bootloader.baudrate=38400
 x61.menu.clock.4MHz_external.build.clocksource=1
 x61.menu.clock.4MHz_external.build.f_cpu=4000000L
 
@@ -1502,7 +1502,7 @@ x313.menu.clock.6MHz_external.build.f_cpu=6000000L
 
 x313.menu.clock.4MHz_external=4 MHz external osc.
 x313.menu.clock.4MHz_external.bootloader.low_fuses=0xfd
-x313.menu.clock.4MHz_external.bootloader.baudrate=57600
+x313.menu.clock.4MHz_external.bootloader.baudrate=9600
 x313.menu.clock.4MHz_external.build.clocksource=1
 x313.menu.clock.4MHz_external.build.f_cpu=4000000L
 
@@ -1675,7 +1675,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 
 1634.menu.clock.4MHz_external=4 MHz external osc.
 1634.menu.clock.4MHz_external.bootloader.low_fuses=0xed
-1634.menu.clock.4MHz_external.bootloader.baudrate=57600
+1634.menu.clock.4MHz_external.bootloader.baudrate=9600
 1634.menu.clock.4MHz_external.build.clocksource=1
 1634.menu.clock.4MHz_external.build.speedfix=
 1634.menu.clock.4MHz_external.build.f_cpu=4000000L
@@ -1955,7 +1955,7 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 43.menu.clock.4MHz_internal.bootloader.clock=4MHz
 43.menu.clock.4MHz_internal.bootloader.osc=i
 43.menu.clock.4MHz_internal.bootloader.low_fuses=0x62
-43.menu.clock.4MHz_internal.bootloader.baudrate=9600
+43.menu.clock.4MHz_internal.bootloader.baudrate=57600
 43.menu.clock.4MHz_internal.build.clocksource=0
 43.menu.clock.4MHz_internal.build.f_cpu=4000000L
 
@@ -2024,8 +2024,8 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 # Brown out detection
 26.menu.bod.2v7=BOD 2.7V
 26.menu.bod.2v7.bootloader.bod_bits=10
-26.menu.bod.4v3=BOD 4.3V
-26.menu.bod.4v3.bootloader.bod_bits=00
+26.menu.bod.4v0=BOD 4.0V
+26.menu.bod.4v0.bootloader.bod_bits=00
 26.menu.bod.disable=BOD disabled
 26.menu.bod.disable.bootloader.bod_bits=11
 
