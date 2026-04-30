@@ -5,18 +5,21 @@ REM %1 = absolute path to avr-g++
 REM %2 = sketch path
 REM %3 = build path
 REM %4 = build project name
-REM %5 = flag name ("release_flags" or "debug_flags")
+REM %5 = build cache path
+REM %6 = flag name ("release_flags" or "debug_flags")
 
 set "COMPILER=%~1"
 set "SKETCH_PATH=%~2"
 set "BUILD_PATH=%~3"
 set "PROJECT_NAME=%~4"
-set "FLAG_NAME=%~5"
+set "BUILD_CACHE=%~5"
+set "FLAG_NAME=%~6"
 
 if "%COMPILER%"=="" goto :usage
 if "%SKETCH_PATH%"=="" goto :usage
 if "%BUILD_PATH%"=="" goto :usage
 if "%PROJECT_NAME%"=="" goto :usage
+if "%BUILD_CACHE%"=="" goto :usage
 if "%FLAG_NAME%"=="" goto :usage
 
 set "IN_FILE=%SKETCH_PATH%\%PROJECT_NAME%"
@@ -30,7 +33,12 @@ set "OCORE=%BUILD_PATH%\\core\\*.o"
 set "OCORE=%OCORE:\\=\%"
 set "ACORE=%BUILD_PATH%\\core\\*.a" 
 set "ACORE=%ACORE:\\=\%"
-set "ALL_CORES=%BUILD_PATH%\\..\\..\\cores" 
+
+if "%BUILD_CACHE%"=="{build_cache.path}" (
+   set "BUILD_CACHE_CORES=%LOCALAPPDATA%\arduino\cores"
+) else (
+   set "BUILD_CACHE_CORES=%BUILD_CACHE%\cores"
+)
 
 if not exist "%BUILD_PATH%" mkdir "%BUILD_PATH%" >nul 2>nul
 
@@ -111,7 +119,7 @@ if errorlevel 1 (
    del "%OSKETCH%" 2>nul
    del "%OCORE%" 2>nul
    del "%ACORE%" 2>nul
-   rd /s/q "%ALL_CORES%" 2>nul
+   rd /s/q "%BUILD_CACHE_CORES%" 2>nul
 )
    
 endlocal
