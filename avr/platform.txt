@@ -1,4 +1,4 @@
-# Arduino AVR Core and platform.
+# Arduino AVR Core and platform. 
 # ------------------------------
 
 # For more info:
@@ -11,9 +11,9 @@ version=0.6.0
 # ---------------------
 
 # Optimization flags for debugging
-compiler.optimization_flags=-Os -ggdb3 -flto -DNDEBUG
-compiler.optimization_flags.release=-Os -ggdb3 -flto -DNDEBUG
-compiler.optimization_flags.debug=-Og -ggdb3 -fno-lto -DDEBUG
+compiler.optimization_flags=-Os -ggdb3 -flto -DNDEBUG @{build.path}/options.release_flags
+compiler.optimization_flags.release=-Os -ggdb3 -flto -DNDEBUG @{build.path}/options.release_flags
+compiler.optimization_flags.debug=-Og -ggdb3 -fno-lto -DDEBUG @{build.path}/options.debug_flags
 
 build.versiondefines=-DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_AVR -DTINYCORE="{version}"
 build.optiondefines=-DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource}
@@ -125,6 +125,12 @@ recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags}
 preprocessed_file_path={build.path}/nul
 preproc.macros.flags=-w -x c++ -E -CC
 recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{preprocessed_file_path}"
+
+# Generating options.XXXX_flags using #pragmas
+recipe.hooks.prebuild.1.pattern=/bin/bash "{runtime.platform.path}/scripts/pragma.sh" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" debug_flags
+recipe.hooks.prebuild.2.pattern=/bin/bash "{runtime.platform.path}/scripts/pragma.sh" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" release_flags
+recipe.hooks.prebuild.1.pattern.windows="{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" debug_flags
+recipe.hooks.prebuild.2.pattern.windows="{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" release_flags
 
 
 # AVR Uploader/Programmers tools
