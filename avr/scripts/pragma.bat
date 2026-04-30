@@ -21,14 +21,28 @@ if "%FLAG_NAME%"=="" goto :usage
 
 set "IN_FILE=%SKETCH_PATH%\%PROJECT_NAME%"
 set "OUT_FILE=%BUILD_PATH%\options.%FLAG_NAME%"
+set "BAK_FILE=%OUT_FILE%.bak"
 set "TMP_OUT=%BUILD_PATH%\pragma_preproc.tmp"
 set "TMP_ERR=%BUILD_PATH%\pragma_preproc.err"
+set "OSKETCH=%BUILD_PATH%\sketch\\*.o" 
+set "OSKETCH=%OSKETCH:\\=\%"
+set "OCORE=%BUILD_PATH%\\core\\*.o" 
+set "OCORE=%OCORE:\\=\%"
+set "ACORE=%BUILD_PATH%\\core\\*.a" 
+set "ACORE=%ACORE:\\=\%"
+set "ALL_CORES=%BUILD_PATH%\\..\\..\\cores" 
 
 if not exist "%BUILD_PATH%" mkdir "%BUILD_PATH%" >nul 2>nul
 
 if not exist "%IN_FILE%" (
   echo ERROR: Input file not found: "%IN_FILE%"
   exit /b 3
+)
+
+if not exist "%OUT_FILE%" (
+   copy NUL "%BAK_FILE%" >nul
+) else (
+   copy/y "%OUT_FILE%" "%BAK_FILE%" >nul
 )
 
 "%COMPILER%" -fpreprocessed -dD -E -x c++ "%IN_FILE%" 1>"%TMP_OUT%" 2>"%TMP_ERR%"
@@ -87,6 +101,19 @@ for /f "usebackq delims=" %%L in ("%TMP_OUT%") do (
 
 > "%OUT_FILE%" (<nul set /p ="%OPTIONS% ")
 
+FC %OUT_FILE% %BAK_FILE% > nul
+if errorlevel 1 (
+   echo "Options changed: Deleting cache"
+   echo "%OSKETCH%"
+   echo "%OCORE%"
+   echo "%ACORE%"
+   echo "%ALL_CORES%"
+   del "%OSKETCH%" 2>nul
+   del "%OCORE%" 2>nul
+   del "%ACORE%" 2>nul
+   rd /s/q "%ALL_CORES%" 2>nul
+)
+   
 endlocal
 exit /b 0
 
