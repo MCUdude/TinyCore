@@ -5,21 +5,18 @@ REM %1 = absolute path to avr-g++
 REM %2 = sketch path
 REM %3 = build path
 REM %4 = build project name
-REM %5 = build cache path
-REM %6 = flag name ("release_flags" or "debug_flags")
+REM %5 = flag name ("release_flags" or "debug_flags")
 
 set "COMPILER=%~1"
 set "SKETCH_PATH=%~2"
 set "BUILD_PATH=%~3"
 set "PROJECT_NAME=%~4"
-set "BUILD_CACHE=%~5"
-set "FLAG_NAME=%~6"
+set "FLAG_NAME=%~5"
 
 if "%COMPILER%"=="" goto :usage
 if "%SKETCH_PATH%"=="" goto :usage
 if "%BUILD_PATH%"=="" goto :usage
 if "%PROJECT_NAME%"=="" goto :usage
-if "%BUILD_CACHE%"=="" goto :usage
 if "%FLAG_NAME%"=="" goto :usage
 
 set "IN_FILE=%SKETCH_PATH%\%PROJECT_NAME%"
@@ -34,12 +31,14 @@ set "OCORE=%OCORE:\\=\%"
 set "ACORE=%BUILD_PATH%\\core\\*.a" 
 set "ACORE=%ACORE:\\=\%"
 
-if "%BUILD_CACHE%"=="{build_cache.path}" (
-   set "BUILD_CACHE_CORES=%LOCALAPPDATA%\arduino\cores"
-) else (
-   set "BUILD_CACHE_CORES=%BUILD_CACHE%\cores"
-)
+set "BUILD_CACHE_CORES_DEFAULT=%LOCALAPPDATA%\arduino\cores"
 
+where arduino-cli 2>NUL
+if %ERRORLEVEL% EQU 0 (
+  for /f %%i in ('arduino-cli config get build_cache.path') do set BUILD_CACHE_CORES_LOCAL=%%i
+  set "BUILD_CACHE_CORES_LOCAL=!BUILD_CACHE_CORES_LOCAL!\cores"
+)
+   
 if not exist "%BUILD_PATH%" mkdir "%BUILD_PATH%" >nul 2>nul
 
 if not exist "%IN_FILE%" (
@@ -54,10 +53,10 @@ if not exist "%OUT_FILE%" (
 )
 
 "%COMPILER%" -fpreprocessed -dD -E -x c++ "%IN_FILE%" 1>"%TMP_OUT%" 2>"%TMP_ERR%"
-if errorlevel 1 (
+if %ERRORLEVEL% EQU 1 (
   REM keep quiet by default; uncomment next 2 lines for debugging
-  REM echo ERROR: Preprocessor failed. stderr:
-  REM type "%TMP_ERR%"
+  echo ERROR: Preprocessor failed. stderr:
+  type "%TMP_ERR%"
   exit /b 4
 )
 
@@ -112,14 +111,13 @@ for /f "usebackq delims=" %%L in ("%TMP_OUT%") do (
 FC %OUT_FILE% %BAK_FILE% > nul
 if errorlevel 1 (
    echo "Options changed: Deleting cache"
-   echo "%OSKETCH%"
-   echo "%OCORE%"
-   echo "%ACORE%"
-   echo "%ALL_CORES%"
-   del "%OSKETCH%" 2>nul
-   del "%OCORE%" 2>nul
-   del "%ACORE%" 2>nul
-   rd /s/q "%BUILD_CACHE_CORES%" 2>nul
+   del "%OSKETCH%" 2>NUL
+   del "%OCORE%" 2>NUL
+   del "%ACORE%" 2>NUL
+   rd /s/q "%BUILD_CACHE_CORES_DEFAULT%" 2>NUL
+   if "%BUILD_CACHE_CORES_LOCAL%" NEQ "" (
+      rd /s/q "%BUILD_CACHE_CORES_LOCAL%" 2>NUL
+   ) 
 )
    
 endlocal

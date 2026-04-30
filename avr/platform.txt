@@ -127,10 +127,10 @@ preproc.macros.flags=-w -x c++ -E -CC
 recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{preprocessed_file_path}"
 
 # Generating options.XXXX_flags using #pragmas
-recipe.hooks.prebuild.1.pattern=/bin/bash "{runtime.platform.path}/scripts/pragma.sh" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" "{build_cache.path}" debug_flags
-recipe.hooks.prebuild.2.pattern=/bin/bash "{runtime.platform.path}/scripts/pragma.sh" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" "{build_cache.path}" release_flags
-recipe.hooks.prebuild.1.pattern.windows="{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" "{build_cache.path}" debug_flags
-recipe.hooks.prebuild.2.pattern.windows="{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" "{build_cache.path}" release_flags
+recipe.hooks.prebuild.1.pattern=/bin/bash "{runtime.platform.path}/scripts/pragma.sh" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" debug_flags
+recipe.hooks.prebuild.2.pattern=/bin/bash "{runtime.platform.path}/scripts/pragma.sh" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" release_flags
+recipe.hooks.prebuild.1.pattern.windows="{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" debug_flags
+recipe.hooks.prebuild.2.pattern.windows="{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{sketch_path}" "{build.path}" "{build.project_name}" release_flags
 
 
 # AVR Uploader/Programmers tools
