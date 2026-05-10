@@ -30,15 +30,14 @@ set "OCORE=%BUILD_PATH%\\core\\*.o"
 set "OCORE=%OCORE:\\=\%"
 set "ACORE=%BUILD_PATH%\\core\\*.a" 
 set "ACORE=%ACORE:\\=\%"
+set "CACHEFOLDER=%BUILD_PATH%\\..\\.."
 
-set "BUILD_CACHE_CORES_DEFAULT=%LOCALAPPDATA%\arduino\cores"
-
-where arduino-cli 2>NUL
-if %ERRORLEVEL% EQU 0 (
-  for /f %%i in ('arduino-cli config get build_cache.path') do set BUILD_CACHE_CORES_LOCAL=%%i
-  set "BUILD_CACHE_CORES_LOCAL=!BUILD_CACHE_CORES_LOCAL!\cores"
+PUSHD %CACHEFOLDER%
+FOR /F %%A IN ('DIR /B ^| FIND /C /V ""') DO (
+    SET "CNT=%%A"
 )
-   
+POPD
+
 if not exist "%BUILD_PATH%" mkdir "%BUILD_PATH%" >nul 2>nul
 
 if not exist "%IN_FILE%" (
@@ -64,7 +63,7 @@ set "OPTIONS="
 
 for /f "usebackq delims=" %%L in ("%TMP_OUT%") do (
   set "LINE=%%L"
-
+  set "HASH=0"
   REM 1) Convert TABs to spaces
   for /f "delims=" %%T in ("!LINE!") do set "LINE=%%T"
   REM Above looks like a no-op, but it keeps delayed expansion happy.
@@ -78,6 +77,7 @@ for /f "usebackq delims=" %%L in ("%TMP_OUT%") do (
 
   REM 3) Drop leading '#' if present, then trim again
   if "!LINE:~0,1!"=="#" (
+    set "HASH=1"
     set "LINE=!LINE:~1!"
     call :ltrim LINE
   )
@@ -89,18 +89,20 @@ for /f "usebackq delims=" %%L in ("%TMP_OUT%") do (
   REM Accept both "pragma arduino debug_flags" and "pragma arduino release_flags"
   echo(!LINE! | findstr /I /C:"pragma arduino %FLAG_NAME% " >nul
   if not errorlevel 1 (
-    REM Strip prefix
-    set "LINE=!LINE:pragma arduino %FLAG_NAME% =!"
+    if !HASH! EQU 1 (
+      REM Strip prefix
+      set "LINE=!LINE:pragma arduino %FLAG_NAME% =!"
 
-    REM Trim again, collapse again (in case there were extra spaces)
-    call :ltrim LINE
-    call :collapse_spaces LINE
+      REM Trim again, collapse again (in case there were extra spaces)
+      call :ltrim LINE
+      call :collapse_spaces LINE
 
-    if defined LINE (
-      if defined OPTIONS (
-        set "OPTIONS=!OPTIONS! !LINE!"
-      ) else (
-        set "OPTIONS=!LINE!"
+      if defined LINE (
+        if defined OPTIONS (
+          set "OPTIONS=!OPTIONS! !LINE!"
+        ) else (
+          set "OPTIONS=!LINE!"
+        )
       )
     )
   )
@@ -108,15 +110,19 @@ for /f "usebackq delims=" %%L in ("%TMP_OUT%") do (
 
 > "%OUT_FILE%" (<nul set /p ="%OPTIONS% ")
 
-FC %OUT_FILE% %BAK_FILE% > nul
+FC %OUT_FILE% %BAK_FILE% > NUL
 if errorlevel 1 (
-   echo "Options changed: Deleting cache"
+   echo "Options changed: Deleting cached object files"
    del "%OSKETCH%" 2>NUL
    del "%OCORE%" 2>NUL
    del "%ACORE%" 2>NUL
-   rd /s/q "%BUILD_CACHE_CORES_DEFAULT%" 2>NUL
-   if "%BUILD_CACHE_CORES_LOCAL%" NEQ "" (
-      rd /s/q "%BUILD_CACHE_CORES_LOCAL%" 2>NUL
+   if exist "%CACHEFOLDER%\\sketches" (
+      if exist "%CACHEFOLDER%\\cores" (
+         if %CNT% equ 2 (
+            echo "Delete cached cores: %CACHEFOLDER%\\cores"
+            rd /s/q "%CACHEFOLDER%\\cores" 
+         )
+      )
    ) 
 )
    
@@ -147,5 +153,5 @@ endlocal & set "%~1=%s%"
 exit /b
 
 :usage
-echo Usage: %~nx0 ^<path-to-avr-g++^> ^<sketch_path^> ^<build_path^> ^<project_name^> ^<debug_flags^|release_flags^>
+echo Usage: %~nx0 ^<path-to-avr-g++^> ^<sketch_path^> ^<build_path^> ^<project_name^> ^<debug_flags^|release_flags^|build_flags^>
 exit /b 2
