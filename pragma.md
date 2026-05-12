@@ -23,3 +23,15 @@ Since this optimization is known to confuse the debugger, one should not use it 
 
 you will enable link-time optimization while debugging (`-flto`), which is normally disabled when debugging. Additionally, the symbol `TXBUFFER` will be defined, which enables a 16-byte transmit buffer for hardware serial interfaces.
 
+Here's a list of some flags that can be used:
+
+| Flag                        | Description                                                        |
+|-----------------------------|--------------------------------------------------------------------|
+| -lprintf_flt                | Lets you print floats with printf (occupies ~1.5 kB)               |
+| -Wall -Wextra               | Show all compiler warnings                                         |
+| -DTX_ONLY                   | Only enable Serial TX (saves flash and RAM)                        |
+| -DTXBUFFER                  | Enable 16-byte TX buffer (chips with hardware serial only)         |
+| -DLOWER_CAL=6               | Used to slow down the internal oscillator on when running at 5V.<br/>Increase number to slow down more (ATtiny841/441/828/1634 only) |
+| -DWIRE_MASTER_ONLY          | Enable i2c master only functionality (ATtiny841/441/828 only)      |
+| -DWIRE_SLAVE_ONLY           | Enable i2c slave only functionality (ATtiny841/441/828 only)       |
+| -DWIRE_BOTH                 | Enable i2c master and slave functionality (ATtiny841/441/828 only) |
