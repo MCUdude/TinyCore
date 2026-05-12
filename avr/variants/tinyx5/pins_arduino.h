@@ -205,6 +205,16 @@ static const uint8_t  A3 =  ADC_CH(3);
 #define USI_DO_BIT            PINB1
 #define USI_DI_BIT            PINB0
 
+#define PORT_USI_CL           USI_PORT
+#define PORT_USI              USI_PORT
+#define PIN_USI               USI_PIN
+#define DDR_USI               USI_DDR
+
+#define PIN_USI_CL            USI_PIN
+#define PIN_USI_SDA           USI_DI_BIT
+#define PIN_USI_SCL           USI_CLOCK_BIT
+#define DDR_USI_CL            USI_DDR
+
 #define USI_START_VECTOR      USI_START_vect
 #define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
