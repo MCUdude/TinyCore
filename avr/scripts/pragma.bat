@@ -33,6 +33,7 @@ set "ACORE=%ACORE:\\=\%"
 set "CACHEFOLDER=%BUILD_PATH%\\..\\.."
 
 PUSHD %CACHEFOLDER%
+
 FOR /F %%A IN ('DIR /B ^| FIND /C /V ""') DO (
     SET "CNT=%%A"
 )
@@ -50,6 +51,7 @@ if not exist "%OUT_FILE%" (
 ) else (
    copy/y "%OUT_FILE%" "%BAK_FILE%" >nul
 )
+
 
 "%COMPILER%" -fpreprocessed -dD -E -x c++ "%IN_FILE%" 1>"%TMP_OUT%" 2>"%TMP_ERR%"
 if %ERRORLEVEL% EQU 1 (
@@ -116,16 +118,33 @@ if errorlevel 1 (
    del "%OSKETCH%" 2>NUL
    del "%OCORE%" 2>NUL
    del "%ACORE%" 2>NUL
+   set WRONG=0
+   dir /b cores 2>nul >nul
+   if %ERRORLEVEL% EQU 0 (
+      FOR /D %%P IN ("%CACHEFOLDER%\\CORES\\*") DO (
+       	  if not exist "%%P\\core.a" set WRONG=1
+       	  if not exist "%%P\\.last-used" set WRONG=1
+   	  )
+   )
+
    if exist "%CACHEFOLDER%\\sketches" (
-      if exist "%CACHEFOLDER%\\cores" (
-         if %CNT% equ 2 (
-            echo "Delete cached cores: %CACHEFOLDER%\\cores"
-            rd /s/q "%CACHEFOLDER%\\cores" 
+      dir /a-d "%CACHEFOLDER%\\sketches" 2>nul >nul
+      if errorlevel 1 (
+      	 if exist "%CACHEFOLDER%\\cores" (
+	    dir /a-d "%CACHEFOLDER%\\cores" 2>nul >nul
+	    if errorlevel 1 (
+               if %CNT% equ 2 (
+	          if !WRONG! equ 0 (
+                     echo "Delete cached cores"
+                     rd /s/q "%CACHEFOLDER%\\cores"
+		  )
+               )
+	    )
          )
       )
    ) 
 )
-   
+
 endlocal
 exit /b 0
 
