@@ -26,6 +26,7 @@ Key improvements include:
 * [Fast IO](fast-io)
 * [Internal oscillator calibration (OSCCAL)](#internal-oscillator-calibration-osccal)
 * [Write to own flash](#write-to-own-flash)
+* [Pragma directive](#pragma-directive)
 * [Programmers](#programmers)
 * **[How to install](#how-to-install)**
   - [Boards Manager Installation](#boards-manager-installation)
@@ -182,6 +183,19 @@ TinyCore uses the excellent Urboot bootloader, written by [Stefan Rueger](https:
 For more information on how it works and how you can use this in your own application, check out the [Flash_put_get](avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) and [Flash_iterate](avr/libraries/Flash/examples/Flash_iterate/Flash_iterate.ino) for useful examples on how you can store strings, structs, and variables to flash and retrieve them afterward.
 
 
+## Pragma directive
+TinyCore introduces two custom `#pragma` directives that allow you to specify build flags directly from the sketch.
+ 
+```c
+#pragma arduino release_flags ...
+#pragma arduino debug_flags ...
+```
+ 
+These directives append flags to the build command line depending on the active build mode.  
+For instance, `#pragma arduino release_flags -DTX_ONLY` will enable UART TX only without having to specify this in the Tools menu.
+  
+Read more about these `#pragma` directives and how to use them in [pragma.md](/pragma.md).
+ 
 ## Programmers
 Select your microcontroller in the boards menu, then select the clock frequency. You'll have to hit "Burn bootloader" in order to set the correct fuses and upload the correct bootloader. <br/>
 Make sure you connect an ISP programmer, and select the correct one in the "Programmers" menu.
