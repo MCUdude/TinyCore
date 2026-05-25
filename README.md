@@ -13,12 +13,15 @@ Key improvements include:
 - **Hardware debugging** via [PyAvrOCD](https://pyavrocd.io)
 - **Revised and improved documentation** for every supported chip
 - **Systematic hardware testing** - core functionality is [tested on real silicon](/avr/extras/tests/README.md)
+- **Support for the ATtiny85 based [Digispark](/avr/extras/ATtiny_x5.md) and the ATtiny88 based [MH-Tiny board](/avr/extras/ATtiny_x8.md)**
 - **Works with PlatformIO**
 
 # Table of contents
 * [Supported microcontrollers](#supported-microcontrollers)
 * [Supported clock frequencies](#supported-clock-frequencies)
 * [Bootloader](#bootloader)
+  - [Urboot](#urboot)
+  - [Micronucleus](#micronucleus)
 * [BOD option](#bod-option)
 * [EEPROM retain option](#eeprom-option)
 * [Printf support](#printf-support)
@@ -109,12 +112,18 @@ Note that the ATtiny48/88 and ATtiny828 require an external clock signal and are
 
 
 ## Bootloader
+
+### Urboot
 TinyCore supports the ultra-lightweight and lean [Urboot](https://github.com/stefanrueger/urboot) bootloader, written by [Stefan Rueger](https://github.com/stefanrueger). The bootloader makes it trivial to upload sketches using a USB-to-serial adapter, just like with a traditional AVR-based Arduino board. But unlike other bootloaders, Urboot only occupies 256 bytes of flash and protects its patched reset vector, which means that, unlike Optiboot, it's practically impossible to mess up the reset vector and "brick" the chip. Give the bootloader option a try, and you'll be amazed at how well it works!
 
-The internal oscillator on the most ATtinys is usually slower than it should be according to the spec. Try burning the slower and faster ones (-1.25%, +1.25%, etc.) if the "Bootloader: _Yes_" option doesn't work.
+The internal oscillator on the most ATtinys is usually slower than it should be according to the spec. Try burning the slower and faster ones (-1.25%, +1.25%, etc.) if the "Bootloader: Urboot" option doesn't work.
 
 Note that the 128 kHz internal oscillator option is not recommended for use with a bootloader since the oscillator is too inaccurate for practical use with an asynchronous protocol like UART.
 
+### Micronucleus
+[Micronucleus](https://github.com/micronucleus/micronucleus) is a bootloader that emulates a USB interface and lets you upload sketches using a native USB interface. This bootloader is quite a bit larger than Urboot (~1400 bytes compared to 256 bytes), but it requires no external programmer or USB to serial chip for programming. Popular boards that uses the Micronucleus bootloader is the ATtiny85 based Digispark and the ATtiny88 based MH-Tiny boards. All of these can be bought cheaply from sites like Aliexpress.
+
+Read more about how to use, flash and upgrade the Micronucleus bootloader under the bootlaoder section in the device spesific documentation for [ATtiny25/45/85](/avr/extras/ATtiny_x5.md) and [ATtiny48/88](/avr/extras/ATtiny_x8.md).
 
 ## BOD option
 Brown-out detection, or BOD for short lets the microcontroller sense the input voltage and shut down if the voltage goes below the brown-out setting. To change the BOD settings you'll have to connect an ISP programmer and hit "Burn bootloader". Below is a table that shows the available BOD options:
@@ -422,9 +431,9 @@ See the tinyNeoPixel documentation and the included examples for additional deta
 
 ### ATtiny25/45/85
 
-| Pinout diagram                                  | Minimal setup schematic                                  |
-|-------------------------------------------------|----------------------------------------------------------|
-|<img src="avr/extras/Pinout_x5.png" width="360"> | <img src="avr/extras/ATtiny25_45_85_minimal_setup.png" width="240"> |
+| Pinout diagram                                  | Digispark                                                  | Minimal setup schematic                                  |
+|-------------------------------------------------|------------------------------------------------------------|----------------------------------------------------------|
+|<img src="avr/extras/Pinout_x5.png" width="300"> | <img src="avr/extras/Pinout_x5_Digispark.png" width="360"> |<img src="avr/extras/ATtiny25_45_85_minimal_setup.png" width="240"> |
 
 
 ### ATtiny24/44/84
