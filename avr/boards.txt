@@ -39,66 +39,6 @@ x5.build.variant=tinyx5
 x5.build.board=AVR_ATTINYX5
 x5.build.extra_flags={build.serialrxtx}
 
-# Upload port select / Bootloader
-x5.menu.bootloader.no_bootloader=No bootloader
-x5.menu.bootloader.no_bootloader.build.export_merged_output=false
-x5.menu.bootloader.no_bootloader.bootloader.str=
-x5.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
-
-x5.menu.bootloader.urboot=Yes
-x5.menu.bootloader.urboot.upload.protocol=urclock
-x5.menu.bootloader.urboot.build.export_merged_output=true
-x5.menu.bootloader.urboot.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
-x5.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
-
-x5.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
-x5.menu.bootloader.urboot_-125.upload.protocol=urclock
-x5.menu.bootloader.urboot_-125.build.export_merged_output=true
-x5.menu.bootloader.urboot_-125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
-x5.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
-
-x5.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
-x5.menu.bootloader.urboot_-250.upload.protocol=urclock
-x5.menu.bootloader.urboot_-250.build.export_merged_output=true
-x5.menu.bootloader.urboot_-250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
-x5.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
-
-x5.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
-x5.menu.bootloader.urboot_-375.upload.protocol=urclock
-x5.menu.bootloader.urboot_-375.build.export_merged_output=true
-x5.menu.bootloader.urboot_-375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
-x5.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
-
-x5.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
-x5.menu.bootloader.urboot_-500.upload.protocol=urclock
-x5.menu.bootloader.urboot_-500.build.export_merged_output=true
-x5.menu.bootloader.urboot_-500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
-x5.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
-
-x5.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
-x5.menu.bootloader.urboot_+125.upload.protocol=urclock
-x5.menu.bootloader.urboot_+125.build.export_merged_output=true
-x5.menu.bootloader.urboot_+125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
-x5.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
-
-x5.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
-x5.menu.bootloader.urboot_+250.upload.protocol=urclock
-x5.menu.bootloader.urboot_+250.build.export_merged_output=true
-x5.menu.bootloader.urboot_+250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
-x5.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
-
-x5.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
-x5.menu.bootloader.urboot_+375.upload.protocol=urclock
-x5.menu.bootloader.urboot_+375.build.export_merged_output=true
-x5.menu.bootloader.urboot_+375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
-x5.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
-
-x5.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
-x5.menu.bootloader.urboot_+500.upload.protocol=urclock
-x5.menu.bootloader.urboot_+500.build.export_merged_output=true
-x5.menu.bootloader.urboot_+500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
-x5.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
-
 # EEPROM
 x5.menu.eeprom.keep=EEPROM retained
 x5.menu.eeprom.keep.bootloader.eesave_bit=0
@@ -282,6 +222,85 @@ x5.menu.clock.1MHz_external.bootloader.baudrate=9600
 x5.menu.clock.1MHz_external.build.clocksource=1
 x5.menu.clock.1MHz_external.build.f_cpu=1000000L
 
+# Upload port select / Bootloader
+x5.menu.bootloader.no_bootloader=No bootloader
+x5.menu.bootloader.no_bootloader.build.export_merged_output=false
+x5.menu.bootloader.no_bootloader.bootloader.str=
+x5.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
+
+x5.menu.bootloader.urboot=Urboot
+x5.menu.bootloader.urboot.upload.protocol=urclock -D -xnometadata
+x5.menu.bootloader.urboot.build.export_merged_output=true
+x5.menu.bootloader.urboot.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
+x5.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
+
+x5.menu.bootloader.urboot_-125=Urboot (F_CPU -1.25%)
+x5.menu.bootloader.urboot_-125.upload.protocol=urclock -D -xnometadata
+x5.menu.bootloader.urboot_-125.build.export_merged_output=true
+x5.menu.bootloader.urboot_-125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
+x5.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
+
+x5.menu.bootloader.urboot_-250=Urboot (F_CPU -2.50%)
+x5.menu.bootloader.urboot_-250.upload.protocol=urclock -D -xnometadata
+x5.menu.bootloader.urboot_-250.build.export_merged_output=true
+x5.menu.bootloader.urboot_-250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
+x5.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
+
+x5.menu.bootloader.urboot_-375=Urboot (F_CPU -3.75%)
+x5.menu.bootloader.urboot_-375.upload.protocol=urclock -D -xnometadata
+x5.menu.bootloader.urboot_-375.build.export_merged_output=true
+x5.menu.bootloader.urboot_-375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
+x5.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
+
+x5.menu.bootloader.urboot_-500=Urboot (F_CPU -5.00%)
+x5.menu.bootloader.urboot_-500.upload.protocol=urclock -D -xnometadata
+x5.menu.bootloader.urboot_-500.build.export_merged_output=true
+x5.menu.bootloader.urboot_-500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
+x5.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
+
+x5.menu.bootloader.urboot_+125=Urboot (F_CPU +1.25%)
+x5.menu.bootloader.urboot_+125.upload.protocol=urclock -D -xnometadata
+x5.menu.bootloader.urboot_+125.build.export_merged_output=true
+x5.menu.bootloader.urboot_+125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
+x5.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
+
+x5.menu.bootloader.urboot_+250=Urboot (F_CPU +2.50%)
+x5.menu.bootloader.urboot_+250.upload.protocol=urclock -D -xnometadata
+x5.menu.bootloader.urboot_+250.build.export_merged_output=true
+x5.menu.bootloader.urboot_+250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
+x5.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
+
+x5.menu.bootloader.urboot_+375=Urboot (F_CPU +3.75%)
+x5.menu.bootloader.urboot_+375.upload.protocol=urclock -D -xnometadata
+x5.menu.bootloader.urboot_+375.build.export_merged_output=true
+x5.menu.bootloader.urboot_+375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
+x5.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
+
+x5.menu.bootloader.urboot_+500=Urboot (F_CPU +5.00%)
+x5.menu.bootloader.urboot_+500.upload.protocol=urclock -D -xnometadata
+x5.menu.bootloader.urboot_+500.build.export_merged_output=true
+x5.menu.bootloader.urboot_+500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
+x5.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
+
+x5.menu.bootloader.micronucleus=Micronucleus (16 MHz PLL)
+x5.menu.bootloader.micronucleus.upload.tool=avrdude_micronucleus
+x5.menu.bootloader.micronucleus.upload.protocol=micronucleus -V -xwait=60
+x5.menu.bootloader.micronucleus.build.export_merged_output=true
+x5.menu.bootloader.micronucleus.bootloader.str=-Uflash,lfuse,efuse:w:{runtime.platform.path}/bootloaders/micronucleus/{build.mcu}_micronucleus_16MHz.hex:I
+x5.menu.bootloader.micronucleus.bootloader.extended_fuses=0xfe
+x5.menu.bootloader.micronucleus.build.clocksource=6
+x5.menu.bootloader.micronucleus.build.f_cpu=16000000L
+
+x5.menu.bootloader.micronucleus_upgrade=Upgrade to newest Micronucleus (16 MHz PLL)
+x5.menu.bootloader.micronucleus_upgrade.upload.tool=avrdude_micronucleus
+x5.menu.bootloader.micronucleus_upgrade.upload.protocol=micronucleus -V -xwait=60
+x5.menu.bootloader.micronucleus_upgrade.bootloader.tool=avrdude_micronucleus
+x5.menu.bootloader.micronucleus_upgrade.bootloader.protocol={upload.protocol}
+x5.menu.bootloader.micronucleus_upgrade.build.export_merged_output=true
+x5.menu.bootloader.micronucleus_upgrade.bootloader.str=-Uflash:w:{runtime.platform.path}/bootloaders/micronucleus/upgrade_{build.mcu}_micronucleus_16MHz.hex:i
+x5.menu.bootloader.micronucleus_upgrade.upload.str=-Uflash:w:{runtime.platform.path}/bootloaders/micronucleus/upgrade_{build.mcu}_micronucleus_16MHz.hex:i
+x5.menu.bootloader.micronucleus_upgrade.build.clocksource=6
+x5.menu.bootloader.micronucleus_upgrade.build.f_cpu=16000000L
 
 ########################
 #### ATtiny24/44/84 ####
@@ -308,55 +327,55 @@ x4.menu.bootloader.no_bootloader.bootloader.str=
 x4.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
 
 x4.menu.bootloader.urboot=Yes
-x4.menu.bootloader.urboot.upload.protocol=urclock
+x4.menu.bootloader.urboot.upload.protocol=urclock -D -xnometadata
 x4.menu.bootloader.urboot.build.export_merged_output=true
 x4.menu.bootloader.urboot.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
 x4.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
 
-x4.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
-x4.menu.bootloader.urboot_-125.upload.protocol=urclock
+x4.menu.bootloader.urboot_-125=Urboot (F_CPU -1.25%)
+x4.menu.bootloader.urboot_-125.upload.protocol=urclock -D -xnometadata
 x4.menu.bootloader.urboot_-125.build.export_merged_output=true
 x4.menu.bootloader.urboot_-125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
 x4.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
 
-x4.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
-x4.menu.bootloader.urboot_-250.upload.protocol=urclock
+x4.menu.bootloader.urboot_-250=Urboot (F_CPU -2.50%)
+x4.menu.bootloader.urboot_-250.upload.protocol=urclock -D -xnometadata
 x4.menu.bootloader.urboot_-250.build.export_merged_output=true
 x4.menu.bootloader.urboot_-250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
 x4.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
 
-x4.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
-x4.menu.bootloader.urboot_-375.upload.protocol=urclock
+x4.menu.bootloader.urboot_-375=Urboot (F_CPU -3.75%)
+x4.menu.bootloader.urboot_-375.upload.protocol=urclock -D -xnometadata
 x4.menu.bootloader.urboot_-375.build.export_merged_output=true
 x4.menu.bootloader.urboot_-375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
 x4.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
 
-x4.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
-x4.menu.bootloader.urboot_-500.upload.protocol=urclock
+x4.menu.bootloader.urboot_-500=Urboot (F_CPU -5.00%)
+x4.menu.bootloader.urboot_-500.upload.protocol=urclock -D -xnometadata
 x4.menu.bootloader.urboot_-500.build.export_merged_output=true
 x4.menu.bootloader.urboot_-500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
 x4.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
 
-x4.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
-x4.menu.bootloader.urboot_+125.upload.protocol=urclock
+x4.menu.bootloader.urboot_+125=Urboot (F_CPU +1.25%)
+x4.menu.bootloader.urboot_+125.upload.protocol=urclock -D -xnometadata
 x4.menu.bootloader.urboot_+125.build.export_merged_output=true
 x4.menu.bootloader.urboot_+125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
 x4.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
 
-x4.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
-x4.menu.bootloader.urboot_+250.upload.protocol=urclock
+x4.menu.bootloader.urboot_+250=Urboot (F_CPU +2.50%)
+x4.menu.bootloader.urboot_+250.upload.protocol=urclock -D -xnometadata
 x4.menu.bootloader.urboot_+250.build.export_merged_output=true
 x4.menu.bootloader.urboot_+250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
 x4.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
 
-x4.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
-x4.menu.bootloader.urboot_+375.upload.protocol=urclock
+x4.menu.bootloader.urboot_+375=Urboot (F_CPU +3.75%)
+x4.menu.bootloader.urboot_+375.upload.protocol=urclock -D -xnometadata
 x4.menu.bootloader.urboot_+375.build.export_merged_output=true
 x4.menu.bootloader.urboot_+375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
 x4.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
 
-x4.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
-x4.menu.bootloader.urboot_+500.upload.protocol=urclock
+x4.menu.bootloader.urboot_+500=Urboot (F_CPU +5.00%)
+x4.menu.bootloader.urboot_+500.upload.protocol=urclock -D -xnometadata
 x4.menu.bootloader.urboot_+500.build.export_merged_output=true
 x4.menu.bootloader.urboot_+500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
 x4.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
@@ -562,7 +581,7 @@ x7.menu.bootloader.no_bootloader.bootloader.str=
 x7.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
 
 x7.menu.bootloader.urboot_uart0=Yes
-x7.menu.bootloader.urboot_uart0.upload.protocol=urclock
+x7.menu.bootloader.urboot_uart0.upload.protocol=urclock -D -xnometadata
 x7.menu.bootloader.urboot_uart0.build.export_merged_output=true
 x7.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:1s_pr_autobaud_noled_{bootloader.pins}
 x7.menu.bootloader.urboot_uart0.bootloader.extended_fuses=0xfe
@@ -721,66 +740,6 @@ x8.build.core=TinyCore
 x8.build.board=AVR_ATTINYX8
 x8.build.extra_flags={build.serialrxtx}
 
-# Upload port select / Bootloader
-x8.menu.bootloader.no_bootloader=No bootloader
-x8.menu.bootloader.no_bootloader.build.export_merged_output=false
-x8.menu.bootloader.no_bootloader.bootloader.str=
-x8.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
-
-x8.menu.bootloader.urboot=Yes
-x8.menu.bootloader.urboot.upload.protocol=urclock
-x8.menu.bootloader.urboot.build.export_merged_output=true
-x8.menu.bootloader.urboot.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
-x8.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
-
-x8.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
-x8.menu.bootloader.urboot_-125.upload.protocol=urclock
-x8.menu.bootloader.urboot_-125.build.export_merged_output=true
-x8.menu.bootloader.urboot_-125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
-x8.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
-
-x8.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
-x8.menu.bootloader.urboot_-250.upload.protocol=urclock
-x8.menu.bootloader.urboot_-250.build.export_merged_output=true
-x8.menu.bootloader.urboot_-250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
-x8.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
-
-x8.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
-x8.menu.bootloader.urboot_-375.upload.protocol=urclock
-x8.menu.bootloader.urboot_-375.build.export_merged_output=true
-x8.menu.bootloader.urboot_-375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
-x8.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
-
-x8.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
-x8.menu.bootloader.urboot_-500.upload.protocol=urclock
-x8.menu.bootloader.urboot_-500.build.export_merged_output=true
-x8.menu.bootloader.urboot_-500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
-x8.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
-
-x8.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
-x8.menu.bootloader.urboot_+125.upload.protocol=urclock
-x8.menu.bootloader.urboot_+125.build.export_merged_output=true
-x8.menu.bootloader.urboot_+125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
-x8.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
-
-x8.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
-x8.menu.bootloader.urboot_+250.upload.protocol=urclock
-x8.menu.bootloader.urboot_+250.build.export_merged_output=true
-x8.menu.bootloader.urboot_+250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
-x8.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
-
-x8.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
-x8.menu.bootloader.urboot_+375.upload.protocol=urclock
-x8.menu.bootloader.urboot_+375.build.export_merged_output=true
-x8.menu.bootloader.urboot_+375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
-x8.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
-
-x8.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
-x8.menu.bootloader.urboot_+500.upload.protocol=urclock
-x8.menu.bootloader.urboot_+500.build.export_merged_output=true
-x8.menu.bootloader.urboot_+500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
-x8.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
-
 # Pinout
 x8.menu.pinout.standard=Standard
 x8.menu.pinout.standard.build.variant=tinyx8
@@ -877,6 +836,86 @@ x8.menu.clock.8MHz_external.bootloader.baudrate=38400
 x8.menu.clock.8MHz_external.build.clocksource=2
 x8.menu.clock.8MHz_external.build.f_cpu=8000000L
 
+# Upload port select / Bootloader
+x8.menu.bootloader.no_bootloader=No bootloader
+x8.menu.bootloader.no_bootloader.build.export_merged_output=false
+x8.menu.bootloader.no_bootloader.bootloader.str=
+x8.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
+
+x8.menu.bootloader.urboot=Yes
+x8.menu.bootloader.urboot.upload.protocol=urclock -D -xnometadata
+x8.menu.bootloader.urboot.build.export_merged_output=true
+x8.menu.bootloader.urboot.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
+x8.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
+
+x8.menu.bootloader.urboot_-125=Urboot (F_CPU -1.25%)
+x8.menu.bootloader.urboot_-125.upload.protocol=urclock -D -xnometadata
+x8.menu.bootloader.urboot_-125.build.export_merged_output=true
+x8.menu.bootloader.urboot_-125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
+x8.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
+
+x8.menu.bootloader.urboot_-250=Urboot (F_CPU -2.50%)
+x8.menu.bootloader.urboot_-250.upload.protocol=urclock -D -xnometadata
+x8.menu.bootloader.urboot_-250.build.export_merged_output=true
+x8.menu.bootloader.urboot_-250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
+x8.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
+
+x8.menu.bootloader.urboot_-375=Urboot (F_CPU -3.75%)
+x8.menu.bootloader.urboot_-375.upload.protocol=urclock -D -xnometadata
+x8.menu.bootloader.urboot_-375.build.export_merged_output=true
+x8.menu.bootloader.urboot_-375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
+x8.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
+
+x8.menu.bootloader.urboot_-500=Urboot (F_CPU -5.00%)
+x8.menu.bootloader.urboot_-500.upload.protocol=urclock -D -xnometadata
+x8.menu.bootloader.urboot_-500.build.export_merged_output=true
+x8.menu.bootloader.urboot_-500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
+x8.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
+
+x8.menu.bootloader.urboot_+125=Urboot (F_CPU +1.25%)
+x8.menu.bootloader.urboot_+125.upload.protocol=urclock -D -xnometadata
+x8.menu.bootloader.urboot_+125.build.export_merged_output=true
+x8.menu.bootloader.urboot_+125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
+x8.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
+
+x8.menu.bootloader.urboot_+250=Urboot (F_CPU +2.50%)
+x8.menu.bootloader.urboot_+250.upload.protocol=urclock -D -xnometadata
+x8.menu.bootloader.urboot_+250.build.export_merged_output=true
+x8.menu.bootloader.urboot_+250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
+x8.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
+
+x8.menu.bootloader.urboot_+375=Urboot (F_CPU +3.75%)
+x8.menu.bootloader.urboot_+375.upload.protocol=urclock -D -xnometadata
+x8.menu.bootloader.urboot_+375.build.export_merged_output=true
+x8.menu.bootloader.urboot_+375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
+x8.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
+
+x8.menu.bootloader.urboot_+500=Urboot (F_CPU +5.00%)
+x8.menu.bootloader.urboot_+500.upload.protocol=urclock -D -xnometadata
+x8.menu.bootloader.urboot_+500.build.export_merged_output=true
+x8.menu.bootloader.urboot_+500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
+x8.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
+
+x8.menu.bootloader.micronucleus=Micronucleus (16 MHz ext. CLOCK)
+x8.menu.bootloader.micronucleus.upload.tool=avrdude_micronucleus
+x8.menu.bootloader.micronucleus.upload.protocol=micronucleus -V -xwait=60
+x8.menu.bootloader.micronucleus.build.export_merged_output=true
+x8.menu.bootloader.micronucleus.bootloader.str=-Uflash,lfuse,efuse:w:{runtime.platform.path}/bootloaders/micronucleus/{build.mcu}_micronucleus_16MHz.hex:I
+x8.menu.bootloader.micronucleus.bootloader.extended_fuses=0xfe
+x8.menu.bootloader.micronucleus.build.clocksource=6
+x8.menu.bootloader.micronucleus.build.f_cpu=16000000L
+
+x8.menu.bootloader.micronucleus_upgrade=Upgrade to newest Micronucleus (16 MHz ext. CLOCK)
+x8.menu.bootloader.micronucleus_upgrade.upload.tool=avrdude_micronucleus
+x8.menu.bootloader.micronucleus_upgrade.upload.protocol=micronucleus -V -xwait=60
+x8.menu.bootloader.micronucleus_upgrade.bootloader.tool=avrdude_micronucleus
+x8.menu.bootloader.micronucleus_upgrade.bootloader.protocol={upload.protocol}
+x8.menu.bootloader.micronucleus_upgrade.build.export_merged_output=true
+x8.menu.bootloader.micronucleus_upgrade.bootloader.str=-Uflash:w:{runtime.platform.path}/bootloaders/micronucleus/upgrade_{build.mcu}_micronucleus_16MHz.hex:i
+x8.menu.bootloader.micronucleus_upgrade.upload.str=-Uflash:w:{runtime.platform.path}/bootloaders/micronucleus/upgrade_{build.mcu}_micronucleus_16MHz.hex:i
+x8.menu.bootloader.micronucleus_upgrade.build.clocksource=6
+x8.menu.bootloader.micronucleus_upgrade.build.f_cpu=16000000L
+
 
 #######################
 #### ATtiny441/841 ####
@@ -902,14 +941,14 @@ x41.menu.bootloader.no_bootloader.build.export_merged_output=false
 x41.menu.bootloader.no_bootloader.bootloader.str=
 x41.menu.bootloader.no_bootloader.bootloader.spm_bit=1
 
-x41.menu.bootloader.urboot_uart0=Yes (UART0)
-x41.menu.bootloader.urboot_uart0.upload.protocol=urclock
+x41.menu.bootloader.urboot_uart0=Urboot (UART0)
+x41.menu.bootloader.urboot_uart0.upload.protocol=urclock -D -xnometadata
 x41.menu.bootloader.urboot_uart0.build.export_merged_output=true
 x41.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart0
 x41.menu.bootloader.urboot_uart0.bootloader.spm_bit=0
 
-x41.menu.bootloader.urboot_uart1=Yes (UART1)
-x41.menu.bootloader.urboot_uart1.upload.protocol=urclock
+x41.menu.bootloader.urboot_uart1=Urboot (UART1)
+x41.menu.bootloader.urboot_uart1.upload.protocol=urclock -D -xnometadata
 x41.menu.bootloader.urboot_uart1.build.export_merged_output=true
 x41.menu.bootloader.urboot_uart1.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart1
 x41.menu.bootloader.urboot_uart1.bootloader.spm_bit=0
@@ -1109,55 +1148,55 @@ x61.menu.bootloader.no_bootloader.bootloader.str=
 x61.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
 
 x61.menu.bootloader.urboot=Yes
-x61.menu.bootloader.urboot.upload.protocol=urclock
+x61.menu.bootloader.urboot.upload.protocol=urclock -D -xnometadata
 x61.menu.bootloader.urboot.build.export_merged_output=true
 x61.menu.bootloader.urboot.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
 x61.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
 
-x61.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
-x61.menu.bootloader.urboot_-125.upload.protocol=urclock
+x61.menu.bootloader.urboot_-125=Urboot (F_CPU -1.25%)
+x61.menu.bootloader.urboot_-125.upload.protocol=urclock -D -xnometadata
 x61.menu.bootloader.urboot_-125.build.export_merged_output=true
 x61.menu.bootloader.urboot_-125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
 x61.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
 
-x61.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
-x61.menu.bootloader.urboot_-250.upload.protocol=urclock
+x61.menu.bootloader.urboot_-250=Urboot (F_CPU -2.50%)
+x61.menu.bootloader.urboot_-250.upload.protocol=urclock -D -xnometadata
 x61.menu.bootloader.urboot_-250.build.export_merged_output=true
 x61.menu.bootloader.urboot_-250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
 x61.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
 
-x61.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
-x61.menu.bootloader.urboot_-375.upload.protocol=urclock
+x61.menu.bootloader.urboot_-375=Urboot (F_CPU -3.75%)
+x61.menu.bootloader.urboot_-375.upload.protocol=urclock -D -xnometadata
 x61.menu.bootloader.urboot_-375.build.export_merged_output=true
 x61.menu.bootloader.urboot_-375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
 x61.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
 
-x61.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
-x61.menu.bootloader.urboot_-500.upload.protocol=urclock
+x61.menu.bootloader.urboot_-500=Urboot (F_CPU -5.00%)
+x61.menu.bootloader.urboot_-500.upload.protocol=urclock -D -xnometadata
 x61.menu.bootloader.urboot_-500.build.export_merged_output=true
 x61.menu.bootloader.urboot_-500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
 x61.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
 
-x61.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
-x61.menu.bootloader.urboot_+125.upload.protocol=urclock
+x61.menu.bootloader.urboot_+125=Urboot (F_CPU +1.25%)
+x61.menu.bootloader.urboot_+125.upload.protocol=urclock -D -xnometadata
 x61.menu.bootloader.urboot_+125.build.export_merged_output=true
 x61.menu.bootloader.urboot_+125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
 x61.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
 
-x61.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
-x61.menu.bootloader.urboot_+250.upload.protocol=urclock
+x61.menu.bootloader.urboot_+250=Urboot (F_CPU +2.50%)
+x61.menu.bootloader.urboot_+250.upload.protocol=urclock -D -xnometadata
 x61.menu.bootloader.urboot_+250.build.export_merged_output=true
 x61.menu.bootloader.urboot_+250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
 x61.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
 
-x61.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
-x61.menu.bootloader.urboot_+375.upload.protocol=urclock
+x61.menu.bootloader.urboot_+375=Urboot (F_CPU +3.75%)
+x61.menu.bootloader.urboot_+375.upload.protocol=urclock -D -xnometadata
 x61.menu.bootloader.urboot_+375.build.export_merged_output=true
 x61.menu.bootloader.urboot_+375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
 x61.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
 
-x61.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
-x61.menu.bootloader.urboot_+500.upload.protocol=urclock
+x61.menu.bootloader.urboot_+500=Urboot (F_CPU +5.00%)
+x61.menu.bootloader.urboot_+500.upload.protocol=urclock -D -xnometadata
 x61.menu.bootloader.urboot_+500.build.export_merged_output=true
 x61.menu.bootloader.urboot_+500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
 x61.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
@@ -1371,8 +1410,8 @@ x313.menu.bootloader.no_bootloader.build.export_merged_output=false
 x313.menu.bootloader.no_bootloader.bootloader.str=
 x313.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
 
-x313.menu.bootloader.urboot_uart0=Yes (UART0)
-x313.menu.bootloader.urboot_uart0.upload.protocol=urclock
+x313.menu.bootloader.urboot_uart0=Urboot (UART0)
+x313.menu.bootloader.urboot_uart0.upload.protocol=urclock -D -xnometadata
 x313.menu.bootloader.urboot_uart0.build.export_merged_output=true
 x313.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:1s_pr_autobaud_noled_ce_{bootloader.pins}
 x313.menu.bootloader.urboot_uart0.bootloader.extended_fuses=0xfe
@@ -1546,14 +1585,14 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 1634.menu.bootloader.no_bootloader.bootloader.str=
 1634.menu.bootloader.no_bootloader.bootloader.spm_bit=1
 
-1634.menu.bootloader.urboot_uart0=Yes (UART0)
-1634.menu.bootloader.urboot_uart0.upload.protocol=urclock
+1634.menu.bootloader.urboot_uart0=Urboot (UART0)
+1634.menu.bootloader.urboot_uart0.upload.protocol=urclock -D -xnometadata
 1634.menu.bootloader.urboot_uart0.build.export_merged_output=true
 1634.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart0_pr
 1634.menu.bootloader.urboot_uart0.bootloader.spm_bit=0
 
-1634.menu.bootloader.urboot_uart1=Yes (UART1)
-1634.menu.bootloader.urboot_uart1.upload.protocol=urclock
+1634.menu.bootloader.urboot_uart1=Urboot (UART1)
+1634.menu.bootloader.urboot_uart1.upload.protocol=urclock -D -xnometadata
 1634.menu.bootloader.urboot_uart1.build.export_merged_output=true
 1634.menu.bootloader.urboot_uart1.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart1_pr
 1634.menu.bootloader.urboot_uart1.bootloader.spm_bit=0
@@ -1720,8 +1759,8 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 828.menu.bootloader.no_bootloader.build.export_merged_output=false
 828.menu.bootloader.no_bootloader.bootloader.str=
 
-828.menu.bootloader.urboot_uart0=Yes (UART0)
-828.menu.bootloader.urboot_uart0.upload.protocol=urclock
+828.menu.bootloader.urboot_uart0=Urboot (UART0)
+828.menu.bootloader.urboot_uart0.upload.protocol=urclock -D -xnometadata
 828.menu.bootloader.urboot_uart0.build.export_merged_output=true
 828.menu.bootloader.urboot_uart0.bootloader.str=-Uurboot:1s_pr_autobaud_noled_uart0_pr
 
@@ -1859,55 +1898,55 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 43.menu.bootloader.no_bootloader.bootloader.extended_fuses=0xff
 
 43.menu.bootloader.urboot=Yes
-43.menu.bootloader.urboot.upload.protocol=urclock
+43.menu.bootloader.urboot.upload.protocol=urclock -D -xnometadata
 43.menu.bootloader.urboot.build.export_merged_output=true
 43.menu.bootloader.urboot.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_{bootloader.osc}{bootloader.clock}
 43.menu.bootloader.urboot.bootloader.extended_fuses=0xfe
 
-43.menu.bootloader.urboot_-125=Yes (F_CPU -1.25%)
-43.menu.bootloader.urboot_-125.upload.protocol=urclock
+43.menu.bootloader.urboot_-125=Urboot (F_CPU -1.25%)
+43.menu.bootloader.urboot_-125.upload.protocol=urclock -D -xnometadata
 43.menu.bootloader.urboot_-125.build.export_merged_output=true
 43.menu.bootloader.urboot_-125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_h{bootloader.clock}
 43.menu.bootloader.urboot_-125.bootloader.extended_fuses=0xfe
 
-43.menu.bootloader.urboot_-250=Yes (F_CPU -2.50%)
-43.menu.bootloader.urboot_-250.upload.protocol=urclock
+43.menu.bootloader.urboot_-250=Urboot (F_CPU -2.50%)
+43.menu.bootloader.urboot_-250.upload.protocol=urclock -D -xnometadata
 43.menu.bootloader.urboot_-250.build.export_merged_output=true
 43.menu.bootloader.urboot_-250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_g{bootloader.clock}
 43.menu.bootloader.urboot_-250.bootloader.extended_fuses=0xfe
 
-43.menu.bootloader.urboot_-375=Yes (F_CPU -3.75%)
-43.menu.bootloader.urboot_-375.upload.protocol=urclock
+43.menu.bootloader.urboot_-375=Urboot (F_CPU -3.75%)
+43.menu.bootloader.urboot_-375.upload.protocol=urclock -D -xnometadata
 43.menu.bootloader.urboot_-375.build.export_merged_output=true
 43.menu.bootloader.urboot_-375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_f{bootloader.clock}
 43.menu.bootloader.urboot_-375.bootloader.extended_fuses=0xfe
 
-43.menu.bootloader.urboot_-500=Yes (F_CPU -5.00%)
-43.menu.bootloader.urboot_-500.upload.protocol=urclock
+43.menu.bootloader.urboot_-500=Urboot (F_CPU -5.00%)
+43.menu.bootloader.urboot_-500.upload.protocol=urclock -D -xnometadata
 43.menu.bootloader.urboot_-500.build.export_merged_output=true
 43.menu.bootloader.urboot_-500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_e{bootloader.clock}
 43.menu.bootloader.urboot_-500.bootloader.extended_fuses=0xfe
 
-43.menu.bootloader.urboot_+125=Yes (F_CPU +1.25%)
-43.menu.bootloader.urboot_+125.upload.protocol=urclock
+43.menu.bootloader.urboot_+125=Urboot (F_CPU +1.25%)
+43.menu.bootloader.urboot_+125.upload.protocol=urclock -D -xnometadata
 43.menu.bootloader.urboot_+125.build.export_merged_output=true
 43.menu.bootloader.urboot_+125.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_j{bootloader.clock}
 43.menu.bootloader.urboot_+125.bootloader.extended_fuses=0xfe
 
-43.menu.bootloader.urboot_+250=Yes (F_CPU +2.50%)
-43.menu.bootloader.urboot_+250.upload.protocol=urclock
+43.menu.bootloader.urboot_+250=Urboot (F_CPU +2.50%)
+43.menu.bootloader.urboot_+250.upload.protocol=urclock -D -xnometadata
 43.menu.bootloader.urboot_+250.build.export_merged_output=true
 43.menu.bootloader.urboot_+250.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_k{bootloader.clock}
 43.menu.bootloader.urboot_+250.bootloader.extended_fuses=0xfe
 
-43.menu.bootloader.urboot_+375=Yes (F_CPU +3.75%)
-43.menu.bootloader.urboot_+375.upload.protocol=urclock
+43.menu.bootloader.urboot_+375=Urboot (F_CPU +3.75%)
+43.menu.bootloader.urboot_+375.upload.protocol=urclock -D -xnometadata
 43.menu.bootloader.urboot_+375.build.export_merged_output=true
 43.menu.bootloader.urboot_+375.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_l{bootloader.clock}
 43.menu.bootloader.urboot_+375.bootloader.extended_fuses=0xfe
 
-43.menu.bootloader.urboot_+500=Yes (F_CPU +5.00%)
-43.menu.bootloader.urboot_+500.upload.protocol=urclock
+43.menu.bootloader.urboot_+500=Urboot (F_CPU +5.00%)
+43.menu.bootloader.urboot_+500.upload.protocol=urclock -D -xnometadata
 43.menu.bootloader.urboot_+500.build.export_merged_output=true
 43.menu.bootloader.urboot_+500.bootloader.str=-Uurboot:1s_pr_noled_{bootloader.pins}_{bootloader.baudrate}baud_m{bootloader.clock}
 43.menu.bootloader.urboot_+500.bootloader.extended_fuses=0xfe
