@@ -2,13 +2,14 @@
 
 The ATtiny25/45/85 family is arguably the most popular classic tinyAVR series, widely used in small and space-constrained designs. Available in an 8-pin DIP, SOIC-8 and QFN-20 packages, these parts pack a USI peripheral, a differential ADC, an on-chip PLL, and a high-speed Timer1 into a minimal footprint. The three family members differ only in flash and RAM size: 2/4/8 KiB of flash and 128/256/512 bytes of RAM respectively. They do not feature a hardware UART; serial communication relies on the built-in software serial implementation.
 
-| Pinout diagram                        | Minimal setup schematic                                  |
-|---------------------------------------|----------------------------------------------------------|
-|<img src="Pinout_x5.png" width="360">  | <img src="ATtiny25_45_85_minimal_setup.png" width="240"> |
+| Pinout diagram                                  | Digispark                                                  | Minimal setup schematic                                  |
+|-------------------------------------------------|------------------------------------------------------------|----------------------------------------------------------|
+|<img src="avr/extras/Pinout_x5.png" width="300"> | <img src="avr/extras/Pinout_x5_Digispark.png" width="360"> |<img src="avr/extras/ATtiny25_45_85_minimal_setup.png" width="240"> |
 
 ## Table of contents
 - [Specifications](#specifications)
 - [Urboot bootloader](#urboot-bootloader)
+- [Micronucleus bootloader](#urboot-bootloader)
 - [LED_BUILTIN is on PB2](#led_builtin-is-on-pb2)
 - [Internal oscillator calibration](#internal-oscillator-calibration)
 - [Features](#features)
@@ -30,26 +31,27 @@ The ATtiny25/45/85 family is arguably the most popular classic tinyAVR series, w
 
 ### Specifications
 
-| Specification                     | ATtiny25/45/85        |
-|-----------------------------------|-----------------------|
-| Bootloader (occupies 256 bytes)   | Urboot                |
-| Flash available (no bootloader)   | 2048/4096/8192 bytes  |
-| Flash available (with bootloader) | 1792/3840/7936 bytes  |
-| RAM                               | 128/256/512 bytes     |
-| EEPROM                            | 128/256/512 bytes     |
-| GPIO Pins                         | 5 + RESET             |
-| ADC Channels                      | 4 (incl RST)          |
-| Differential ADC                  | 1x/20x gain           |
-| PWM Channels                      | 3                     |
-| Interfaces                        | USI                   |
-| Int. Oscillator or PLL (MHz)      | 16, 8, 4, 2, 1        |
-| External Crystal                  | All standard          |
-| External Clock                    | All standard          |
-| Int. WDT Oscillator               | 128 kHz               |
-| LED_BUILTIN                       | PIN_PB2               |
+| Specification                              | ATtiny25/45/85         |
+|--------------------------------------------|------------------------|
+| Bootloader (occupies 256 / 1400 bytes)     | Urboot / Micronucleus  |
+| Flash available (no bootloader)            | 2048/4096/8192 bytes   |
+| Flash available (with Urboot bootloader)   | 1792/3840/7936 bytes   |
+| Flash available (with Micronucleus bootl.) | 640/2688/6784 bytes    |
+| RAM                                        | 128/256/512 bytes      |
+| EEPROM                                     | 128/256/512 bytes      |
+| GPIO Pins                                  | 5 + RESET              |
+| ADC Channels                               | 4 (incl RST)           |
+| Differential ADC                           | 1x/20x gain            |
+| PWM Channels                               | 3                      |
+| Interfaces                                 | USI                    |
+| Int. Oscillator or PLL (MHz)               | 16, 8, 4, 2, 1         |
+| External Crystal                           | All standard           |
+| External Clock                             | All standard           |
+| Int. WDT Oscillator                        | 128 kHz                |
+| LED_BUILTIN                                | PIN_PB2                |
 
 ### Urboot bootloader
-This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny25/45/85, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only 256 bytes, less than half of what Optiboot required, leaving 1792, 3840, or 7936 bytes available for user code on the ATtiny25, 45, and 85 respectively. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
+This core uses the [Urboot bootloader](https://github.com/stefanrueger/urboot/) for the ATtiny25/45/85, a modern replacement that addresses the fundamental shortcomings of Optiboot on these parts. The bootloader is configured to occupy only *256 bytes*, less than half of what Optiboot required, leaving 1792, 3840, or 7936 bytes available for user code on the ATtiny25, 45, and 85 respectively. Urboot can be reconfigured to include additional features at the cost of increased flash usage, though the 256-byte variant used here covers the needs of most users. These chips does not have a hardware serial port, so Urboot is configured to use software-based UART.
 
 A critical improvement over Optiboot is that Urboot actively protects both itself and the reset vector from being overwritten during flash operations, preventing the bootloader from bricking itself. The bootloader remains intact regardless of what is uploaded, making it a reliable choice.
 
@@ -57,6 +59,24 @@ No pre-compiled bootloader binaries are distributed with this core, instead, Avr
 The default serial upload pins for these chips are PB0 (TX) and PB1 (RX). The WDT timeout, UART pins, baud rate, and other bootloader parameters can be customized by editing the relevant entries in boards.txt or in your platformio.ini project configuration file.
 
 The AVR internal oscillator is neither highly accurate nor necessarily tightly calibrated from the factory. Since a stable system clock is essential for asynchronous protocols such as UART, the bootloader can be configured to apply an oscillator correction factor. This is exposed as a Tools menu option, with adjustable compensation ranging from -5.00% to +5.00%.
+
+### Micronucleus
+[Micronucleus](https://github.com/micronucleus/micronucleus) is a bootloader that emulates a USB interface and lets you upload sketches using a native USB interface without the need for an external programmer or USB-to-serial adapter. TinyCore implements the V2.6 of this bootloader.
+
+Rather than relying on a hardware USB controller, Micronucleus uses **V-USB**, a software-only implementation of the USB 1.1 low-speed protocol using the ATtiny's I/O pins. On the ATtiny25/45/85, two pins are dedicated to the USB data lines (D+ and D-), typically with small series resistors and zener diodes for voltage clamping to meet USB signal level requirements.
+
+When the microcontroller powers up or is reset, Micronucleus briefly enumerates as a USB device and waits a few seconds for an upload command from the host. If no upload is initiated, it jumps to the user application. If an upload is detected, it receives the new sketch, writes it to flash, and then starts it. Micronucleus occupies about **1400 bytes** of flash, compared to 256 bytes for Urboot. Note that the microcontroller will be running from its 16 MHz internal PLL when using the Micronucleus bootloader.
+
+The most well-known board using Micronucleus on the ATtiny85 is the **Digispark**, a tiny development board with a built-in USB connector (or USB pins broken out), a voltage regulator, and a few GPIO pins. It was originally designed by Digistump and has since been widely cloned and sold cheaply on sites like AliExpress. The **ATtiny88**-based **MH-Tiny** board follows the same concept for a slightly larger chip.
+
+#### Uploading using the Micronucleus bootloader
+To upload sketches to a board that already has the Micronucleus bootloader installed (for instance the Digispark), select *Tools > Bootloader > Micronucleus (16 MHz PLL)* in the Arduino IDE. Unplug the board from your computer, click *Upload*, and connect the board to your computer when Avrdude tells you to. The sketch will start automatically when done uploading.
+
+#### Upgrading the bootloader
+The bootloader itself can be upgraded over USB using the Micronucleus tool with a special "upgrade" firmware, as long as the chip is already running the Micronucleus bootloader. Select *Tools > Bootloader > Upgrade to newest Micronucleus (16 MHz PLL)*. Unplug the board from the computer and click *Burn Bootloader*. Connect the board to your computer when Avrdude tells you to. When the upload process is finished, give the microcontroller a little time to reprogram itself. The board should now be ready ready!
+
+#### Flashing the bootloader using a programmer
+A chip without any bootloader will require an ISP programmer for the initial flash. Select *Tools > Bootloader > Micronucleus (16 MHz PLL)*, and select your preferred programmer under *Tools > Programmer*. Connect the ISP programmer to the target microcontroller and click *Burn Bootloader*.
 
 ### LED_BUILTIN is on PB2
 This is different than on ATtinyCore, which uses PB1.

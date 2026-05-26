@@ -13,7 +13,7 @@ Key improvements include:
 - **Hardware debugging** via [PyAvrOCD](https://pyavrocd.io)
 - **Revised and improved documentation** for every supported chip
 - **Systematic hardware testing** - core functionality is [tested on real silicon](/avr/extras/tests/README.md)
-- **Support for the ATtiny85 based [Digispark](/avr/extras/ATtiny_x5.md) and the ATtiny88 based [MH-Tiny board](/avr/extras/ATtiny_x8.md)**
+- **Support for the ATtiny85 based [Digispark](/avr/extras/ATtiny_x5.md) and the ATtiny88 based [MH-Tiny](/avr/extras/ATtiny_x8.md) board**
 - **Works with PlatformIO**
 
 # Table of contents
