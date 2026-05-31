@@ -11,9 +11,9 @@ version=0.6.0
 # ---------------------
 
 # Optimization flags for debugging
-compiler.optimization_flags=-Os -ggdb3 -flto -DNDEBUG @{build.path}/options.release_flags
-compiler.optimization_flags.release=-Os -ggdb3 -flto -DNDEBUG @{build.path}/options.release_flags
-compiler.optimization_flags.debug=-Og -ggdb3 -fno-lto -DDEBUG @{build.path}/options.debug_flags
+compiler.optimization_flags=-Os -ggdb3 -flto -DNDEBUG "@{build.path}/options.release_flags"
+compiler.optimization_flags.release=-Os -ggdb3 -flto -DNDEBUG "@{build.path}/options.release_flags"
+compiler.optimization_flags.debug=-Og -ggdb3 -fno-lto -DDEBUG "@{build.path}/options.debug_flags"
 
 build.versiondefines=-DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_AVR -DTINYCORE="{version}"
 build.optiondefines=-DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource}
