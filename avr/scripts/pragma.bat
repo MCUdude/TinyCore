@@ -89,7 +89,7 @@ for /f "usebackq delims=" %%L in ("%TMP_OUT%") do (
 
   REM Now we can match deterministically
   REM Accept both "pragma arduino debug_flags" and "pragma arduino release_flags"
-  echo(!LINE! | findstr /I /C:"pragma arduino %FLAG_NAME% " >nul
+  echo "!LINE!" | findstr /I /C:"pragma arduino %FLAG_NAME% " >nul
   if not errorlevel 1 (
     if !HASH! EQU 1 (
       REM Strip prefix
@@ -112,7 +112,7 @@ for /f "usebackq delims=" %%L in ("%TMP_OUT%") do (
 
 > "%OUT_FILE%" (<nul set /p ="%OPTIONS% ")
 
-FC %OUT_FILE% %BAK_FILE% > NUL
+FC "%OUT_FILE%" "%BAK_FILE%" > NUL
 if errorlevel 1 (
    echo "Options changed: Deleting cached object files"
    del "%OSKETCH%" 2>NUL

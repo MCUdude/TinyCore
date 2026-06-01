@@ -28,7 +28,7 @@ set /a maxflash=%maxflash% - %boot%
 REM Calculate flash and RAM from avr-size output
 set flash=0
 set ram=0
-for /f "tokens=1,2" %%a in ('%sizeprog% -A %sketch%') do (
+for /f "tokens=1,2" %%a in ('%sizeprog% -A "%sketch%"') do (
     if "%%a"==".text"   set /a flash+=%%b
     if "%%a"==".data"   set /a flash+=%%b
     if "%%a"==".data"   set /a ram+=%%b
@@ -51,4 +51,4 @@ if %flash% GTR %maxflash% (
    )
 
 REM Output JSON
-echo {"output": "Flash memory used: %flash% bytes out of %maxflash% (%flashpercent%%%). RAM used for global variables: %ram% bytes out of %maxram%.","severity": "%severity%",%errstr%"sections": [{"name": "text","size": %flash%,"max_size": %maxflash%},{"name": "data","size": %ram%,"max_size": %maxram%}]}
+echo {"output": "Flash memory used: %flash% bytes out of %maxflash% (%flashpercent%%%).\nRAM used for global variables: %ram% bytes out of %maxram%.","severity": "%severity%",%errstr%"sections": [{"name": "text","size": %flash%,"max_size": %maxflash%},{"name": "data","size": %ram%,"max_size": %maxram%}]}
