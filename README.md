@@ -26,7 +26,7 @@ Key improvements include:
 * [EEPROM retain option](#eeprom-option)
 * [Printf support](#printf-support)
 * [Pin macros](#pin-macros)
-* [Fast IO](fast-io)
+* [Fast IO](#fast-io)
 * [Internal oscillator calibration (OSCCAL)](#internal-oscillator-calibration-osccal)
 * [Write to own flash](#write-to-own-flash)
 * [Pragma directive](#pragma-directive)
@@ -177,7 +177,7 @@ digitalWrite(0, HIGH);
 
 ## Fast IO
 For timing critical applications the standard `digitalRead()` and `digitalWrite()` functions may be too slow. To solve this, TinyCore also includes improved variants that compiles down to a single instruction.
-Call `pinModeFast(pin, state), `digitalReadFast(pin)`, `digitalWriteFast(pin, state)` to use these.<br/>
+Call `pinModeFast(pin, state)`, `digitalReadFast(pin)`, `digitalWriteFast(pin, state)` to use these.<br/>
 **Note that the pin number and pin state has to be known at compile time!**
 
 
