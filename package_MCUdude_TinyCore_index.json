@@ -338,7 +338,7 @@
             {
               "packager": "TinyCore",
               "name": "avrocd-tools",
-              "version": "1.5.0"
+              "version": "1.5.1"
             }
           ]
         }
@@ -518,63 +518,63 @@
         },
         {
           "name": "avrocd-tools",
-          "version": "1.5.0",
+          "version": "1.5.1",
           "systems": [
             {
-              "size": "1072",
-              "checksum": "SHA-256:b3e026805e0d566d2259b93769b206d49fbfa3043283a71f18dabd59fa02b18c",
+              "size": "1073",
+              "checksum": "SHA-256:38b47af36074a65bd031a8aadd5fdbb37ec56ebf5cfe3b597ef0141a33521f2a",
               "host": "arm-linux-gnueabihf",
-              "archiveFileName": "avrocd-tools-1.5.0-arm-linux-gnueabihf.tar.gz",
-              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.0/avrocd-tools-1.5.0-arm-linux-gnueabihf.tar.gz"
+              "archiveFileName": "avrocd-tools-1.5.1-arm-linux-gnueabihf.tar.gz",
+              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.1/avrocd-tools-1.5.1-arm-linux-gnueabihf.tar.gz"
             },
             {
-              "size": "48785473",
-              "checksum": "SHA-256:348965d43b30e66353ecc06655f0c41b25dc283e779f9a4ff7f11bec778a177b",
+              "size": "48779740",
+              "checksum": "SHA-256:d4a32e80804fc0016d021992d294d50e7fbe0dc7779641eef26a68685b4acce4",
               "host": "aarch64-linux-gnu",
-              "archiveFileName": "avrocd-tools-1.5.0-aarch64-linux-gnu.tar.gz",
-              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.0/avrocd-tools-1.5.0-aarch64-linux-gnu.tar.gz"
+              "archiveFileName": "avrocd-tools-1.5.1-aarch64-linux-gnu.tar.gz",
+              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.1/avrocd-tools-1.5.1-aarch64-linux-gnu.tar.gz"
             },
             {
-              "size": "37732071",
-              "checksum": "SHA-256:ca5cbbad178147ee33b06f8b789333e8559487b360352201d7b0323b9daf90d7",
+              "size": "37737059",
+              "checksum": "SHA-256:2e21b48d8b6af73ad6d6d402b36471a520cd8e31346a49223ee44405079f65a6",
               "host": "x86_64-apple-darwin",
-              "archiveFileName": "avrocd-tools-1.5.0-x86_64-apple-darwin.tar.gz",
-              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.0/avrocd-tools-1.5.0-x86_64-apple-darwin.tar.gz"
+              "archiveFileName": "avrocd-tools-1.5.1-x86_64-apple-darwin.tar.gz",
+              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.1/avrocd-tools-1.5.1-x86_64-apple-darwin.tar.gz"
             },
             {
-              "size": "49265442",
-              "checksum": "SHA-256:40f0e3d4de665faa7152335f15f9bc8264d3b99001802b8e99a14b06d9e1c39b",
+              "size": "49267807",
+              "checksum": "SHA-256:7ff9d81727042fa4fd3df8d2e9aebd8954643cf5175864f9aca526e4086fcc1b",
               "host": "x86_64-linux-gnu",
-              "archiveFileName": "avrocd-tools-1.5.0-x86_64-linux-gnu.tar.gz",
-              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.0/avrocd-tools-1.5.0-x86_64-linux-gnu.tar.gz"
+              "archiveFileName": "avrocd-tools-1.5.1-x86_64-linux-gnu.tar.gz",
+              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.1/avrocd-tools-1.5.1-x86_64-linux-gnu.tar.gz"
             },
             {
-              "size": "1081",
-              "checksum": "SHA-256:80e708101421de3da5edb61c51d9e1b473b37c2b253a72746f93ea7c282ab4e2",
+              "size": "1079",
+              "checksum": "SHA-256:045125570ba576ffc2029e457d4d5122e084aa79151b1a5c2d16670a897abfd7",
               "host": "i686-linux-gnu",
-              "archiveFileName": "avrocd-tools-1.5.0-i686-linux-gnu.tar.gz",
-              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.0/avrocd-tools-1.5.0-i686-linux-gnu.tar.gz"
+              "archiveFileName": "avrocd-tools-1.5.1-i686-linux-gnu.tar.gz",
+              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.1/avrocd-tools-1.5.1-i686-linux-gnu.tar.gz"
             },
             {
-              "size": "29125413",
-              "checksum": "SHA-256:9b24112009f842273818010611d5324f048aac51db2b54876105de2d6801e64b",
+              "size": "29124163",
+              "checksum": "SHA-256:3512a1668e18a323aad4bc1bfe50250d56d75f876e6343edb8510827cd627734",
               "host": "x86_64-mingw32",
-              "archiveFileName": "avrocd-tools-1.5.0-x86_64-mingw32.tar.gz",
-              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.0/avrocd-tools-1.5.0-x86_64-mingw32.tar.gz"
+              "archiveFileName": "avrocd-tools-1.5.1-x86_64-mingw32.tar.gz",
+              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.1/avrocd-tools-1.5.1-x86_64-mingw32.tar.gz"
             },
             {
-              "size": "36369373",
-              "checksum": "SHA-256:75fe9bce15e3ebf10e551d030dc38524de8851328066e96b2dec71e190464054",
+              "size": "36368219",
+              "checksum": "SHA-256:f3cbf1bc6574f1659eabde3ec145f1cb507fe3e71c323652b471e57ace7b183d",
               "host": "arm64-apple-darwin",
-              "archiveFileName": "avrocd-tools-1.5.0-arm64-apple-darwin.tar.gz",
-              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.0/avrocd-tools-1.5.0-arm64-apple-darwin.tar.gz"
+              "archiveFileName": "avrocd-tools-1.5.1-arm64-apple-darwin.tar.gz",
+              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.1/avrocd-tools-1.5.1-arm64-apple-darwin.tar.gz"
             },
             {
-              "size": "27093274",
-              "checksum": "SHA-256:41a26887c3119458505044af0a01a3c703b816545985bcb482ba5b805d60755b",
+              "size": "27092307",
+              "checksum": "SHA-256:8821d19a8ccae4ad78105d3933eb75b28b45dd2c4e3fa4eea362e1384a37d302",
               "host": "i686-mingw32",
-              "archiveFileName": "avrocd-tools-1.5.0-i686-mingw32.tar.gz",
-              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.0/avrocd-tools-1.5.0-i686-mingw32.tar.gz"
+              "archiveFileName": "avrocd-tools-1.5.1-i686-mingw32.tar.gz",
+              "url": "https://github.com/felias-fogg/PyAvrOCD/releases/download/v1.5.1/avrocd-tools-1.5.1-i686-mingw32.tar.gz"
             }
           ]
         }
