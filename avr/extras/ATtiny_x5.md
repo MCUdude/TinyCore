@@ -2,9 +2,9 @@
 
 The ATtiny25/45/85 family is arguably the most popular classic tinyAVR series, widely used in small and space-constrained designs. Available in an 8-pin DIP, SOIC-8 and QFN-20 packages, these parts pack a USI peripheral, a differential ADC, an on-chip PLL, and a high-speed Timer1 into a minimal footprint. The three family members differ only in flash and RAM size: 2/4/8 KiB of flash and 128/256/512 bytes of RAM respectively. They do not feature a hardware UART; serial communication relies on the built-in software serial implementation.
 
-| Pinout diagram                                  | Digispark                                                  | Minimal setup schematic                                  |
-|-------------------------------------------------|------------------------------------------------------------|----------------------------------------------------------|
-|<img src="avr/extras/Pinout_x5.png" width="300"> | <img src="avr/extras/Pinout_x5_Digispark.png" width="360"> |<img src="avr/extras/ATtiny25_45_85_minimal_setup.png" width="240"> |
+| Pinout diagram                       | Digispark                                       | Minimal setup schematic                                 |
+|--------------------------------------|-------------------------------------------------|---------------------------------------------------------|
+|<img src="Pinout_x5.png" width="300"> | <img src="Pinout_x5_Digispark.png" width="360"> |<img src="ATtiny25_45_85_minimal_setup.png" width="240"> |
 
 ## Table of contents
 - [Specifications](#specifications)
