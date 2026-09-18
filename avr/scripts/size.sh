@@ -22,8 +22,8 @@ else
     maxflash=$(($3-boot))
 fi
 maxram=$4
-flash=$($1 -A "$2" | grep -E '^(.text|.data)\s+([0-9]+).*' | awk '{s+=$2}END{print s}')
-ram=$($1 -A "$2" | grep -E '^(.data|.bss|.noinit)\s+([0-9]+).*' | awk '{s+=$2}END{print s}')
+flash=$("$1" -A "$2" | grep -E '^(.text|.data)\s+([0-9]+).*' | awk '{s+=$2}END{print s}')
+ram=$("$1" -A "$2" | grep -E '^(.data|.bss|.noinit)\s+([0-9]+).*' | awk '{s+=$2}END{print s}')
 flashpercent=$((flash*100/maxflash))
 printf  '{  "output": "%sFlash memory used: %d bytes out of %d (%d%%).\\n' "$info" "$flash" "$maxflash" "$flashpercent"
 printf  'RAM used for global variables: %d bytes out of %d.",' "$ram" "$maxram" 

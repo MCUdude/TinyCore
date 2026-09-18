@@ -13,7 +13,7 @@ touch "$3/options.$5"
 cp "$3/options.$5" "$3/options.$5.bak"
 
 # create new option file
-$1 -fpreprocessed -dD -E -x c++ "$2/$4" | grep -E "^\s*#\s*pragma\s+arduino\s+$5" | sed -E 's/# *pragma +arduino +(debug|release|build)_flags//g' | tr '\n' ' ' >"$3/options.$5"
+"$1" -fpreprocessed -dD -E -x c++ "$2/$4" | grep -E "^\s*#\s*pragma\s+arduino\s+$5" | sed -E 's/# *pragma +arduino +(debug|release|build)_flags//g' | tr '\n' ' ' >"$3/options.$5"
 
 # compare old and new options
 # if different, then delete all cached *.o and *.a files
@@ -23,9 +23,9 @@ $1 -fpreprocessed -dD -E -x c++ "$2/$4" | grep -E "^\s*#\s*pragma\s+arduino\s+$5
 # 'core.a', then delete the 'cores' folder.
 if  [[ $(diff -q "$3/options.$5" "$3/options.$5.bak") ]]; then
     echo "Options changed: Delete cached object files"
-    rm -rf "$3/core/*.a"
-    rm -rf "$3/core/*.o"
-    rm -rf "$3/sketch/*.a"
+    rm -rf "$3/core/"*.a
+    rm -rf "$3/core/"*.o
+    rm -rf "$3/sketch/"*.a
     
     if [[ -d $3/../../cores ]] &&  [[ -d $3/../../sketches ]]; then
         filenums=$(find "$3"/../../ -maxdepth 1 -print | wc -l)

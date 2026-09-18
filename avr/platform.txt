@@ -100,8 +100,9 @@ recipe.output.tmp_file={build.project_name}.hex
 recipe.output.save_file={build.project_name}_{build.mcu}_{build.f_cpu}.hex
 
 ## Save hex
-recipe.hooks.savehex.presavehex.1.pattern.windows="{runtime.platform.path}/scripts/delete_merged_output.bat" {build.export_merged_output} "{build.path}\{build.project_name}.with_bootloader.hex"
-recipe.hooks.savehex.presavehex.2.pattern.windows=cmd /C copy "{build.path}\{build.project_name}_{build.mcu}_{build.f_cpu}.lst" "{sketch_path}"
+# Dummy initial `echo.` command prevents unwanted stripping of quotes, which would cause the command to fail for paths with spaces
+recipe.hooks.savehex.presavehex.1.pattern.windows=cmd /C call "{runtime.platform.path}/scripts/delete_merged_output.bat" {build.export_merged_output} "{build.path}\{build.project_name}.with_bootloader.hex"
+recipe.hooks.savehex.presavehex.2.pattern.windows=cmd /C echo. && copy "{build.path}\{build.project_name}_{build.mcu}_{build.f_cpu}.lst" "{sketch_path}"
 recipe.hooks.savehex.presavehex.1.pattern.linux=chmod +x "{runtime.platform.path}/scripts/delete_merged_output.sh"
 recipe.hooks.savehex.presavehex.2.pattern.linux="{runtime.platform.path}/scripts/delete_merged_output.sh" {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
 recipe.hooks.savehex.presavehex.3.pattern.linux=cp "{build.path}/{build.project_name}_{build.mcu}_{build.f_cpu}.lst" "{sketch_path}"
@@ -115,7 +116,7 @@ recipe.size.regex=^(?:\.text|\.data|\.bootloader)\s+([0-9]+).*
 recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 recipe.advanced_size.pattern="/bin/bash" "{runtime.platform.path}/scripts/size.sh" "{compiler.path}{compiler.size.cmd}" "{build.path}/{build.project_name}.elf" "{upload.maximum_size}" "{upload.maximum_data_size}" "{build.mcu}" "{bootloader.type}"
-recipe.advanced_size.pattern.windows="{runtime.platform.path}\scripts\size.bat" "{compiler.path}{compiler.size.cmd}.exe" "{build.path}\{build.project_name}.elf" "{upload.maximum_size}" "{upload.maximum_data_size}" "{build.mcu}" "{bootloader.type}" 
+recipe.advanced_size.pattern.windows=cmd /C call "{runtime.platform.path}\scripts\size.bat" "{compiler.path}{compiler.size.cmd}.exe" "{build.path}\{build.project_name}.elf" "{upload.maximum_size}" "{upload.maximum_data_size}" "{build.mcu}" "{bootloader.type}" 
 
 ## Preprocessor
 preproc.includes.flags=-w -x c++ -M -MG -MP
@@ -129,9 +130,9 @@ recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {
 # Generating options.XXXX_flags using #pragma
 recipe.hooks.prebuild.1.pattern=/bin/bash "{runtime.platform.path}/scripts/pragma.sh" "{compiler.path}{compiler.cpp.cmd}" "{build.source.path}" "{build.path}" "{build.project_name}" debug_flags
 recipe.hooks.prebuild.2.pattern=/bin/bash "{runtime.platform.path}/scripts/pragma.sh" "{compiler.path}{compiler.cpp.cmd}" "{build.source.path}" "{build.path}" "{build.project_name}" release_flags
-recipe.hooks.prebuild.1.pattern.windows="{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{build.source.path}" "{build.path}" "{build.project_name}" debug_flags
-recipe.hooks.prebuild.2.pattern.windows="{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{build.source.path}" "{build.path}" "{build.project_name}" release_flags
-
+# Dummy initial `echo.` command prevents unwanted stripping of quotes, which would cause the command to fail for paths with spaces
+recipe.hooks.prebuild.1.pattern.windows=cmd /C call "{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{build.source.path}" "{build.path}" "{build.project_name}" debug_flags
+recipe.hooks.prebuild.2.pattern.windows=cmd /C call "{runtime.platform.path}\scripts\pragma.bat" "{compiler.path}{compiler.cpp.cmd}" "{build.source.path}" "{build.path}" "{build.project_name}" release_flags
 
 # AVR Uploader/Programmers tools
 # ------------------------------
