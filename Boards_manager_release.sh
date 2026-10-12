@@ -15,26 +15,65 @@ REALAUTHOR=MCUdude   # real author
 REPOSITORY=TinyCore  # Github repo name
 
 
-AVRDUDE_VERSION="8.1"
+# Which index to write. Set INDEX_FILE to put a release candidate into an index
+# of its own, so the board manager of an ordinary user never offers it. Called
+# without the variable, this is the released index, exactly as before.
+INDEX="${INDEX_FILE:-package_${REALAUTHOR}_${REPOSITORY}_index.json}"
+
+# The avrdude the platform depends on has to be one the index actually offers,
+# so take the newest entry there rather than a number written down here. Run
+# Add_avrdude_release.sh first when a newer avrdude should be used.
+AVRDUDE_VERSION=$(jq -r '.packages[].tools[] | select(.name == "avrdude") | .version' \
+                  $INDEX | sort -V | tail -1)
+
+if [ -z "$AVRDUDE_VERSION" ]; then
+    echo "The index contains no avrdude at all. Run Add_avrdude_release.sh first."
+    exit 1
+fi
+echo "Platform will depend on avrdude ${AVRDUDE_VERSION}"
 
 # Get the version number of most recent PyAvrOCD version
 PAOVERSION=$(curl -s https://api.github.com/repos/$PAOOWNER/PyAvrOCD/releases/latest | grep "tag_name" |  awk -F\" '{print $4}')
 AVROCDVERSION=${PAOVERSION#"v"}
 
-# Get the download URL for the latest release from Github
-DOWNLOAD_URL=$(curl -s https://api.github.com/repos/$AUTHOR/$REPOSITORY/releases/latest | grep "tarball_url" | awk -F\" '{print $4}')
+# Without this the script runs on with an empty version: the check below then
+# matches any avrocd-tools entry at all, and jq swallows the next --arg as the
+# value of an empty one, so every argument after it shifts by one.
+if [ -z "$AVROCDVERSION" ]; then
+    echo "Could not find out which PyAvrOCD version is the most recent one"
+    exit 1
+fi
 
-# Get filename
-DOWNLOADED_FILE=$(echo $DOWNLOAD_URL | awk -F/ '{print $8}')
+# A tag may be given as the first argument. Without one we take the latest
+# release, as before; with one we take exactly that tag, which is what a
+# pre-release needs: the "latest release" of the API never is one.
+TAG="$1"
 
-# Check whether most recent board file is already in the index
-if grep -q ${REPOSITORY}-${DOWNLOADED_FILE#"v"} package_${REALAUTHOR}_${REPOSITORY}_index.json; then
+if [ -n "$TAG" ]; then
+    DOWNLOAD_URL="https://api.github.com/repos/$AUTHOR/$REPOSITORY/tarball/$TAG"
+    DOWNLOADED_FILE="$TAG"
+else
+    DOWNLOAD_URL=$(curl -s https://api.github.com/repos/$AUTHOR/$REPOSITORY/releases/latest | grep "tarball_url" | awk -F\" '{print $4}')
+    DOWNLOADED_FILE=$(echo $DOWNLOAD_URL | awk -F/ '{print $8}')
+fi
+
+if [ -z "$DOWNLOADED_FILE" ]; then
+    echo "Could not work out which version to package"
+    exit 1
+fi
+echo "Packaging ${DOWNLOADED_FILE}"
+
+# Check whether this exact version is already in the index. The archive name
+# has to be matched in full: without the extension, "TinyCore-0.9.0" also
+# matches "TinyCore-0.9.0-pre6.tar.bz2", and the final release would be
+# refused because one of its own pre-releases is in the index.
+if grep -q "${REPOSITORY}-${DOWNLOADED_FILE#"v"}.tar.bz2" $INDEX; then
     echo "Most recent board version is already in the index file. Nothing to do."
     exit 1
 fi
 
 # Check whether already part of the index
-if grep -q "avrocd-tools-"${AVROCDVERSION} package_${REALAUTHOR}_${REPOSITORY}_index.json; then
+if grep -q "avrocd-tools-"${AVROCDVERSION} $INDEX; then
     echo "Current PyAvrOCD version is in index. Continue ..."
 else
     echo "Current PyAvrOCD version is not in index. Add it first."
@@ -59,7 +98,7 @@ mv $REPOSITORY-${DOWNLOADED_FILE#"v"}/avr/* $REPOSITORY-${DOWNLOADED_FILE#"v"}
 rm -rf ${DOWNLOADED_FILE}.tar.bz2 $REPOSITORY-${DOWNLOADED_FILE#"v"}/avr
 
 # Make sure there are no macOS related files added to the arching that's soon to be geneated
-dot_clean .
+command -v dot_clean > /dev/null 2>&1 && dot_clean .
 
 # Compress folder to tar.bz2
 printf "\nCompressing folder $REPOSITORY-${DOWNLOADED_FILE#"v"} to $REPOSITORY-${DOWNLOADED_FILE#"v"}.tar.bz2\n"
@@ -75,7 +114,7 @@ SHA256="SHA-256:$(shasum -a 256 "$REPOSITORY-${DOWNLOADED_FILE#"v"}.tar.bz2" | a
 # Create Github download URL
 URL="https://${AUTHOR}.github.io/${REPOSITORY}/$REPOSITORY-${DOWNLOADED_FILE#"v"}.tar.bz2"
 
-cp "package_${REALAUTHOR}_${REPOSITORY}_index.json" "package_${REALAUTHOR}_${REPOSITORY}_index.json.tmp"
+cp "$INDEX" "$INDEX.tmp"
 
 # Add new boards release entry
 jq -r                                    \
@@ -122,7 +161,7 @@ jq -r                                    \
       "version": $avrocdversion
     }   
   ]
-}' "package_${REALAUTHOR}_${REPOSITORY}_index.json.tmp" > "package_${REALAUTHOR}_${REPOSITORY}_index.json"
+}' "$INDEX.tmp" > "$INDEX"
 
 # Remove files that are no longer needed
-rm -rf "$REPOSITORY-${DOWNLOADED_FILE#"v"}" "package_${REALAUTHOR}_${REPOSITORY}_index.json.tmp"
+rm -rf "$REPOSITORY-${DOWNLOADED_FILE#"v"}" "$INDEX.tmp"

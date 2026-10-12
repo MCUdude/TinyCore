@@ -4,9 +4,14 @@ OWNER=felias-fogg  # Github username
 AUTHOR=MCUdude
 REPOSITORY=TinyCore
 
+# Which index to write. Set INDEX_FILE to put a release candidate into an index
+# of its own, so the board manager of an ordinary user never offers it. Called
+# without the variable, this is the released index, exactly as before.
+INDEX="${INDEX_FILE:-package_${AUTHOR}_${REPOSITORY}_index.json}"
+
 AVROCD_TOOLS_VERSION=$(curl -s https://api.github.com/repos/$OWNER/PyAvrOCD/releases/latest | grep "tag_name" |  awk -F\" '{print $4}' | awk -Fv '{print $2}')
 
-if grep -q "avrocd-tools-${AVROCD_TOOLS_VERSION}" package_${AUTHOR}_${REPOSITORY}_index.json; then
+if grep -q "avrocd-tools-${AVROCD_TOOLS_VERSION}" $INDEX; then
     echo "Most recent version of PyAvrOCD is already in the index"
     exit 1
 fi
@@ -85,9 +90,9 @@ printf "File6: ${FILE6}, Size: ${SIZE6}, SHA256: ${SHASUM6}, URL6: ${URL6}\n"
 printf "File7: ${FILE7}, Size: ${SIZE7}, SHA256: ${SHASUM7}, URL7: ${URL7}\n"
 printf "File8: ${FILE8}, Size: ${SIZE8}, SHA256: ${SHASUM8}, URL8: ${URL8}\n"
 
-count=$(jq '.packages | length' "package_${AUTHOR}_${REPOSITORY}_index.json")
+count=$(jq '.packages | length' "$INDEX")
 for ((p = 0; p < count; p++)); do
-cp "package_${AUTHOR}_${REPOSITORY}_index.json" "package_${AUTHOR}_${REPOSITORY}_index.json.tmp"
+cp "$INDEX" "$INDEX.tmp"
 jq -r                                  \
 --arg ix                   $p \
 --arg avrocd_tools_version $AVROCD_TOOLS_VERSION \
@@ -201,8 +206,8 @@ jq -r                                  \
       "url": $url8
     }
   ]
-}' "package_${AUTHOR}_${REPOSITORY}_index.json.tmp" > "package_${AUTHOR}_${REPOSITORY}_index.json"
-rm "package_${AUTHOR}_${REPOSITORY}_index.json.tmp"
+}' "$INDEX.tmp" > "$INDEX"
+rm "$INDEX.tmp"
 done
 
 rm $FILE1
