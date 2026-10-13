@@ -3,7 +3,27 @@
 AUTHOR=MCUdude      # Github username
 REPOSITORY=TinyCore # Github repo name
 
-AVRDUDE_VERSION="8.1"
+# Which index to write. Set INDEX_FILE to put a release candidate into an index
+# of its own, so the board manager of an ordinary user never offers it. Called
+# without the variable, this is the released index, exactly as before.
+INDEX="${INDEX_FILE:-package_${AUTHOR}_${REPOSITORY}_index.json}"
+
+# Take whatever avrdude has released most recently instead of carrying a
+# version number in here that ages.
+AVRDUDE_VERSION=$(curl -s https://api.github.com/repos/avrdudes/avrdude/releases/latest \
+                  | grep '"tag_name"' | awk -F\" '{print $4}' | sed 's/^v//')
+
+if [ -z "$AVRDUDE_VERSION" ]; then
+    echo "Could not find out which avrdude version is the most recent one"
+    exit 1
+fi
+
+if grep -q "avrdude_v${AVRDUDE_VERSION}_" $INDEX; then
+    echo "avrdude ${AVRDUDE_VERSION} is already in the index. Nothing to do."
+    exit 0                      # not a failure: a release script calls this every time
+fi
+
+echo "Adding avrdude ${AVRDUDE_VERSION} to the index"
 
 OS_PLATFORM1="Linux_ARMv6"
 OS_PLATFORM2="Linux_ARM64"
@@ -41,6 +61,15 @@ wget --no-verbose $URL4
 wget --no-verbose $URL5
 wget --no-verbose $URL6
 
+# A download that did not happen would otherwise end up in the index as a
+# zero-sized entry with the checksum of nothing.
+for f in "$FILE1" "$FILE2" "$FILE3" "$FILE4" "$FILE5" "$FILE6"; do
+    if [ ! -s "$f" ]; then
+        echo "Could not download $f - does avrdude ${AVRDUDE_VERSION} still ship it?"
+        exit 1
+    fi
+done
+
 SIZE1=$(wc -c $FILE1 | awk '{print $1}')
 SIZE2=$(wc -c $FILE2 | awk '{print $1}')
 SIZE3=$(wc -c $FILE3 | awk '{print $1}')
@@ -62,16 +91,10 @@ printf "File4: ${FILE4}, Size: ${SIZE4}, SHA256: ${SHASUM4}, URL4: ${URL4}\n"
 printf "File5: ${FILE5}, Size: ${SIZE5}, SHA256: ${SHASUM5}, URL5: ${URL5}\n"
 printf "File6: ${FILE6}, Size: ${SIZE6}, SHA256: ${SHASUM6}, URL6: ${URL6}\n"
 
-cp "package_${AUTHOR}_${REPOSITORY}_index.json" "package_${AUTHOR}_${REPOSITORY}_index.json.tmp"
+cp "$INDEX" "$INDEX.tmp"
 
 jq -r                                  \
 --arg avrdude_version $AVRDUDE_VERSION \
---arg os_plaform1 $OS_PLATFORM1 \
---arg os_plaform2 $OS_PLATFORM2 \
---arg os_plaform3 $OS_PLATFORM3 \
---arg os_plaform4 $OS_PLATFORM5 \
---arg os_plaform5 $OS_PLATFORM6 \
---arg os_plaform6 $OS_PLATFORM6 \
 --arg host1       $HOST1        \
 --arg host2       $HOST2        \
 --arg host3       $HOST3        \
@@ -150,7 +173,7 @@ jq -r                                  \
       "url": $url6
     }
   ]
-}' "package_${AUTHOR}_${REPOSITORY}_index.json.tmp" > "package_${AUTHOR}_${REPOSITORY}_index.json"
+}' "$INDEX.tmp" > "$INDEX"
 
 rm $FILE1
 rm $FILE2
@@ -158,4 +181,4 @@ rm $FILE3
 rm $FILE4
 rm $FILE5
 rm $FILE6
-rm "package_${AUTHOR}_${REPOSITORY}_index.json.tmp"
+rm "$INDEX.tmp"
