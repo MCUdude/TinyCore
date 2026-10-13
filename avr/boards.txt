@@ -14,9 +14,7 @@ menu.bod=BOD
 menu.eeprom=EEPROM
 menu.chip=Chip
 menu.bootloader=Bootloader
-menu.baudrate=Baud rate
 menu.wiremode=Wire mode
-menu.resetpin=Reset pin
 menu.serial=Serial
 menu.pinout=Pinout
 
@@ -1915,28 +1913,28 @@ x313.menu.clock.1MHz_external.build.f_cpu=1000000L
 828.menu.clock.20MHz_external.bootloader.low_fuses=0xe0
 828.menu.clock.20MHz_external.bootloader.baudrate=115200
 828.menu.clock.20MHz_external.build.clocksource=2
-828.menu.clock.20MHz_internal.build.speedfix=
+828.menu.clock.20MHz_external.build.speedfix=
 828.menu.clock.20MHz_external.build.f_cpu=20000000L
 
 828.menu.clock.16MHz_external=16 MHz external CLOCK
 828.menu.clock.16MHz_external.bootloader.low_fuses=0xe0
 828.menu.clock.16MHz_external.bootloader.baudrate=115200
 828.menu.clock.16MHz_external.build.clocksource=2
-828.menu.clock.16MHz_internal.build.speedfix=
+828.menu.clock.16MHz_external.build.speedfix=
 828.menu.clock.16MHz_external.build.f_cpu=16000000L
 
 828.menu.clock.12MHz_external=12 MHz external CLOCK
 828.menu.clock.12MHz_external.bootloader.low_fuses=0xe0
 828.menu.clock.12MHz_external.bootloader.baudrate=115200
 828.menu.clock.12MHz_external.build.clocksource=2
-828.menu.clock.12MHz_internal.build.speedfix=
+828.menu.clock.12MHz_external.build.speedfix=
 828.menu.clock.12MHz_external.build.f_cpu=12000000L
 
 828.menu.clock.8MHz_external=8 MHz external CLOCK
 828.menu.clock.8MHz_external.bootloader.low_fuses=0xe0
 828.menu.clock.8MHz_external.bootloader.baudrate=38400
 828.menu.clock.8MHz_external.build.clocksource=2
-828.menu.clock.8MHz_internal.build.speedfix=
+828.menu.clock.8MHz_external.build.speedfix=
 828.menu.clock.8MHz_external.build.f_cpu=8000000L
 
 # Wire mode
