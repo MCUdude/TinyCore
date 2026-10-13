@@ -131,24 +131,24 @@ if errorlevel 1 (
    dir /b cores 2>nul >nul
    if !ERRORLEVEL! EQU 0 (
       FOR /D %%P IN ("%CACHEFOLDER%\\CORES\\*") DO (
-       	  if not exist "%%P\\core.a" set WRONG=1
-       	  if not exist "%%P\\.last-used" set WRONG=1
-   	  )
+          if not exist "%%P\\core.a" set WRONG=1
+          if not exist "%%P\\.last-used" set WRONG=1
+      )
    )
 
    if exist "%CACHEFOLDER%\\sketches" (
       dir /a-d "%CACHEFOLDER%\\sketches" 2>nul >nul
       if errorlevel 1 (
-      	 if exist "%CACHEFOLDER%\\cores" (
-	    dir /a-d "%CACHEFOLDER%\\cores" 2>nul >nul
-	    if errorlevel 1 (
+         if exist "%CACHEFOLDER%\\cores" (
+      dir /a-d "%CACHEFOLDER%\\cores" 2>nul >nul
+      if errorlevel 1 (
                if %CNT% equ 2 (
-	          if !WRONG! equ 0 (
+            if !WRONG! equ 0 (
                      echo "Delete cached cores"
                      rd /s/q "%CACHEFOLDER%\\cores"
-		  )
+      )
                )
-	    )
+      )
          )
       )
    ) 

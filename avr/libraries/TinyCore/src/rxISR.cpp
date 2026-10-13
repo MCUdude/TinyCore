@@ -72,4 +72,3 @@ uint8_t pu_read()
 }
 
 #endif  // PU_PCMSK
-

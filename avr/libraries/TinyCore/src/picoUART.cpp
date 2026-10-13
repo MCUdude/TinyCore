@@ -108,4 +108,3 @@ uint8_t purx()
 
     return c;
 }
-

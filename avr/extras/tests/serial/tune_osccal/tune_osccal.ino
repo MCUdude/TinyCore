@@ -1,4 +1,3 @@
-
 uint8_t orig_osccal;
 void setup() {
   Serial.begin(9600);
