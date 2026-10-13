@@ -43,25 +43,25 @@ void init_clock() {
   #if (CLOCK_SOURCE == 6) // Internal 16 MHz PLL
       #if (F_CPU == 16000000L || F_CPU == 8000000L || F_CPU == 4000000L || F_CPU == 2000000L || F_CPU == 1000000L || F_CPU == 500000L)
         // 16MHz is speed of unprescaled PLL clock.
-        #if (F_CPU != 16000000)
-          #ifdef CCP
+        #if (F_CPU != 16000000L)
+          #if defined(CCP)
             CCP = 0xD8; // Wnable change of protected register
-          #else
+          #elif defined(CLKPR)
             CLKPR = (1 << CLKPCE); // Wnable change of protected register
+            #if (F_CPU == 8000000L)
+              CLKPR = 1; // Prescale by 2 for 8MHz
+            #elif (F_CPU == 4000000L)
+              CLKPR = 2; // Prescale by 4 for 4MHz
+            #elif (F_CPU ==  2000000L)  // could also be done with fuses, but this is such a weird situation,
+              CLKPR = 3; // Prescale by 8 for 2MHz
+            #elif (F_CPU == 1000000L)
+              CLKPR = 4; // Prescale by 16 for 1MHz
+            #elif (F_CPU == 500000L)
+              CLKPR = 5; // Prescale by 32 for 0.5MHz
+            #else
+              CLKPR = 8; // Prescale by 256 for 62.50kHz
+            #endif  // End of checking F_CPUs
           #endif
-          #if (F_CPU == 8000000L)
-            CLKPR = 1; // Prescale by 2 for 8MHz
-          #elif (F_CPU == 4000000L)
-            CLKPR = 2; // Prescale by 4 for 4MHz
-          #elif (F_CPU ==  2000000L)  // could also be done with fuses, but this is such a weird situation,
-            CLKPR = 3; // Prescale by 8 for 2MHz
-          #elif (F_CPU == 1000000L)
-            CLKPR = 4; // Prescale by 16 for 1MHz
-          #elif (F_CPU == 500000L)
-            CLKPR = 5; // Prescale by 32 for 0.5MHz
-          #else
-            CLKPR = 8; // Prescale by 256 for 62.50kHz
-          #endif  // End of checking F_CPUs
         #endif // End not 16 MHz
       #endif // End if not 16 MHz derived
   /* End of PLL prescale */
@@ -74,23 +74,21 @@ void init_clock() {
       // Apply prescaling to get desired frequency if not set by fuses
       #if (F_CPU != 8000000L && F_CPU != 1000000L)
         // Normal oscillator, and we want a setting that fuses won't give us, so need to set prescale.
-        #ifdef CCP
+        #if defined(CCP)
           CCP = 0xD8; // Enable change of protected register
-        #else
-          CLKPR = 1 << CLKPCE; // Enable change of protected register
-        #endif
-        #if (F_CPU == 4000000L)
-          CLKPR = 1; // Prescale by 2 for 4MHz
-        #elif (F_CPU == 2000000L)
-          CLKPR = 2; // Prescale by 4 for 2MHz
-        #elif (F_CPU == 500000L)
-          CLKPR = 4; // Prescale by 16 for 0.5MHz
-        #else
-          CLKPR = 8; // Prescale by 256 for 31.25kHz
+        #elif defined(CLKPR)
+          CLKPR = (1 << CLKPCE); // Enable change of protected register
+          #if (F_CPU == 4000000L)
+            CLKPR = 1; // Prescale by 2 for 4MHz
+          #elif (F_CPU == 2000000L)
+            CLKPR = 2; // Prescale by 4 for 2MHz
+          #elif (F_CPU == 500000L)
+            CLKPR = 4; // Prescale by 16 for 0.5MHz
+          #else
+            CLKPR = 8; // Prescale by 256 for 31.25kHz
+          #endif
         #endif
       #endif // End if not 1/8 MHz
-    #else
-      CLKPR= 1 << CLKPCE; // Enable change of protected register
     #endif
     /* End of internal osc prescale and tuning */
   #endif // End handling for the two types of internal oscillator derived clock source
