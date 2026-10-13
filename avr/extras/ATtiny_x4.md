@@ -25,7 +25,7 @@ The ATtiny24/44/84 family is one of the most widely used classic tinyAVR series.
   - [ADC differential pair matrix](#adc-differential-pair-matrix)
   - [Temperature measurement](#temperature-measurement)
 
-# Specifications
+## Specifications
 
 | Specification                     | ATtiny24/44/84        |
 |-----------------------------------|-----------------------|

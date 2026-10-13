@@ -2,7 +2,7 @@
 
 This test checks each pin for its `digitalWrite` and `digitalRead` capabilities.
 
-1. Set up the host MCU board (Uno, Nano, or Mega) and target chip/board on a breadboard. 
+1. Set up the host MCU board (Uno, Nano, or Mega) and target chip/board on a breadboard.
 2. Erase the target board, so that all I/O pins are high impedance.
 3. Connect all host and target GPIOs by using a number 2 higher on the host: 0 -> 2, 1 -> 3, ... and from target pin 11 (host pin 13) onwards, add 3 (in order to leave out LED_BUILTIN)
 4. Provide power to the boards.
@@ -26,5 +26,5 @@ The protocol is as follows:
 8. Now the host switches all pins to INPUT_PULLUP (but LED_BUILTIN will use OUTPUT).
 9. And waits for them to become HIGH.
 10. Then the host switches pin after pin to LOW.
-11. After 100 ms the host switches all pins again to INPUT. 
+11. After 100 ms the host switches all pins again to INPUT.
 12. If the target switches the pin with the lowest number to HIGH, everything is good; otherwise, something failed.

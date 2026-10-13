@@ -126,6 +126,7 @@ A built-in Servo library is included with this core, with full support for the A
 ## ADC features
 The ATtiny87/167 features a mid-range ADC with a second internal reference voltage, a built-in voltage divider on AVCC, and a modest selection of differential pairs. AVCC is nominally tied to VCC and may optionally be filtered to reduce noise, though this is rarely done in practice. Note that the datasheet requires AVCC to remain within 0.3V of VCC.
 
+### ADC reference options
 The device has the unusual ability to drive its internal reference voltage onto the AREF pin, allowing it to be used as a reference source for other external devices. However, the interaction between this feature and other uses of the AREF pin is ambiguous in the datasheet. The note that "the internal voltage reference options may not be used if an external voltage is being applied to the AREF pin" leaves it unclear whether outputting the internal reference onto the pin is still permissible when an external reference is also present. Until this is clarified, caution is advised when sharing the AREF pin with other devices.
 
 | Reference Option    | Reference Voltage           | Uses AREF Pin                 |

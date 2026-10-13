@@ -20,10 +20,9 @@ The ATtiny261/461/861 is a microcontroller designed with brushless DC (BLDC) mot
   - [Tone support](#tone-support)
   - [Servo support](#servo-support)
 - [ADC features](#adc-features)
-  - [Differential ADC](#differential-adc)
   - [ADC reference options](#adc-reference-options)
   - [Internal sources](#internal-sources)
-  - [Differential ADC channel table](#differential-adc-channel-table)
+  - [Differential ADC](#differential-adc)
   - [Differential ADC channel layout](#differential-adc-channel-layout)
   - [ADC differential pair matrix](#adc-differential-pair-matrix)
   - [Temperature measurement](#temperature-measurement)
@@ -137,9 +136,6 @@ If a version of the Servo library has been installed through the Library Manager
 
 ## ADC features
 The ATtiny261/461/861 has a surprisingly sophisticated ADC with many differential channels, most with selectable gain. These are available through analogRead. When used to read a pair of analog pins in differential mode, the ADC normally runs in unipolar mode: The voltage on the positive pin must be higher than that on the negative one, but the difference is measured to the full precision of the ADC. It can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and generate meaningful measurements (it will return a signed value, which costs 1 bit of accuracy for the sign bit). This can be enabled by calling the helper function `setADCBipolarMode(true or false)`.
-
-### Differential ADC
-The ATtiny261/461/861 features a sophisticated differential ADC, with a large selection of differential pairs and selectable gain on most channels. Differential channels are accessible through `analogRead()`.
 
 By default, the ADC operates in unipolar mode, requiring the positive input to exceed the negative input, with the full ADC precision applied to the difference. Bipolar mode is also available, allowing the negative input to exceed the positive and returning a signed result at the cost of one bit of resolution. Bipolar mode is enabled and disabled by calling `setADCBipolarMode(true)` and `setADCBipolarMode(false)` respectively.
 

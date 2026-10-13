@@ -1,13 +1,13 @@
 # PlatformIO
 
-[PlatformIO](https://platformio.org) is an open-source ecosystem for embedded development. 
+[PlatformIO](https://platformio.org) is an open-source ecosystem for embedded development.
 It has a built-in library manager and is Arduino-compatible. It supports most operating systems; Windows, MacOS, Linux 32 and 64-bit, ARM, and X86.  
 And best of all, it works with TinyCore!
 
 * [What is PlatformIO?](http://docs.platformio.org/en/latest/what-is-platformio.html)
 * [PlatformIO IDE](http://platformio.org/#!/platformio-ide)
 * Getting started with [PlatformIO IDE](http://docs.platformio.org/en/latest/ide/atom.html#quick-start) or [PlatformIO command line interface](http://docs.platformio.org/en/latest/quickstart.html)
-* [Advanced functionality](http://docs.platformio.org/en/latest/platforms/atmelavr.html) 
+* [Advanced functionality](http://docs.platformio.org/en/latest/platforms/atmelavr.html)
 * [Project Examples](http://docs.platformio.org/en/latest/platforms/atmelavr.html#examples)
 
 
@@ -240,7 +240,7 @@ PlatformIO requires the `board` parameter to be present. Simply use the chip nam
 
 
 ### `board_build.f_cpu`
-Specifies the clock frequency in [Hz]. 
+Specifies the clock frequency in [Hz].
 Used to determine what oscillator option to choose. A capital `L` has to be added to the end of the frequency number.
 Below is a table with supported clocks. Defaults to 8 MHz if not specified.
 **Note that some parts cannot drive an external crystal, and requires an externa clock instead
@@ -333,7 +333,7 @@ Enable system clock output on the CKOUT pin (varies from chip family to chip fam
 
 
 ### `board_upload.speed` / `board_bootloader.speed`
-Specifies the upload baud rate. Valid baud rates for devices with **hardware serial ports** are shown in the table below. The Urboot bootloader has auto baud support on devices that utilize their hardware serial port, so the upload baud rate can be changed without re-flashing the bootloader. 
+Specifies the upload baud rate. Valid baud rates for devices with **hardware serial ports** are shown in the table below. The Urboot bootloader has auto baud support on devices that utilize their hardware serial port, so the upload baud rate can be changed without re-flashing the bootloader.
   
 **Note that if you're using a programmer that communicates with Avrdude with a serial port (Arduino as ISP, STK500, etc.) the `board_upload.speed` field will interfere with the programmer's baud rate.  
 In this case, use `board_bootloader.speed` to set the bootloader baud rate, and `board_upload.speed` to set the baud rate for the programmer.**  

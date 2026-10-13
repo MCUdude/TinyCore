@@ -12,7 +12,7 @@ The ATtiny441/841 is an enhanced successor to the ATtiny24/44/84 family, sharing
 - [Internal oscillator calibration](#internal-oscillator-calibration)
 - [Features](#features)
   - [PWM frequency](#pwm-frequency)
-  - [I2C support](#i2c)
+  - [I2C support](#i2c-support)
   - [SPI support](#spi-support)
   - [UART (Serial) support](#uart-serial-support)
   - [Tone support](#tone-support)
@@ -246,8 +246,7 @@ Once enabled, a pull-up remains active regardless of subsequent port configurati
 
 
 ### Enhanced sink capability on PA5 and PA7
-PA5 and PA7 feature enhanced current sink capability compared to other GPIO pins, meaning their output voltage remains closer to ground when sinking larger currents. The standard absolute maximum rating of 40mA still applies, but under typical loads of 10-20mA these pins exhibit noticeably lower 
-voltage drop than standard pins.
+PA5 and PA7 feature enhanced current sink capability compared to other GPIO pins, meaning their output voltage remains closer to ground when sinking larger currents. The standard absolute maximum rating of 40mA still applies, but under typical loads of 10-20mA these pins exhibit noticeably lower voltage drop than standard pins.
 
 ```c
 PHDE=(1<<PHDEA0)|(1<<PHDEA1); //PHDEA0 controls PA5, PHDEA1 controls PA7.

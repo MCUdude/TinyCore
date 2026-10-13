@@ -3,9 +3,9 @@
 
 TinyCore brings full Arduino IDE support to the classic ATtiny microcontroller family. It pairs these capable little chips with the modern and lean [Urboot](https://github.com/stefanrueger/urboot) bootloader and a clean, well-documented experience.
 
-Arduino IDE v1.8 and v2.x are both supported, as well as with [PlatformIO](#platormio)! Note, however, that with Arduino IDE v1.8, you do not get any debugging functionality. Additionally, the flash size check before starting the upload is too optimistic, maybe leading to strange error messages by the bootloader.
+Arduino IDE v1.8 and v2.x are both supported, as well as with [PlatformIO](#platformio)! Note, however, that with Arduino IDE v1.8, you do not get any debugging functionality. Additionally, the flash size check before starting the upload is too optimistic, maybe leading to strange error messages by the bootloader.
 
-TinyCore is a fork of [ATTinyCore 2.0.0](https://github.com/SpenceKonde/ATTinyCore), with focus on a cleaner user experience, up-to-date tooling, and improved documentation. 
+TinyCore is a fork of [ATTinyCore 2.0.0](https://github.com/SpenceKonde/ATTinyCore), with focus on a cleaner user experience, up-to-date tooling, and improved documentation.  
 Key improvements include:
 
 - **Cleaner Tools menu** - fewer options, as core functionality is automatically optimized away if not used
@@ -16,7 +16,7 @@ Key improvements include:
 - **Support for the ATtiny85 based [Digispark](/avr/extras/ATtiny_x5.md) and the ATtiny88 based [MH-Tiny](/avr/extras/ATtiny_x8.md) board**
 - **Works with PlatformIO**
 
-# Table of contents
+## Table of contents
 * [Supported microcontrollers](#supported-microcontrollers)
 * [Supported clock frequencies](#supported-clock-frequencies)
 * [Bootloader](#bootloader)
@@ -128,22 +128,22 @@ Read more about how to use, flash and upgrade the Micronucleus bootloader under 
 ## BOD option
 Brown-out detection, or BOD for short lets the microcontroller sense the input voltage and shut down if the voltage goes below the brown-out setting. To change the BOD settings you'll have to connect an ISP programmer and hit "Burn bootloader". Below is a table that shows the available BOD options:
 
-| All other parts | ATtiny26 | ATtiny43 | 
+| All other parts | ATtiny26 | ATtiny43 |
 |-----------------|----------|----------|
 | 4.3V            | 4.0V     | 4.3V     |
 | 2.7V            | 2.7V     | 2.7V     |
-| 1.8V            | Disabled | 2.3V     | 
-| Disabled        |          | 2.2V     |                               
-|                 |          | 2.0V     |      
-|                 |          | 1.9V     |    
-|                 |          | 1.8V     | 
-|                 |          | Disabled | 
+| 1.8V            | Disabled | 2.3V     |
+| Disabled        |          | 2.2V     |
+|                 |          | 2.0V     |
+|                 |          | 1.9V     |
+|                 |          | 1.8V     |
+|                 |          | Disabled |
 
 
 ## EEPROM option
 If you want the EEPROM to be erased every time you burn the bootloader or upload using a programmer, you can turn off this option. You'll have to connect an ISP programmer and hit "Burn bootloader" to enable or disable "EEPROM retain". Note that when uploading using a bootloader, the EEPROM will always be retained.
 
-If you're using an ISP programmer, data specified in the user program using the `EEMEM` attribute will be uploaded to EEPROM when you upload your program in the Arduino IDE. 
+If you're using an ISP programmer, data specified in the user program using the `EEMEM` attribute will be uploaded to EEPROM when you upload your program in the Arduino IDE.
 
 ```cpp
 #include <avr/eeprom.h>
@@ -211,7 +211,7 @@ Make sure you connect an ISP programmer, and select the correct one in the "Prog
 
 
 ## How to install
-#### Boards Manager Installation
+### Boards Manager Installation
 * Open the Arduino IDE.
 * Open the **File > Preferences** menu item.
 * Enter the following URL in **Additional Boards Manager URLs**: `https://mcudude.github.io/TinyCore/package_MCUdude_TinyCore_index.json`
@@ -221,20 +221,20 @@ Make sure you connect an ISP programmer, and select the correct one in the "Prog
 * Click **Install**.
 * After installation is complete close the **Boards Manager** window.
 
-#### Manual Installation
+### Manual Installation
 Click on the "Download ZIP" button in the upper right corner. Extract the ZIP file, and move the extracted folder to the location "**~/Documents/Arduino/hardware**". Create the "hardware" folder if it doesn't exist.
 Open Arduino IDE, and a new category in the boards menu called "TinyCore" will show up.
 
 Note that a manual installation will not download binary tools such as the most recent avrdude program and the debugging tool.
 
-#### Arduino CLI Installation
+### Arduino CLI Installation
 Run the following command in a terminal:
 
-```
+```text
 arduino-cli core install TinyCore:avr --additional-urls https://mcudude.github.io/TinyCore/package_MCUdude_TinyCore_index.json
 ```
 
-#### PlatformIO
+### PlatformIO
 [PlatformIO](http://platformio.org) is an open-source ecosystem for IoT and embedded systems.
 
 **See [PlatformIO.md](PlatformIO.md) for more information.*
@@ -301,10 +301,10 @@ Serial.print("Hello World\n");
 Serial.flush();
 ```
 
-##### Moving builtin soft-serial TX pin
+#### Moving builtin soft-serial TX pin
 On parts without hardware serial, the TX pin can be moved to another pin *on the same port* using `Serial.setTxBit(bit)`. The bit value must be between 0 and 7 and corresponds to the bit position within the port. This must be called before `Serial.begin()`.
 
-##### Internal oscillator and Serial
+#### Internal oscillator and Serial
 Reliable UART communication requires accurate clock timing. The internal oscillator on many classic ATtiny devices is calibrated to approximately ±10%, which may be insufficient for serial communication. Some devices operate correctly without tuning, but others require calibration using OSCCAL.
 The ATtiny x41 family, ATtiny1634R, and ATTiny828R include an oscillator calibrated to ±2%, but only below 4 V. At higher voltages the oscillator frequency increases, which can cause UART timing errors depending on baud configuration. Clock menu options are provided to compensate when operating above 4 V.
 Because of these limitations, applications that rely on serial communication are generally best served by using an external crystal, except on devices with tighter oscillator calibration.
@@ -346,7 +346,7 @@ A few devices support hardware i2c slave mode only, with neither USI nor hardwar
 
 Software i2c master implementations on these devices may be unreliable. In particular, timeouts cannot be distinguished from slaves returning zero data, and clock configuration is not supported. Simultaneous master and slave operation is not supported on any of these devices.
 
-##### Buffer size
+#### Buffer size
 Devices with more than 128 bytes of SRAM use a **32-byte buffer**. Smaller devices use **16 bytes**. However, most libraries assume a 32-byte buffer, so TinyCore uses a 32-byte buffer on larger devices even when this consumes a significant portion of available RAM.
 </details>
 

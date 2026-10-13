@@ -1,11 +1,11 @@
 # Minimum functionality tests
 
-The tests in this folder each check one particular basic functionality. They are organized in folders, where each folder contains at least a target sketch, which needs to be flashed to the target chip, and perhaps a host sketch for an ATmega328P (Uno, Mega, or Nano). Further, there will be a generic description of how to wire up the two boards and how to run the test protocol. 
+The tests in this folder each check one particular basic functionality. They are organized in folders, where each folder contains at least a target sketch, which needs to be flashed to the target chip, and perhaps a host sketch for an ATmega328P (Uno, Mega, or Nano). Further, there will be a generic description of how to wire up the two boards and how to run the test protocol.  
 
 - `digitalrw`: Tests `digitalRead` and `digitalWrite` on all pins
 - `analogw`: Tests `analogWrite` on all supported pins, one by one, trying out different values.
 - `analogr`: Tests `analogRead` on all supported pins, one by one, trying 0V and Vcc.
-- `analogv`: Tests `analogRead` on all supported pins in parallel, printing the measured voltage. 
+- `analogv`: Tests `analogRead` on all supported pins in parallel, printing the measured voltage.
 - `serial`: Tests serial I/O.
 - `wire`: Tests to check I2C master and slave capabilities.
 - `spi`: Tests to check SPI master and slave capabilities.

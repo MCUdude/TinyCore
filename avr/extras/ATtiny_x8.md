@@ -67,7 +67,7 @@ The most well-known board using Micronucleus on the ATtiny85 is the **Digispark*
 To upload sketches to a board that already has the Micronucleus bootloader installed (for instance the Digispark), select *Tools > Bootloader > Original Micronucleus (16 MHz ext. CLOCK)* in the Arduino IDE. Unplug the board from your computer, click *Upload*, and connect the board to your computer when Avrdude tells you to. The sketch will start automatically when the upload is done.
 
 #### Upgrading the bootloader
-Because the most recent version of Micronucleus is much more memory efficient than the older versions, it is advisable to upgrade the bootloader. 
+Because the most recent version of Micronucleus is much more memory efficient than the older versions, it is advisable to upgrade the bootloader.
 
 The bootloader itself can be upgraded over USB using the Micronucleus tool with a special "upgrade" firmware, as long as the chip is already running the Micronucleus bootloader. Select *Tools > Bootloader > Upgrade to newest Micronucleus (16 MHz ext. CLOCK)*. In order to get Arduino IDE to play along, select *Tools > Programmers* and select any programmer. Unplug the board from the computer and click *Burn Bootloader*. Connect the board to your computer when Avrdude tells you to. When the upload process is finished, give the microcontroller a little time to reprogram itself. The board should now be ready ready!
 

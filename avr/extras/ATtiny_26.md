@@ -8,7 +8,7 @@ The ATtiny26 is the predecessor to the ATtiny261/461/861 family, sharing a simil
 
 ## Table of contents
 - [Specifications](#specifications)
-- [No bootloader support](#no-bootloader-is-possible)
+- [No bootloader support](#no-bootloader-support)
 - [Internal oscillator calibration](#internal-oscillator-calibration)
 - [Features](#features)
   - [PLL clock](#pll-clock)
