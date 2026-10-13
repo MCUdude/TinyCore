@@ -12,7 +12,7 @@ const int iopins = 23;
 #elif defined(__AVR_ATtiny828__)
 const int iopins = 26;
 #else
-const int iopins = NUM_DIGITAL_PINS - 1; 
+const int iopins = NUM_DIGITAL_PINS - 1;
 #endif
 #if defined(LED_BUILTIN)
 const int led_builtin = LED_BUILTIN;
@@ -34,7 +34,7 @@ void loop()
 {
   int i;
 
-  if (millis() - start > TIMEOUT_MS) 
+  if (millis() - start > TIMEOUT_MS)
     report_failure();
   switch (phase) {
   case 1: /* wait for HIGH on pin 0, and then wait 20 ms */
@@ -101,7 +101,7 @@ void loop()
     start = millis();
     break;
   case 10: /* Now wait for switching to LOW one by one */
-    for (i = 0; i <= subphase; i++) 
+    for (i = 0; i <= subphase; i++)
       if (digitalRead(i) == HIGH) return;
     for (i = subphase+1; i < iopins; i++)
       if (digitalRead(i) == LOW) return;

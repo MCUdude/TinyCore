@@ -1,5 +1,5 @@
 // Write a value to the slave, then read it again
-#define I2CADDR 8 
+#define I2CADDR 8
 #define IASTR "8"
 
 #include <Wire.h>
@@ -46,7 +46,7 @@ void loop() {
       succ = false;
       Serial.println(F("*** Too many bytes"));
     }
-    i++;      
+    i++;
   }
   Serial.println();
   delay(500);

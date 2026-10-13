@@ -81,7 +81,7 @@
     #define PU_PCIFR GIFR
   #endif
   #ifndef PU_PCIE
-    #define PU_PCIE PCIE0 
+    #define PU_PCIE PCIE0
   #endif
   #ifndef PU_PCIF
     #define PU_PCIF PCIF0
@@ -107,7 +107,7 @@
     #define PU_PCIFR GIFR
   #endif
   #ifndef PU_PCIE
-    #define PU_PCIE PCIE0 
+    #define PU_PCIE PCIE0
   #endif
   #ifndef PU_PCIF
     #define PU_PCIF PCIF
@@ -217,7 +217,7 @@
     #define PU_PCIFR GIFR
   #endif
   #ifndef PU_PCIE
-    #define PU_PCIE PCIE0 
+    #define PU_PCIE PCIE0
   #endif
   #ifndef PU_PCIF
     #define PU_PCIF PCIF0
@@ -269,7 +269,7 @@
     #define PU_PCIFR GIFR
   #endif
   #ifndef PU_PCIE
-    #define PU_PCIE PCIE0 
+    #define PU_PCIE PCIE0
   #endif
   #ifndef PU_PCIF
     #define PU_PCIF PCIF0

@@ -123,7 +123,7 @@ Note that the 128 kHz internal oscillator option is not recommended for use with
 ### Micronucleus
 [Micronucleus](https://github.com/micronucleus/micronucleus) is a bootloader that emulates a USB interface and lets you upload sketches using a native USB interface. This bootloader is quite a bit larger than Urboot (~1400 bytes compared to 256 bytes), but it requires no external programmer or USB to serial chip for programming. Popular boards that use the Micronucleus bootloader are the ATtiny85-based Digispark and the ATtiny88-based MH-Tiny boards. All of these can be bought cheaply from sites like Aliexpress.
 
-Read more about how to use, flash and upgrade the Micronucleus bootloader under the bootlaoder section in the device spesific documentation for [ATtiny25/45/85](/avr/extras/ATtiny_x5.md) and [ATtiny48/88](/avr/extras/ATtiny_x8.md).
+Read more about how to use, flash and upgrade the Micronucleus bootloader under the bootloader section in the device  specific documentation for [ATtiny25/45/85](/avr/extras/ATtiny_x5.md) and [ATtiny48/88](/avr/extras/ATtiny_x8.md).
 
 ## BOD option
 Brown-out detection, or BOD for short lets the microcontroller sense the input voltage and shut down if the voltage goes below the brown-out setting. To change the BOD settings you'll have to connect an ISP programmer and hit "Burn bootloader". Below is a table that shows the available BOD options:
@@ -182,7 +182,7 @@ Call `pinModeFast(pin, state)`, `digitalReadFast(pin)`, `digitalWriteFast(pin, s
 
 
 ### Internal oscillator calibration (OSCCAL)
-The internal 8 MHz oscillator (or 16 MHz PLL) on these microcontrollers aren't all that accurate, and is both temperature and voltage dependent. Depending on the application, it might be necessary to perform an oscillator calibration. TinyCore provides a simple [Oscillator calibration sketch](avr/libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that uses the incoming UART data to calibrate its clock. Read more about this in the [device spesific documentation](#supported-microcontrollers).
+The internal 8 MHz oscillator (or 16 MHz PLL) on these microcontrollers aren't all that accurate, and is both temperature and voltage dependent. Depending on the application, it might be necessary to perform an oscillator calibration. TinyCore provides a simple [Oscillator calibration sketch](avr/libraries/TinyCore/examples/OscillatorCalibration/OscillatorCalibration.ino) that uses the incoming UART data to calibrate its clock. Read more about this in the [device  specific documentation](#supported-microcontrollers).
 
 <img src="avr/extras/OSCCAL_procedure.gif" width="500">
 
@@ -357,19 +357,19 @@ This means that for an ATtiny841, you can either use `analogRead(A10)`, `analogR
 
 Analog pin labels (A0 for instance) cannot be used with `digitalWrite()`, `digitalRead()`, or `analogWrite()`. All pins must be referenced by their digital pin numbers for these functions. Analog pin labels should be used only with analogRead(). This differs from the behavior on official AVR boards, but allows access to advanced ADC features on some ATtiny chips with minimal impact. In practice, clear and well-written code is unlikely to be affected by this.
 
-Some parts have additional ADC functionality like differential inputs, programmable gain, bipolar mode and noise reduction. See the table below and read the appropriate [TinyCore target spesific documentation](#supported-microcontrollers) on how to utilize this functionality.
+Some parts have additional ADC functionality like differential inputs, programmable gain, bipolar mode and noise reduction. See the table below and read the appropriate [TinyCore target  specific documentation](#supported-microcontrollers) on how to utilize this functionality.
 
 <details>
 <summary><b>TinyCore ADC functionality overview</b></summary>
 
-| **ATtiny**           | 25/45/85 | 24/44/84 | 441/841 | 261/461/861 | 87/167 | 48/88 | 2313/4313 | 1634 | 828 | 43 | 26 |
-|----------------------|----------|----------|---------|-------------|--------|-------|-----------|------|-----|----|----|
-| *Has ADC*            | ✅       | ✅        | ✅      | ✅          | ✅      | ✅    | ❌        | ✅    | ✅  | ✅ | ✅  |
-| *ADC inputs*         | 4        | 12       | 12      | 11          | 11     | 6/8   |           | 12   | 28  | 4  | 11 |
-| *Diff. support*      | ✅       | ✅       | ✅       | ✅          | ✅      | ❌    |           | ❌    | ❌  | ❌ | ✅  |
-| *Bipolar mode*       | ✅       | ✅       | ❌       | ✅          | ✅      | ❌    |           | ❌    | ❌  | ❌ | ✅  |
-| *Prog. gain*         | ❌       | ❌       | ✅       | ✅          | ❌      | ❌    |           | ❌    | ❌  | ❌ | ❌  |
-| *Noise reduct. mode* | ✅       | ✅       | ✅       | ✅          | ✅      | ✅    |           | ✅    | ✅  | ✅ | ✅  |
+| **ATtiny**             | 25/45/85 | 24/44/84 | 441/841 | 261/461/861 | 87/167 | 48/88 | 2313/4313 | 1634 | 828 | 43 | 26 |
+|------------------------|----------|----------|---------|-------------|--------|-------|-----------|------|-----|----|----|
+| *Has ADC*              | ✅       | ✅        | ✅      | ✅          | ✅      | ✅    | ❌        | ✅    | ✅  | ✅ | ✅  |
+| *ADC inputs*           | 4        | 12       | 12      | 11          | 11     | 6/8   |           | 12   | 28  | 4  | 11 |
+| *Diff. support*        | ✅       | ✅       | ✅       | ✅          | ✅      | ❌    |           | ❌    | ❌  | ❌ | ✅  |
+| *Bipolar mode*         | ✅       | ✅       | ❌       | ✅          | ✅      | ❌    |           | ❌    | ❌  | ❌ | ✅  |
+| *Prog. gain*           | ❌       | ❌       | ✅       | ✅          | ❌      | ❌    |           | ❌    | ❌  | ❌ | ❌  |
+| *Noise reduction mode* | ✅       | ✅       | ✅       | ✅          | ✅      | ✅    |           | ✅    | ✅  | ✅ | ✅  |
 
 
 Note that the number of analog input pins includes the input that may be multiplexed with the RESET pin. The RESET pin has to be disabled to utilize this input.

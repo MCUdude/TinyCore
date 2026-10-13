@@ -50,7 +50,7 @@ void Flash::set_far_address(uint32_t address)
 
 /**
  * @brief Checks if the microcontroller contains a bootloader that has flash
- * writing capabilities. It does so by checking if a spesific number is placed
+ * writing capabilities. It does so by checking if a specific number is placed
  * at the very end of the flash memory
  *
  * @return true if compatible bootloader is present

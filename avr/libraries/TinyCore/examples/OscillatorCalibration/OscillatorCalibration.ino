@@ -3,7 +3,7 @@
 
   Based on picoUart by Ralph Doncaster (2020)
   https://github.com/nerdralph/picoUART
-  
+
   Modified by MCUdude to work with TinyCore
   https://github.com/MCUdude/TinyCore
   ------------------------------------------------------------------------------
@@ -11,7 +11,7 @@
   Tunes the internal oscillator using a software serial implementation
   and a USB to serial adapter, and store the calibrated OSCCAL value to
   EEPROM address E2END (last byte in EEPROM). The default RX and TX pins are the
-  ones found in the device spesific documentation.
+  ones found in the device specific documentation.
   https://github.com/MCUdude/TinyCore#supported-microcontrollers
 
   The microcontroller has to be running off its internal 8 MHz or 16 MHz PLL
@@ -64,12 +64,12 @@ void printHex(uint8_t value) {
 // RX interrupt
 ISR(PU_PCINT_vect) {
   static uint8_t cal_counter;
-  
+
   // Start timer when pin transitions low
   if ((PURXPIN & _BV(PURXBIT)) == 0)
     TCCR0B = _BV(CS00);
   else {
-    uint8_t current = TCNT0;    
+    uint8_t current = TCNT0;
     // End of interval, reset counter
     TCCR0B = 0;
     TCNT0 = 0;
@@ -95,7 +95,7 @@ ISR(PU_PCINT_vect) {
     }
   }
 
-  // Store new OSCCAL to EEPROM when stable    
+  // Store new OSCCAL to EEPROM when stable
   if(cal_counter >= 5) {
     eeprom_write_byte((uint8_t*)E2END, OSCCAL);
     prints_P(PSTR("New OSCCAL stored to EEPROM addr. 0x"));
@@ -106,7 +106,7 @@ ISR(PU_PCINT_vect) {
     prints_P(PSTR(" (E2END)\n"));
     while(true);
   }
-  
+
   // Clear interrupt flag in case another triggered
   PU_PCIFR = _BV(PU_PCIF);
 }
@@ -114,7 +114,7 @@ ISR(PU_PCINT_vect) {
 void setup() {
   // Serial monitor open delay
   _delay_ms(100);
-  
+
   // Pullup RX line
   PURXPORT |= _BV(PURXBIT);
 
@@ -129,7 +129,7 @@ void setup() {
   do {
     counter++;
   } while ((PURXPIN & _BV(PURXBIT)) == 0);
-  
+
   // Low period should be 4 bit-times for 'x'
   // Counter loop is 4 cycles, so counter =~ cycles/bit
   // 1/4 = 25% timing margin
@@ -139,17 +139,17 @@ void setup() {
     prints_P(PSTR("Noise skipped\n"));
     goto wait_x;
   }
-  
+
   // Skip remaining bits in frame
   _delay_ms(1);
 
   prints_P(PSTR(" OSCCAL "));
-  if (delta < 2) { 
+  if (delta < 2) {
     prints_P(PSTR("OK\n"));
     return;
   }
   prints_P(PSTR("Imperfect\n"));
-  
+
   // Reset counter for first interrupt
   TCCR0B = 0;
   TCNT0 = 0;

@@ -150,7 +150,7 @@
 
   void HardwareSerial::end() {
     flush();
-    
+
     #if (defined(UBRR0H) || defined(UBRR1H))
      /*
       cbi(*_ucsrb, _rxen);
@@ -270,7 +270,7 @@
     *_ucsrb |= _udrie;
    #else
     if(!(LINENIR & _BV(LENTXOK))){
-      // The buffer was previously empty, so load the first byte, then enable 
+      // The buffer was previously empty, so load the first byte, then enable
       // the TX Complete interrupt
       unsigned char c = _tx_buffer[_tx_buffer_tail];
       _tx_buffer_tail = (_tx_buffer_tail + 1) & (SERIAL_BUFFER_SIZE - 1);
@@ -294,7 +294,7 @@
     *_udr = c;
    #endif
   #endif
-    
+
     return 1;
   }
 

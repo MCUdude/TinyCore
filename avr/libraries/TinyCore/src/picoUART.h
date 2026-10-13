@@ -35,6 +35,6 @@ uint8_t purx();
 uint8_t pu_read();
 
 // data is ready when PCINT is disabled
-MUST_INLINE bool purx_dataready() { return !(PCMSK & 1<<PURXBIT); } 
+MUST_INLINE bool purx_dataready() { return !(PCMSK & 1<<PURXBIT); }
 
 #endif  // PU_PCMSK

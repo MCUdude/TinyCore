@@ -27,7 +27,7 @@ void loop()
 {
   bool lsucc = true;
   int i;
-  if (millis() - start > TIMEOUT_MS) 
+  if (millis() - start > TIMEOUT_MS)
     report_failure();
   switch (phase) {
   case 1:
@@ -48,11 +48,11 @@ void loop()
     start = millis();
     break;
   case 3: /* wait for PWM pin number */
-    pinMode(COMPIN, INPUT_PULLUP); 
+    pinMode(COMPIN, INPUT_PULLUP);
     if (digitalRead(COMPIN) == HIGH)
       return;
-    pwm = count_pulses() - 1; // number is one to high to allow for pin 
-    pinMode(COMPIN, INPUT); 
+    pwm = count_pulses() - 1; // number is one to high to allow for pin
+    pinMode(COMPIN, INPUT);
     if (pwm >= iocount) { // we are ready
       if (succ)
         report_success();
@@ -97,14 +97,14 @@ bool waitfor(int pin, int parts)
     if (high == 0 || low == 0) continue;
     duty = high*255/(high+low);
     if (duty >= parts-30 && duty <= parts + 30) {
-      succ = true; 
+      succ = true;
     }
   }
-  if (succ) { 
-    high = pulseIn(HPIN(pin), HIGH, WAITFORPULSE_uS);  
+  if (succ) {
+    high = pulseIn(HPIN(pin), HIGH, WAITFORPULSE_uS);
     low = pulseIn(HPIN(pin), LOW, WAITFORPULSE_uS);
     duty = high*255/(high+low);
-    Serial.print(F("PWM check ")); 
+    Serial.print(F("PWM check "));
     Serial.print(parts);
     Serial.print(F("p: "));
     Serial.print(duty);
@@ -137,7 +137,7 @@ void report_failure()
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.print(F("*** Failure in phase "));
   Serial.println(phase);
- 
+
   while (1) {
     if (millis() - start > BLINKFAST_MS) {
       on = !on;
@@ -154,12 +154,12 @@ int count_pulses()
   int pulses = 1;
   bool timeout = false;
   unsigned long lastedge;
-  
+
   while (1) {
     lastedge = millis();
     // wait for raising edge
     while ((digitalRead(COMPIN) == LOW) && (millis() - lastedge < MAXPULSE_MS));
-    if (digitalRead(COMPIN) == LOW) 
+    if (digitalRead(COMPIN) == LOW)
       report_failure(); // if timeout, something went wrong
     lastedge = millis();
     // now wait for falling edge

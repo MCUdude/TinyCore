@@ -4,7 +4,7 @@
 
 
 void setup() {
-#ifdef CORR_OSCCAL  
+#ifdef CORR_OSCCAL
   OSCCAL = CORR_OSCCAL;
 #endif
   Serial.begin(BPS);

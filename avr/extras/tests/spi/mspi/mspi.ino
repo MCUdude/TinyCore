@@ -39,7 +39,7 @@ void loop (void) {
    for (i=0; i < len; i++) {
       c = SPI.transfer (send[i]);
       delayMicroseconds(10);
-      if (i > 0) buf[i-1] = c; 
+      if (i > 0) buf[i-1] = c;
    }
 #if FLASHEND > 2047
    Serial.println();
@@ -52,7 +52,7 @@ void loop (void) {
      Serial.println(F("SPI test successful"));
    else
      Serial.println(F("SPI test failed"));
-#else 
+#else
    if (strcmp(recv, buf) == 0)
       success();
 #endif

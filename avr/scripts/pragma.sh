@@ -9,7 +9,7 @@
 # create previous option file if not already there
 touch "$3/options.$5"
 
-# make a backup copy 
+# make a backup copy
 cp "$3/options.$5" "$3/options.$5.bak"
 
 # create new option file
@@ -26,7 +26,7 @@ if  [[ $(diff -q "$3/options.$5" "$3/options.$5.bak") ]]; then
     rm -rf "$3/core/"*.a
     rm -rf "$3/core/"*.o
     rm -rf "$3/sketch/"*.a
-    
+
     if [[ -d $3/../../cores ]] &&  [[ -d $3/../../sketches ]]; then
         filenums=$(find "$3"/../../ -maxdepth 1 -print | wc -l)
         if [[ $filenums -eq 3 ]]; then

@@ -22,14 +22,14 @@
 Defines the following constants:
 
 HW_N_BOOT_SECTIONS, which can be
- -1 Unkown whether part has hardware boot sections or not (eg, missing ATDFs)
+ -1 Unknown whether part has hardware boot sections or not (eg, missing ATDFs)
   0 Part does not support hardware boot sections
   1 For, eg, XMEGAs that have one boot section in top flash
   1 For modern (AVR8X) parts that have a variable sized boot section in bottom flash
   4 There are four sizes of boot sections in top flash: 2^i min_size with i in 0..3
 
 HW_MIN_BOOTSIZE, which can be
-   -1 Unkown whether part has hardware boot section support or not
+   -1 Unknown whether part has hardware boot section support or not
     0 Part does not support hardware boot sections
   <n> Minimum size (eg, XMEGA only have one size but other sizes vary)
 

@@ -112,7 +112,7 @@ bool SoftwareSerial::stopListening() {
 // The receive routine called by the interrupt handler
 //
 void SoftwareSerial::recv() {
-  // Spence Konde: removed dead code to work around bugs in aincent compiler version. This core requires Link
+  // Spence Konde: removed dead code to work around bugs in ancient compiler version. This core requires Link
   // timer optimization as of 2.0.0, which was not implemented unti 5.x
   uint8_t d = 0;
 

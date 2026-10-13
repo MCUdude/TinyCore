@@ -11,8 +11,8 @@
 // RX ISR storage
 volatile uint8_t purx_data __attribute(( section(".noinit") ));
 
-// PCINT latency is 6 cycles minimum + 2 for rjmp 
-// nerdralph.blogspot.com/2020/04/measuring-avr-interrupt-latency.html  
+// PCINT latency is 6 cycles minimum + 2 for rjmp
+// nerdralph.blogspot.com/2020/04/measuring-avr-interrupt-latency.html
 ISR(PU_PCINT_vect, ISR_NAKED)
 {
     register char c asm ("r16");

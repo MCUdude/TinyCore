@@ -7,12 +7,12 @@
  * capable of single-pin operation (PU_TX = PU_RX) as follows:
  * connect MCU pin to host RX line, and a 1.5k-4.7k resistor between
  * host RX and TX line.  Note this also gives local echo.
- * 
+ *
  * 20200123 version 0.5
  * 20200123 version 0.6 - improve inline asm
- * 20200201 version 0.7 - use push/pull during tx 
+ * 20200201 version 0.7 - use push/pull during tx
  * 20200203 version 0.8 - add prints, prefix globals with PU_
- * 20200209 version 0.9 - rewrite in mostly C 
+ * 20200209 version 0.9 - rewrite in mostly C
  */
 
 #include <avr/io.h>
@@ -76,7 +76,7 @@ extern "C" void putx(uint8_t c)
         // macro hack to set correct bit
         concat(psave.b, PUTXBIT) = f.lo8 & 0x01 ? 1 : 0;
         f.i16 >>= 1;
-        PUTXPORT = psave.c; 
+        PUTXPORT = psave.c;
     // tx more bits if f.lo8 not equal to 0
     asm goto ("brne %l[txbit]" :::: txbit);
     //} while (f.lo8);
@@ -88,12 +88,12 @@ uint8_t purx()
     // wait for idle state (high) to avoid reading last bit of last frame
     // except for at very high baud rates ( <= 11 cycles per bit )
     if ( PUBIT_CYCLES + 0.5 > 11 )
-        while (! (PURXPIN & (1<<PURXBIT)) ); 
+        while (! (PURXPIN & (1<<PURXBIT)) );
 
     IntModeSave isave;
 
     // wait for start bit
-    while ( PURXPIN & (1<<PURXBIT) ); 
+    while ( PURXPIN & (1<<PURXBIT) );
     uint8_t c = 0x80;                   // bit shift counter
     // wait for the middle of the start bit
     __builtin_avr_delay_cycles(PURXSTART);

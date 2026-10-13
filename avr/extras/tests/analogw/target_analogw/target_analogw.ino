@@ -9,7 +9,7 @@ unsigned long start;
 #if defined(__AVR_ATtiny48__) || defined(__AVR_ATtiny88__)
 const int iopins = 23;
 #else
-const int iopins = NUM_DIGITAL_PINS - 1; 
+const int iopins = NUM_DIGITAL_PINS - 1;
 #endif
 int phase;
 int pin = 0;
@@ -25,7 +25,7 @@ void loop()
 {
   int i;
 
-  if (millis() - start > TIMEOUT_MS) 
+  if (millis() - start > TIMEOUT_MS)
     report_failure();
   switch (phase) {
   case 1: /* wait for HIGH on pin 0, and then wait 20 ms */

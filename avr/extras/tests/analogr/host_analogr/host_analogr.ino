@@ -26,7 +26,7 @@ void setup()
 void loop()
 {
   int i;
-  if (millis() - start > TIMEOUT_MS) 
+  if (millis() - start > TIMEOUT_MS)
     report_failure();
   switch (phase) {
   case 1:
@@ -48,14 +48,14 @@ void loop()
     adc = -1;
     break;
   case 3: /* wait for adc pin number */
-    pinMode(COMPIN, INPUT_PULLUP); 
+    pinMode(COMPIN, INPUT_PULLUP);
     if (digitalRead(COMPIN) == HIGH)
       return;
     lastadc = adc;
     adc = count_pulses() - 1; // number is one to high to allow for pin 0
-    pinMode(COMPIN, INPUT); 
+    pinMode(COMPIN, INPUT);
     if (adc == iocount) { // we are ready
-      pinMode(COMPIN, INPUT_PULLUP); 
+      pinMode(COMPIN, INPUT_PULLUP);
       delay(100);
       if (digitalRead(COMPIN) == LOW) report_success();
       else report_failure();
@@ -122,12 +122,12 @@ int count_pulses()
   int pulses = 1;
   bool timeout = false;
   unsigned long lastedge;
-  
+
   while (1) {
     lastedge = millis();
     // wait for raising edge
     while ((digitalRead(COMPIN) == LOW) && (millis() - lastedge < MAXPULSE_MS));
-    if (digitalRead(COMPIN) == LOW) 
+    if (digitalRead(COMPIN) == LOW)
       report_failure(); // if timeout, something went wrong
     lastedge = millis();
     // now wait for falling edge

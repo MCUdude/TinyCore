@@ -35,8 +35,8 @@ void setup (void) {
    SPI.attachInterrupt(); // turn on interrupt
 }
 
-ISR (SPI_STC_vect) // SPI interrupt routine 
-{ 
+ISR (SPI_STC_vect) // SPI interrupt routine
+{
    byte c = SPDR; // read byte from SPI Data Register
    if (indx < sizeof buf) {
       buf[indx] = c; // save data in the next index in the array buff
@@ -49,13 +49,13 @@ ISR (SPI_STC_vect) // SPI interrupt routine
 void loop (void) {
   if (done) {
     Serial.print(F("Received: '"));
-    Serial.print(buf); 
+    Serial.print(buf);
     Serial.println(F("'"));
-    if (strcmp(recv, buf) == 0) 
+    if (strcmp(recv, buf) == 0)
       Serial.println(F("SPI test successful"));
     else
       Serial.println(F("SPI test failed"));
-    indx = 0; 
-    done = false; //reset the process   
+    indx = 0;
+    done = false; //reset the process
   }
 }

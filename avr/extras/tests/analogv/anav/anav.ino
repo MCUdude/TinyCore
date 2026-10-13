@@ -6,7 +6,7 @@
 #if defined(__AVR_ATtiny48__) || defined(__AVR_ATtiny88__)
 const int iopins = 23;
 #else
-const int iopins = NUM_DIGITAL_PINS - 1; 
+const int iopins = NUM_DIGITAL_PINS - 1;
 #endif
 
 void setup()
@@ -29,7 +29,7 @@ void loop()
   long adc;
 
   for (pin=0; pin < iopins; pin++) {
-    if (digitalPinToAnalogInput(pin) >= 0 && digitalPinToAnalogInput(pin) != NOT_A_PIN) { 
+    if (digitalPinToAnalogInput(pin) >= 0 && digitalPinToAnalogInput(pin) != NOT_A_PIN) {
       adc = analogRead(pin);
       adc = analogRead(pin);
       Serial.print(pin);

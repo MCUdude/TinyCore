@@ -25,7 +25,7 @@ void setup()
 void loop()
 {
   int i;
-  if (millis() - start > TIMEOUT_MS) 
+  if (millis() - start > TIMEOUT_MS)
     report_failure();
   switch (phase) {
   case 1:
@@ -56,7 +56,7 @@ void loop()
       if (digitalRead(HPIN(i)) == LOW) {
         Serial.print(F("This target pin is still low: "));
         Serial.println(i);
-        if (lowcount++ > 10) 
+        if (lowcount++ > 10)
           report_failure();
         delay(1);
         return;
@@ -68,7 +68,7 @@ void loop()
     start = millis();
     break;
   case 6: /* Now wait for switching to LOW one by one */
-    for (i = 0; i <= subphase; i++) 
+    for (i = 0; i <= subphase; i++)
       if (digitalRead(HPIN(i)) == HIGH) {
         return;
       }
@@ -141,7 +141,7 @@ void loop()
     report_failure();
   }
 }
-    
+
 
 void report_success()
 {
@@ -186,12 +186,12 @@ int count_pulses()
   int pulses = 1;
   bool timeout = false;
   unsigned long lastedge;
-  
+
   while (1) {
     lastedge = millis();
     // wait for raising edge
     while ((digitalRead(COMPIN) == LOW) && (millis() - lastedge < MAXPULSE_MS));
-    if (digitalRead(COMPIN) == LOW) 
+    if (digitalRead(COMPIN) == LOW)
       report_failure(); // if timeout, something went wrong
     lastedge = millis();
     // now wait for falling edge
