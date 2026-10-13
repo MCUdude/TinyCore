@@ -32,7 +32,7 @@ set "ACORE=%BUILD_PATH%\\core\\*.a"
 set "ACORE=%ACORE:\\=\%"
 set "CACHEFOLDER=%BUILD_PATH%\\..\\.."
 
-PUSHD %CACHEFOLDER%
+PUSHD "%CACHEFOLDER%"
 
 FOR /F %%A IN ('DIR /B ^| FIND /C /V ""') DO (
     SET "CNT=%%A"
@@ -120,7 +120,7 @@ if errorlevel 1 (
    del "%ACORE%" 2>NUL
    set WRONG=0
    dir /b cores 2>nul >nul
-   if %ERRORLEVEL% EQU 0 (
+   if !ERRORLEVEL! EQU 0 (
       FOR /D %%P IN ("%CACHEFOLDER%\\CORES\\*") DO (
        	  if not exist "%%P\\core.a" set WRONG=1
        	  if not exist "%%P\\.last-used" set WRONG=1
