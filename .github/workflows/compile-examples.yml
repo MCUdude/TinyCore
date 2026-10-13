@@ -1,8 +1,6 @@
 name: Compile Examples
 
 on:
-  # Called by release.yml, so that a release waits for this check.
-  workflow_call:
   pull_request:
     paths:
       - ".github/workflows/compile-examples.yml"
