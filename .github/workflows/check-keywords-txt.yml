@@ -1,14 +1,16 @@
 name: Check keywords.txt
 
 on:
+  # Called by release.yml, so that a release waits for this check.
+  workflow_call:
   pull_request:
     paths:
       - ".github/workflows/check-keywords-txt.yml"
-      - "megaavr/libraries/**"
+      - "avr/libraries/**"
   push:
     paths:
       - ".github/workflows/check-keywords-txt.yml"
-      - "megaavr/libraries/**"
+      - "avr/libraries/**"
   # workflow_dispatch event allows the workflow to be triggered manually
   # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
   workflow_dispatch:
@@ -36,4 +38,4 @@ jobs:
         run: |
           source "${{ env.ARDUINO_CI_SCRIPT_FOLDER_PATH }}/arduino-ci-script.sh"
           # https://github.com/per1234/arduino-ci-script#check_keywords_txt-searchpath-maximumsearchdepth
-          check_keywords_txt "${GITHUB_WORKSPACE}/megaavr/libraries" 1
+          check_keywords_txt "${GITHUB_WORKSPACE}/avr/libraries" 1

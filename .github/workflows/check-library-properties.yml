@@ -1,6 +1,8 @@
 name: Check library.properties
 
 on:
+  # Called by release.yml, so that a release waits for this check.
+  workflow_call:
   pull_request:
     paths:
       - ".github/workflows/check-library-properties.yml"

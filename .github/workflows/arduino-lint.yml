@@ -2,6 +2,8 @@ name: Arduino Lint
 
 # See: https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
 on:
+  # Called by release.yml, so that a release waits for this check.
+  workflow_call:
   push:
   pull_request:
   schedule:
