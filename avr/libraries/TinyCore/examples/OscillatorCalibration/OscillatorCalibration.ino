@@ -3,7 +3,7 @@
 
   Based on picoUart by Ralph Doncaster (2020)
   https://github.com/nerdralph/picoUART
-    
+  
   Modified by MCUdude to work with TinyCore
   https://github.com/MCUdude/TinyCore
   ------------------------------------------------------------------------------

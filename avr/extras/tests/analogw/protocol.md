@@ -23,4 +23,3 @@ The protocol is as follows:
 4. The target sends 20 msec a 10% duty cycle signal, then 20 msec a 50% duty cycle signal, and finally 20 msec a 90% duty cycle signal.
 5. If this were the last PWM pin, then it would send the number of I/O pins + 1; if there are more PWM pins, it continues with step 3.
 6. If this were the last pin, the target would report success.
-

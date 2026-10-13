@@ -63,4 +63,3 @@ void success()
 {
    while (2);
 }
-

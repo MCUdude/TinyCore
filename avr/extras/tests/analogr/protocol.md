@@ -22,4 +22,3 @@ The protocol is as follows:
 4. The host switches this pin to LOW, waits 50 msec, then it switches it to HIGH for 50 msec.
 5. If this were the last ADC pin, then the target would send the number of I/O pins + 1; if there are more ADC pins, it continues with step 3.
 6. If this were the last pin, the target would report success by pulling the host pin 2 to LOW. If there was an error, it will not pull the pin down.
-
