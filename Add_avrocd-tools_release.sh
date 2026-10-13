@@ -13,7 +13,7 @@ AVROCD_TOOLS_VERSION=$(curl -s https://api.github.com/repos/$OWNER/PyAvrOCD/rele
 
 if grep -q "avrocd-tools-${AVROCD_TOOLS_VERSION}" $INDEX; then
     echo "Most recent version of PyAvrOCD is already in the index"
-    exit 1
+    exit 0                      # not a failure: a release workflow calls this every time
 fi
 
 OS_PLATFORM1="Linux_ARMv6"
