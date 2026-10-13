@@ -1,6 +1,11 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
+REM Windows' own tools first. A batch file is written for the commands cmd
+REM comes with, and a PATH that puts something else of the same name in
+REM front of them changes what this script does.
+set "PATH=%SystemRoot%\System32;%PATH%"
+
 REM %1 = absolute path to avr-g++
 REM %2 = sketch path
 REM %3 = build path
@@ -32,11 +37,15 @@ set "ACORE=%BUILD_PATH%\\core\\*.a"
 set "ACORE=%ACORE:\\=\%"
 set "CACHEFOLDER=%BUILD_PATH%\\..\\.."
 
+REM How many entries the cache folder has, counted by the shell rather than
+REM by FIND. FIND is not necessarily the FIND that was meant: anyone with Git
+REM for Windows on the PATH, which includes every CI runner, has a GNU find
+REM ahead of it, and that one reads /C /V "" as three directories to search,
+REM starts at the root of the drive and walks all of it. The build does not
+REM hang then, it waits for someone to finish searching C:.
+set "CNT=0"
 PUSHD "%CACHEFOLDER%"
-
-FOR /F %%A IN ('DIR /B ^| FIND /C /V ""') DO (
-    SET "CNT=%%A"
-)
+for /f "delims=" %%A in ('dir /b 2^>nul') do set /a CNT+=1
 POPD
 
 if not exist "%BUILD_PATH%" mkdir "%BUILD_PATH%" >nul 2>nul
