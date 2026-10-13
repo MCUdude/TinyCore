@@ -170,10 +170,13 @@ tools.avrdude_micronucleus.path={runtime.tools.avrdude.path}
 tools.avrdude_micronucleus.config.path={runtime.tools.avrdude.path}/etc/avrdude.conf
 
 tools.avrdude_micronucleus.upload.params.verbose=-v
+tools.avrdude_micronucleus.upload.params.quiet=-q -q
 tools.avrdude_micronucleus.upload.pattern="{cmd.path}" "-C{config.path}" {upload.verbose} -p{build.mcu} -c{upload.protocol} "-Uflash:w:{build.path}/{build.project_name}.hex:i"
 tools.avrdude_micronucleus.erase.pattern=
 tools.avrdude_micronucleus.erase.params.verbose=
+tools.avrdude_micronucleus.erase.params.quiet=
 tools.avrdude_micronucleus.bootloader.params.verbose=-v
+tools.avrdude_micronucleus.bootloader.params.quiet=-q -q
 tools.avrdude_micronucleus.bootloader.pattern="{cmd.path}" "-C{config.path}" {upload.verbose} -p{build.mcu} -c{upload.protocol} "{upload.str}"
 
 # USB Default Flags
