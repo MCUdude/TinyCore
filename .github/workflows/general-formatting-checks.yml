@@ -2,14 +2,9 @@
 name: General Formatting Checks
 
 on:
-  pull_request:
-  push:
-  # workflow_dispatch event allows the workflow to be triggered manually
-  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
+  # Manual only: this reports the whitespace of the whole repository on every
+  # push, which is noise rather than a finding.
   workflow_dispatch:
-  # repository_dispatch event allows the workflow to be triggered via the GitHub API
-  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#repository_dispatch
-  repository_dispatch:
 
 jobs:
   utf-8-bom:
