@@ -30,6 +30,7 @@ Key improvements include:
 * [Internal oscillator calibration (OSCCAL)](#internal-oscillator-calibration-osccal)
 * [Write to own flash](#write-to-own-flash)
 * [Pragma directive](#pragma-directive)
+* [Using Avrdude directly](#using-avrdude-directly)
 * [Programmers](#programmers)
 * **[How to install](#how-to-install)**
   - [Boards Manager Installation](#boards-manager-installation)
@@ -204,6 +205,13 @@ These directives append flags to the build command line depending on the active 
 For instance, `#pragma arduino release_flags -DTX_ONLY` will enable UART TX only without having to specify this in the Tools menu.
 
 Read more about these `#pragma` directives and how to use them in [pragma.md](/pragma.md).
+
+
+## Using Avrdude directly
+Behind the scenes, the Arduino IDE uses [Avrdude](https://github.com/avrdudes/avrdude) for all uploading, fuse setting and bootloader burning. You can also run Avrdude yourself, for example to set fuses that aren't available in the Tools menu, inspect the flash memory, or build an Urboot bootloader with different pins, baud rate or features than the ones TinyCore offers.
+
+See [Avrdude.md](Avrdude.md) for a brief introduction on how to write fuses, how to use the interactive terminal and how to generate Urboot bootloaders on the fly.
+
 
 ## Programmers
 Select your microcontroller in the boards menu, then select the clock frequency. You'll have to hit "Burn bootloader" in order to set the correct fuses and upload the correct bootloader. <br/>
