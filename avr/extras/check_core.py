@@ -2,8 +2,8 @@
 """
 Check a core for the kinds of mistake that only show up when someone else uses it.
 
-    python3 extras/check_core.py              # check the core this file belongs to
-    python3 extras/check_core.py --tag v1.3.1 # and that it is ready to be released
+    python3 avr/extras/check_core.py              # check the core this file belongs to
+    python3 avr/extras/check_core.py --tag v0.9.0 # and that it is ready to be released
 
 Every check is about consistency inside the core, so it needs nothing but the
 files themselves and the standard library. Errors make it exit non-zero;

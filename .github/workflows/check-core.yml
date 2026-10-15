@@ -3,12 +3,12 @@
 # and every option that can change the binary really compiles, and that the
 # prebuild hook picks the '#pragma arduino' lines out of a sketch.
 #
-# Three scripts in extras/ do the work, and each of them runs by hand just as
-# well as it runs here:
+# Three scripts in avr/extras/ do the work, and each of them runs by hand just
+# as well as it runs here:
 #
-#     python3 extras/check_core.py  --root avr
-#     python3 extras/compile_all.py --root avr --fqbn-prefix TinyCore:avr
-#     python3 extras/check_hooks.py --root avr --fqbn TinyCore:avr:x5:chip=85
+#     python3 avr/extras/check_core.py
+#     python3 avr/extras/compile_all.py --fqbn-prefix TinyCore:avr
+#     python3 avr/extras/check_hooks.py --fqbn TinyCore:avr:x5:chip=85
 #
 # The release workflow calls this one, so nothing is published that did not
 # pass here.
@@ -19,7 +19,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/check-core.yml"
-      - "extras/*.py"
+      - "avr/extras/*.py"
       - "avr/*.txt"
       - "avr/cores/**"
       - "avr/variants/**"
@@ -27,7 +27,7 @@ on:
   push:
     paths:
       - ".github/workflows/check-core.yml"
-      - "extras/*.py"
+      - "avr/extras/*.py"
       - "avr/*.txt"
       - "avr/cores/**"
       - "avr/variants/**"
@@ -67,9 +67,9 @@ jobs:
           # With a tag it also says whether the core is ready to be released
           # under that version: the CHANGELOG, package.json and the tag itself.
           if [ -n "$TAG" ]; then
-            python3 extras/check_core.py --root avr --tag "$TAG"
+            python3 avr/extras/check_core.py --tag "$TAG"
           else
-            python3 extras/check_core.py --root avr
+            python3 avr/extras/check_core.py
           fi
 
   compile:
@@ -142,7 +142,7 @@ jobs:
       - name: Compile
         run: |
           # Every board, and of the menus those that can change the binary.
-          python TinyCore/extras/compile_all.py --root TinyCore/avr \
+          python TinyCore/avr/extras/compile_all.py \
                  --fqbn-prefix TinyCore:avr \
                  --work-dir "$HOME/work with blank" --timeout 300
 
@@ -150,6 +150,6 @@ jobs:
         run: |
           # The hook fails silently by nature: the options file stays empty and
           # the build succeeds without the flags. So it gets a sketch of its own.
-          python TinyCore/extras/check_hooks.py --root TinyCore/avr \
+          python TinyCore/avr/extras/check_hooks.py \
                  --fqbn TinyCore:avr:x5:chip=85 \
                  --work-dir "$HOME/work with blank"
