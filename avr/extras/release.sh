@@ -2,9 +2,9 @@
 # Tags a release and pushes the tag, which is what sets the release workflow
 # going:
 #
-#     ./extras/release.sh 1.3.4        # the real thing
-#     ./extras/release.sh 1.3.4-rc1    # one to try out first
-#     ./extras/release.sh -n 1.3.4     # say what it would do, do nothing
+#     ./avr/extras/release.sh 0.9.1        # the real thing
+#     ./avr/extras/release.sh 0.9.1-rc1    # one to try out first
+#     ./avr/extras/release.sh -n 0.9.1     # say what it would do, do nothing
 #
 # A tag is the one thing in this whole business that cannot be taken back once
 # it is out: the workflow runs, the release appears, the board manager index
@@ -15,10 +15,10 @@ set -u
 DRY=0
 case "${1:-}" in
     -n|--dry-run) DRY=1; shift ;;
-    -h|--help) echo "Usage: ./extras/release.sh [-n] <version>"; exit 0 ;;
+    -h|--help) echo "Usage: ./avr/extras/release.sh [-n] <version>"; exit 0 ;;
 esac
 if [[ -z "${1:-}" ]] || [[ -n "${2:-}" ]]; then
-    echo "Usage: ./extras/release.sh [-n] <version>      e.g. 1.3.4 or 1.3.4-rc1"
+    echo "Usage: ./avr/extras/release.sh [-n] <version>      e.g. 0.9.1 or 0.9.1-rc1"
     exit 1
 fi
 
@@ -111,10 +111,11 @@ fi
 
 # The same checks the release workflow runs, so a failure costs a second here
 # instead of a red run and a tag that has to be cleaned up afterwards.
-if [[ -f extras/check_core.py ]] && command -v python3 > /dev/null; then
-    ROOT="."
-    [[ -f avr/platform.txt ]] && ROOT="avr"
-    python3 extras/check_core.py --root "$ROOT" --tag "$TAG" || exit 1
+# The checker sits beside this script, wherever that is, and its own --root
+# default is the folder above it -- the core, so nothing has to be passed.
+HERE="$(cd "$(dirname "$0")" && pwd)"
+if [[ -f "$HERE/check_core.py" ]] && command -v python3 > /dev/null; then
+    python3 "$HERE/check_core.py" --tag "$TAG" || exit 1
 fi
 
 echo

@@ -3,7 +3,7 @@
 Check that the prebuild hook really picks the '#pragma arduino ...' lines out of
 a sketch and writes them where the build reads them from.
 
-    python3 extras/check_hooks.py --root avr --fqbn TinyCore:avr:x5:chip=85
+    python3 avr/extras/check_hooks.py --fqbn TinyCore:avr:x5:chip=85
 
 The hook exists in two versions, a shell one and a batch one, and they only ever
 run on their own platform. A failure is silent by nature: the options file stays

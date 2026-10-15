@@ -4,8 +4,8 @@ Compile a sketch for every board of the core, in every combination its menus
 offer. A board entry that is wrong in boards.txt or platform.txt usually shows
 up here and nowhere else, because nobody builds for every combination by hand.
 
-    python3 extras/compile_all.py --root avr --fqbn-prefix TinyCore:avr
-    python3 extras/compile_all.py --root avr --fqbn-prefix TinyCore:avr --menus clock
+    python3 avr/extras/compile_all.py --fqbn-prefix TinyCore:avr
+    python3 avr/extras/compile_all.py --fqbn-prefix TinyCore:avr --menus clock
 
 Needs arduino-cli with the core installed. Standard library apart from that.
 """
