@@ -71,7 +71,7 @@ extern "C"{
         This implies that the automatic clearing happens **at the start** of the interrupt. But the interrupt condition (rising edge of ACO) will occur again, likely several times
         over the course of receiving a byte, so we had damned well better clear this bit manually!
       */
-      #if !defined(__AVR_ATtinyx8__)
+      #if !defined(__AVR_ATtinyX8__)
         ACSR |= (1 << ACI); // SBI - except on x8 where this isn't in low I/O
       #else
         ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI) | (1 << ACIE); // ldi, out
@@ -139,7 +139,7 @@ void TinySoftwareSerial::begin(long baud) {
     // These should compile to cbi and sbi - everything is compile time known.
     SOFTSERIAL_DDR    &=  ~(1 << SOFTSERIAL_RXBIT);  // set RX to an input
     SOFTSERIAL_PORT   |=   (1 << SOFTSERIAL_RXBIT);  // enable pullup on RX pin - to prevent accidental interrupt triggers.
-    #if !defined(__AVR_ATtinyx8__) // on most classic tinyies ACSR is in the low IO space, so we can use sbi, cbi instructions.
+    #if !defined(__AVR_ATtinyX8__) // on most classic tinyies ACSR is in the low IO space, so we can use sbi, cbi instructions.
       ACSR            |=   (1 <<  ACI);              // clear the flag - above configuration may cause it to be set.
       ACSR            |=   (1 << ACIE);              // turn on the comparator interrupt
     #else
@@ -219,7 +219,7 @@ bool TinySoftwareSerial::listen() {
       _rx_buffer->head = 0;
       _rx_buffer->tail = 0;
       ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI); // must not have ACIE set while changing ACD
-      #if defined(__AVR_ATtiny_x8__) // not in the low I/O space so use LDI, OUT
+      #if defined(__AVR_ATtinyX8__) // not in the low I/O space so use LDI, OUT
         ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI) | (1 << ACIE);
       #else // we can use sbi. on 88/48 this would result in a 3 instruction IN, ORI, OUT sequence.
         ACSR |= 1 << ACIE;
