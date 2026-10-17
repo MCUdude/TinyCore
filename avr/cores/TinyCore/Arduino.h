@@ -433,13 +433,13 @@ uint8_t _lookupPortToMode(uint8_t port);
  *
  */
 
-inline __attribute__((always_inline)) void check_constant_pin(uint8_t pin)
+static inline __attribute__((always_inline)) void check_constant_pin(uint8_t pin)
 {
   if(!__builtin_constant_p(pin))
     badArg("Fast digital pin must be a constant");
 }
 
-inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uint8_t pin) {
+static inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uint8_t pin) {
   if(__builtin_constant_p(pin)) {
     if (pin >= NUM_DIGITAL_PINS && pin != NOT_A_PIN)
     // Exception made for NOT_A_PIN - code exists which relies on being able to pass this and have nothing happen.
@@ -453,7 +453,7 @@ inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uint8_t pi
   }
   return 1;
 }
-inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
+static inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
   check_constant_pin(pin);
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
@@ -493,7 +493,7 @@ inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode
     SREG = oldSREG;
   }
 }
-inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mode) {
+static inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mode) {
   check_constant_pin(pin);
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
@@ -517,7 +517,7 @@ inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mo
     *ddr |= mask;
   }
 }
-inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
+static inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
   check_constant_pin(pin);
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
@@ -532,7 +532,7 @@ inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
 }
 
 
-inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
+static inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
   check_constant_pin(pin);
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
@@ -593,7 +593,7 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
 
 
 #if defined(__AVR_ATtinyX41__)
-  inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
+  static inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
     // "Pullup enable? Never heard if it!" option for x41 only, because access to the PUEx registers is slow and non-atomic on those parts, and it would not be surprising
     // if someone wanted to avoid using them when doing straight digtial I/O. On all other parts - including other ones with PUEx registers (1634 and 828, which do have the
     // registers at sane addresses) - it is a normal call to digitalWriteFast(), and does manipulate the pullup state. Only on the x41 where the overhead is significant does
@@ -616,7 +616,7 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
     }
   }
 #else // silently fall back to standard implementation.
-  inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
+  static inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
     digitalWriteFast(pin,val);
   }
 #endif
