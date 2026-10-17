@@ -78,26 +78,6 @@ void openDrain(uint8_t pin, uint8_t mode);
 
 
 
-#if defined(ADCSRA)
-  int analogRead(uint8_t pinNumber);
-  #ifdef SLEEP_MODE_ADC
-    int analogRead_NR(uint8_t pin);
-    int _analogRead(uint8_t pin, bool use_noise_reduction);
-  #else
-    int _analogRead(uint8_t pin);
-  #endif
-  void analogReference(uint8_t mode);
-#else
-  /* This part has no ADC at all, so these cannot work. They are macros rather
-   * than stub functions with a badCall() body on purpose: a stub has external
-   * linkage and is emitted whether or not the sketch ever calls it, so its
-   * diagnostic fires on its own in every build of every sketch. As macros they
-   * say the same thing, but at the line that calls them, and only then.
-   */
-  #define analogRead(...)      (badCall("analogRead() cannot be used on a part without an ADC"),-32768)
-  #define _analogRead(...)     (badCall("analogRead() cannot be used on a part without an ADC"),-32768)
-  #define analogReference(...) badCall("analogReference() cannot be used on a part without an ADC")
-#endif
 void analogWrite(uint8_t, int);
 
 void setADCDiffMode(bool bipolar);
@@ -269,6 +249,31 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #if !defined(SCL) && defined(USIDR)
   #define SDA   USI_DI
   #define SCL   USI_SCK
+#endif
+
+/* The ADC functions are declared here, below pins_arduino.h, and not further up
+ * with the other core functions: the ATtiny26 calls its register ADCSR, and its
+ * pins_arduino.h is what defines ADCSRA as an alias for it.
+ */
+#if defined(ADCSRA)
+  int analogRead(uint8_t pinNumber);
+  #ifdef SLEEP_MODE_ADC
+    int analogRead_NR(uint8_t pin);
+    int _analogRead(uint8_t pin, bool use_noise_reduction);
+  #else
+    int _analogRead(uint8_t pin);
+  #endif
+  void analogReference(uint8_t mode);
+#else
+  /* This part has no ADC at all, so these cannot work. They are macros rather
+   * than stub functions with a badCall() body on purpose: a stub has external
+   * linkage and is emitted whether or not the sketch ever calls it, so its
+   * diagnostic fires on its own in every build of every sketch. As macros they
+   * say the same thing, but at the line that calls them, and only then.
+   */
+  #define analogRead(...)      (badCall("analogRead() cannot be used on a part without an ADC"),-32768)
+  #define _analogRead(...)     (badCall("analogRead() cannot be used on a part without an ADC"),-32768)
+  #define analogReference(...) badCall("analogReference() cannot be used on a part without an ADC")
 #endif
 
 /* analogGain() only exists on the parts that have a gain selection register of
