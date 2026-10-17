@@ -79,18 +79,17 @@ uint8_t analog_reference = DEFAULT;
       analog_gain = 0x00;
     }
   }
-#elif defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtinyX61__) || defined(__AVR_ATtinyX7__) || defined(__AVR_ATtiny26__)
-  void analogGain( __attribute__ ((unused)) uint8_t gain) {
-    badCall("analog gain is set through channel used on this part - see the part-specific documentation.");
-  }
-#else
-  void analogGain( __attribute__ ((unused)) uint8_t gain) {
-    badCall("This part does not have a differential ADC. Classic AVRs do not support non-unity gain on single-ended measurements.");
-  }
 #endif
+/* On every other part analogGain() does not exist as a function at all: Arduino.h
+ * defines it as a macro that expands to badCall(). A stub function here would have
+ * external linkage and would therefore be emitted whether or not anyone calls it,
+ * which makes the diagnostic fire on its own as soon as the unit is compiled
+ * without LTO to remove it again.
+ */
 
 
 
+#if defined(ADCSRA)
 void analogReference(uint8_t mode) {
   /* In the stock core, this doesn't actually set the reference.
    * But here, there is no reason we can't set the reference. Certainly
@@ -166,6 +165,7 @@ void analogReference(uint8_t mode) {
     #endif
   #endif // end of non-x7 reference setting.
 }
+#endif
 
 
 #if defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtinyX61__) || defined(__AVR_ATtinyX7__)
@@ -191,6 +191,7 @@ void analogReference(uint8_t mode) {
 #endif
 
 
+#if defined(ADCSRA)   /* without one, Arduino.h makes these compile-time diagnostics */
 inline int analogRead(uint8_t pin) {
   if (!(pin & 0x80)) {
     // All constants that specify a channel explicitly have the high bit set. If we got something without that
@@ -225,18 +226,6 @@ inline int analogRead(uint8_t pin) {
 
 
 
-
-#ifndef ADCSRA
-  int _analogRead(uint8_t __attribute__((unused)) pin) {
-    badCall("analogRead() cannot be used on a part without an ADC");
-    /* if a device does not have an ADC, instead of giving a number we know is
-     * wrong AND that isn't unique to error conditions, let's just refuse to
-     * compile it - if they want some other function substituted in, that's
-     * what #ifdefs are for, otherwise, we assume they have the wrong part
-     * selected, or didn't know that the ATtiny4313/2313 don't have an ADC. */
-    return -32768;
-  }
-#else
 
   #ifdef SLEEP_MODE_ADC
     int _analogRead(uint8_t pin, bool use_noise_reduction) {
