@@ -221,31 +221,33 @@ static const uint8_t  A3 =  ADC_CH(3);
   #define USI_START_COND_INT  USISIF
 #endif
 
-#ifdef ARDUINO_MAIN
+/* The pin tables below are defined here, not behind #ifdef ARDUINO_MAIN.
+ * See the note where Arduino.h used to declare them.
+ */
 
 /*---------------------------------------------------------------------------
 
  *---------------------------------------------------------------------------*/
 
-const uint8_t PROGMEM port_to_mode_PGM[] = {
+static const uint8_t PROGMEM port_to_mode_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   NOT_A_PORT,
   (uint8_t)(uint16_t) &DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] = {
+static const uint8_t PROGMEM port_to_output_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PORTB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] = {
+static const uint8_t PROGMEM port_to_input_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_port_PGM[] __attribute__((unused)) = {
   PB, /* 0 */
   PB,
   PB,
@@ -254,7 +256,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PB, /* 5 */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] __attribute__((unused)) = {
   _BV(0), /* 0, port B */
   _BV(1),
   _BV(2),
@@ -263,7 +265,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(5),
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_timer_PGM[] __attribute__((unused)) = {
   TIMER0A, /* OC0A */
   #ifdef TIMER1_PWM
   TIMER1A, /* OC1A */
@@ -275,5 +277,4 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   TIMER1B, /*OC1B*/
   NOT_ON_TIMER,
 };
-#endif
 #endif

@@ -272,7 +272,9 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define PIN_HWSERIAL0_RX      PIN_PA0
 #define HWSERIAL0_IS_LIN      1
 
-#ifdef ARDUINO_MAIN
+/* The pin tables below are defined here, not behind #ifdef ARDUINO_MAIN.
+ * See the note where Arduino.h used to declare them.
+ */
 
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY167/ATTINY87
@@ -294,25 +296,25 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * * indicates PWM pin, a indicates ADC (analog input) pins
  *---------------------------------------------------------------------------*/
 
-const uint8_t PROGMEM port_to_mode_PGM[] = {
+static const uint8_t PROGMEM port_to_mode_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &DDRA,
   (uint8_t)(uint16_t) &DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] = {
+static const uint8_t PROGMEM port_to_output_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PORTA,
   (uint8_t)(uint16_t) &PORTB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] = {
+static const uint8_t PROGMEM port_to_input_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PINA,
   (uint8_t)(uint16_t) &PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_port_PGM[] __attribute__((unused)) = {
   PA, /* 0 */
   PA,
   PA, /* 2 */
@@ -331,7 +333,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PB, /* 15 */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] __attribute__((unused)) = {
   _BV(0), /* 0 */
   _BV(1),
   _BV(2), /* 2 */
@@ -350,7 +352,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(7), /* 15 */
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_timer_PGM[] __attribute__((unused)) = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   TIMER0A,
@@ -369,6 +371,5 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   TIM1BX
 };
 
-#endif
 
 #endif
