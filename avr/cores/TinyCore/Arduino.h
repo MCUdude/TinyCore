@@ -474,6 +474,50 @@ static inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uin
   }
   return 1;
 }
+/* Read-modify-write of an I/O register that an interrupt cannot break into.
+ *
+ * With a constant register in the low I/O space (0x00-0x1F) and a constant
+ * single-bit mask, this is one sbi/cbi, which is atomic by itself. That is the
+ * case the fast I/O functions are made for, and there the asm makes sure of the
+ * instruction rather than leaving it to the optimizer. In every other case --
+ * a pin only known at run time, a register outside the low I/O space like the
+ * x41's PUEx, or no optimization that folds the tables -- it is a load, a
+ * modify and a store, and an interrupt between load and store that changes
+ * another bit of the same register would have that change undone. So there it
+ * runs with interrupts off, the same way digitalWrite() does.
+ */
+/* The test is on (uint8_t)(uint16_t)(reg), not on reg or (uint16_t)(reg): GCC
+ * strips conversions that do not change the size before it looks, and answers 0
+ * for anything of pointer type, however constant. Narrowing to 8 bits is a real
+ * conversion, so what it looks at is an integer. All I/O registers of these
+ * parts are below 0x100, so nothing is lost.
+ */
+#define _ATOMIC_BITS_LOW_IO(reg, mask) (__builtin_constant_p((uint8_t)(uint16_t)(reg)) && __builtin_constant_p(mask) && \
+    (uint16_t)(reg) >= __SFR_OFFSET && (uint16_t)(reg) < __SFR_OFFSET + 0x20 && \
+    (mask) != 0 && ((mask) & ((mask) - 1)) == 0)
+
+static inline __attribute__((always_inline)) void _atomicSetBits(volatile uint8_t *reg, uint8_t mask) {
+  if (_ATOMIC_BITS_LOW_IO(reg, mask)) {
+    __asm__ __volatile__ ("sbi %0, %1" :: "I" ((uint16_t)reg - __SFR_OFFSET), "I" (__builtin_ctz(mask)));
+  } else {
+    uint8_t oldSREG = SREG;
+    cli();
+    *reg |= mask;
+    SREG = oldSREG;
+  }
+}
+
+static inline __attribute__((always_inline)) void _atomicClearBits(volatile uint8_t *reg, uint8_t mask) {
+  if (_ATOMIC_BITS_LOW_IO(reg, mask)) {
+    __asm__ __volatile__ ("cbi %0, %1" :: "I" ((uint16_t)reg - __SFR_OFFSET), "I" (__builtin_ctz(mask)));
+  } else {
+    uint8_t oldSREG = SREG;
+    cli();
+    *reg &= ~mask;
+    SREG = oldSREG;
+  }
+}
+
 static inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
 #if defined(STRICTLY_FAST)
   check_constant_pin(pin);
@@ -540,11 +584,11 @@ static inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uin
   ddr = portModeRegister(port);
   out = portOutputRegister(port);
   if (mode == FLOATING) {
-    *out &= ~mask;
-    *ddr &= ~mask;
+    _atomicClearBits(out, mask);
+    _atomicClearBits(ddr, mask);
   } else if (mode == LOW) {
-    *out &= ~mask;
-    *ddr |= mask;
+    _atomicClearBits(out, mask);
+    _atomicSetBits(ddr, mask);
   }
 }
 static inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
@@ -583,46 +627,38 @@ static inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, 
     volatile uint8_t *pue, *mode;     //
     pue = portPullupRegister(port);   //
     mode = out - 1;
-    if (val == LOW) {                 // 2 instructions
-
+    if (val == LOW) {
       if (*mode & mask) {
-        *out &= ~mask;                // 1/1 atomic
-      } else {                        // 1/1 +1
-        uint8_t oldSREG = SREG;       // 1/1
-        cli();                        // 1/1
-        *pue &= ~mask;                // 3/5 in 5
-        SREG = oldSREG;               // 1/1
+        _atomicClearBits(out, mask);  // cbi
+      } else {
+        _atomicClearBits(pue, mask);  // PUEx is outside the low I/O space: lds/andi/sts with interrupts off
       }
-    } else {                          // total subtotal 8/10 in 5/9
-      if (*mode & mask) {             // 1/1
-        *out |= mask;                 // 1/1
-      } else {                        // 1/1 in 2
-        uint8_t oldSREG = SREG;       // 1/1
-        cli();                        // 1/1
-        *pue |= mask;                 // 3/5 in 5
-        SREG = oldSREG;               // 1/1
-      }                               // 17 instruction, 21 word, and and execution time of 8-12 clocks?
-                                      // A whole new definition of fast (now it means "slow") - who wants to inline that!?
+    } else {
+      if (*mode & mask) {
+        _atomicSetBits(out, mask);    // sbi
+      } else {
+        _atomicSetBits(pue, mask);    // as above
+      }                               // A whole new definition of fast (now it means "slow") - who wants to inline that!?
     }
   #elif defined(PUEA)
     volatile uint8_t *pue;
     pue = portPullupRegister(port);   //
 
     if (val == LOW) {
-      *pue &= ~mask;                  // 1/1
-      *out &= ~mask;                  // 1/1
-    } else {                          // 1/1
-      *pue |= mask;                   // 1/1
-      *out |= mask;                   // 1/1
+      _atomicClearBits(pue, mask);
+      _atomicClearBits(out, mask);
+    } else {
+      _atomicSetBits(pue, mask);
+      _atomicSetBits(out, mask);
     }
       // constant pin -> constant out register.
       // constant val -> constant mask. Combined with above means we will get CBI/SBI (only one bit at a time will be set in the mask
   #else                               // total 13 and 13 and execution time of ~8 eitherway
     if (val == LOW) {
-      *out &= ~mask;                  // 1/1
-    } else {                          // 1/1
-      *out |= mask;                   // 1/1
-    }   // and we know which one at compile time, so
+      _atomicClearBits(out, mask);
+    } else {
+      _atomicSetBits(out, mask);
+    }
   #endif
 }
 
@@ -647,10 +683,10 @@ static inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, 
     if (port == NOT_A_PORT) return;   /* folds away for a constant pin */
     volatile uint8_t *out;
     out = portOutputRegister(port);
-    if (val == LOW) {                  // 2 instruction
-      *out &= ~mask;                   // 1/1 atomic
-    } else {                           //
-      *out |= mask;                    // 1/1
+    if (val == LOW) {
+      _atomicClearBits(out, mask);
+    } else {
+      _atomicSetBits(out, mask);
     }
   }
 #else // silently fall back to standard implementation.
