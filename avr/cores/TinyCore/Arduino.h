@@ -78,19 +78,32 @@ void openDrain(uint8_t pin, uint8_t mode);
 
 
 
-int analogRead(uint8_t pinNumber);
-#ifdef SLEEP_MODE_ADC
-  int analogRead_NR(uint8_t pin);
-  int _analogRead(uint8_t pin, bool use_noise_reduction);
+#if defined(ADCSRA)
+  int analogRead(uint8_t pinNumber);
+  #ifdef SLEEP_MODE_ADC
+    int analogRead_NR(uint8_t pin);
+    int _analogRead(uint8_t pin, bool use_noise_reduction);
+  #else
+    int _analogRead(uint8_t pin);
+  #endif
+  void analogReference(uint8_t mode);
 #else
-  int _analogRead(uint8_t pin);
+  /* This part has no ADC at all, so these cannot work. They are macros rather
+   * than stub functions with a badCall() body on purpose: a stub has external
+   * linkage and is emitted whether or not the sketch ever calls it, so its
+   * diagnostic fires on its own in every build of every sketch. As macros they
+   * say the same thing, but at the line that calls them, and only then.
+   */
+  #define analogRead(...)      (badCall("analogRead() cannot be used on a part without an ADC"),-32768)
+  #define _analogRead(...)     (badCall("analogRead() cannot be used on a part without an ADC"),-32768)
+  #define analogReference(...) badCall("analogReference() cannot be used on a part without an ADC")
 #endif
-
-void analogReference(uint8_t mode);
 void analogWrite(uint8_t, int);
 
 void setADCDiffMode(bool bipolar);
-void analogGain(uint8_t gain);
+/* analogGain() is declared further down, once pins_arduino.h has told us which
+ * part this is.
+ */
 
 unsigned long millis(void);
 unsigned long micros(void);
@@ -256,6 +269,22 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #if !defined(SCL) && defined(USIDR)
   #define SDA   USI_DI
   #define SCL   USI_SCK
+#endif
+
+/* analogGain() only exists on the parts that have a gain selection register of
+ * their own (the 841/441). Everywhere else the gain is part of the channel
+ * constant, so a call is a mistake we can name at compile time. It is a macro
+ * rather than a stub function on purpose: a stub has external linkage and is
+ * emitted even when nobody calls it, so its badCall() survives in any build
+ * that does not optimize it away again -- a warning in every sketch for a
+ * function the sketch never mentioned.
+ */
+#if defined(GSEL0)
+  void analogGain(uint8_t gain);
+#elif defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtinyX61__) || defined(__AVR_ATtinyX7__) || defined(__AVR_ATtiny26__)
+  #define analogGain(gain) badCall("analog gain is set through channel used on this part - see the part-specific documentation.")
+#else
+  #define analogGain(gain) badCall("This part does not have a differential ADC. Classic AVRs do not support non-unity gain on single-ended measurements.")
 #endif
 
 
