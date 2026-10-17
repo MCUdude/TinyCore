@@ -7,9 +7,20 @@
  *   Free Software - LGPL 2.1, please see LICENCE.md for details
  *---------------------------------------------------------------------------*/
 
-#define ARDUINO_MAIN
+#define PIN_TABLES_HOME   /* read the tables directly here; see Arduino.h */
 #include "wiring_private.h"
 #include "pins_arduino.h"
+
+/* The run-time lookups for every other unit, on this unit's copy of the tables. */
+uint8_t _lookupPinToPort(uint8_t pin)     { return pgm_read_byte(digital_pin_to_port_PGM + pin); }
+uint8_t _lookupPinToBitMask(uint8_t pin)  { return pgm_read_byte(digital_pin_to_bit_mask_PGM + pin); }
+uint8_t _lookupPinToTimer(uint8_t pin)    { return pgm_read_byte(digital_pin_to_timer_PGM + pin); }
+uint8_t _lookupPortToOutput(uint8_t port) { return pgm_read_byte(port_to_output_PGM + port); }
+uint8_t _lookupPortToInput(uint8_t port)  { return pgm_read_byte(port_to_input_PGM + port); }
+uint8_t _lookupPortToMode(uint8_t port)   { return pgm_read_byte(port_to_mode_PGM + port); }
+#if defined(PUEA)
+uint8_t _lookupPortToPullup(uint8_t port) { return pgm_read_byte(port_to_pullup_PGM + port); }
+#endif
 
 void pinMode(uint8_t pin, uint8_t mode) {
   if (pin > 127) {

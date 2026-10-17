@@ -288,7 +288,9 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define PIN_HWSERIAL0_TX         PIN_PC3
 #define PIN_HWSERIAL0_RX         PIN_PC2
 
-#ifdef ARDUINO_MAIN
+/* The pin tables below are defined here, not behind #ifdef ARDUINO_MAIN.
+ * See the note where Arduino.h used to declare them.
+ */
 /*---------------------------------------------------------------------------
  * ATMEL/Microchip ATtiny828 ATTinyCore Standard Pin Mapping
  *
@@ -316,7 +318,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  *---------------------------------------------------------------------------*/
 
 
-const uint8_t PROGMEM port_to_mode_PGM[] = {
+static const uint8_t PROGMEM port_to_mode_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &DDRA,
   (uint8_t)(uint16_t) &DDRB,
@@ -324,7 +326,7 @@ const uint8_t PROGMEM port_to_mode_PGM[] = {
   (uint8_t)(uint16_t) &DDRD
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] = {
+static const uint8_t PROGMEM port_to_output_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PORTA,
   (uint8_t)(uint16_t) &PORTB,
@@ -332,7 +334,7 @@ const uint8_t PROGMEM port_to_output_PGM[] = {
   (uint8_t)(uint16_t) &PORTD
 };
 
-const uint8_t PROGMEM port_to_pullup_PGM[] = {
+static const uint8_t PROGMEM port_to_pullup_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PUEA,
   (uint8_t)(uint16_t) &PUEB,
@@ -340,7 +342,7 @@ const uint8_t PROGMEM port_to_pullup_PGM[] = {
   (uint8_t)(uint16_t) &PUED
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] = {
+static const uint8_t PROGMEM port_to_input_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PINA,
   (uint8_t)(uint16_t) &PINB,
@@ -349,7 +351,7 @@ const uint8_t PROGMEM port_to_input_PGM[] = {
 };
 
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_port_PGM[] __attribute__((unused)) = {
   PA,
   PA,
   PA,
@@ -381,7 +383,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 };
 
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] __attribute__((unused)) = {
   _BV(0),
   _BV(1),
   _BV(2),
@@ -413,7 +415,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
 };
 
 /* Include the TOCCn's in order to use the TOCPMOE register to easily turn PWM on and off. */
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_timer_PGM[] __attribute__((unused)) = {
   NOT_ON_TIMER, /*  PA0 */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -444,6 +446,5 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER
 };
 
-#endif
 
 #endif

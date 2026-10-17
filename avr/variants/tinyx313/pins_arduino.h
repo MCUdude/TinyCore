@@ -208,7 +208,9 @@
 #define PIN_HWSERIAL0_TX      PIN_PD1
 #define PIN_HWSERIAL0_RX      PIN_PD0
 
-#ifdef ARDUINO_MAIN
+/* The pin tables below are defined here, not behind #ifdef ARDUINO_MAIN.
+ * See the note where Arduino.h used to declare them.
+ */
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY2313 ATTinyCore Standard Pin Mapping
  *
@@ -227,7 +229,7 @@
  *---------------------------------------------------------------------------*/
 
 
-const uint8_t PROGMEM port_to_mode_PGM[] = {
+static const uint8_t PROGMEM port_to_mode_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &DDRA,
   (uint8_t)(uint16_t) &DDRB,
@@ -235,7 +237,7 @@ const uint8_t PROGMEM port_to_mode_PGM[] = {
   (uint8_t)(uint16_t) &DDRD,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] = {
+static const uint8_t PROGMEM port_to_output_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PORTA,
   (uint8_t)(uint16_t) &PORTB,
@@ -243,7 +245,7 @@ const uint8_t PROGMEM port_to_output_PGM[] = {
   (uint8_t)(uint16_t) &PORTD,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] = {
+static const uint8_t PROGMEM port_to_input_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PINA,
   (uint8_t)(uint16_t) &PINB,
@@ -251,7 +253,7 @@ const uint8_t PROGMEM port_to_input_PGM[] = {
   (uint8_t)(uint16_t) &PIND,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_port_PGM[] __attribute__((unused)) = {
   PD, /* 0 */
   PD,
   PA,
@@ -272,7 +274,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PA,
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] __attribute__((unused)) = {
   _BV(0), /* 0 */
   _BV(1),
   _BV(1),
@@ -293,7 +295,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(2),
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_timer_PGM[] __attribute__((unused)) = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -313,7 +315,6 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
 };
-#endif
 
 //The 2313 2313a and 4313 use different names for a few things in the headers. This makes sure all of them are there for this family if lousy, obsolete garbage parts.
 #ifndef DDA0
