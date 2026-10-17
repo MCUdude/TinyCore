@@ -139,32 +139,59 @@ void loop(void);
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
 
-extern const uint8_t PROGMEM port_to_mode_PGM[];
-extern const uint8_t PROGMEM port_to_input_PGM[];
-extern const uint8_t PROGMEM port_to_output_PGM[];
-#if defined PUEA
-  extern const uint8_t PROGMEM port_to_pullup_PGM[];
-#endif
-
-extern const uint8_t PROGMEM digital_pin_to_port_PGM[];
-extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
-extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
+/* The pin tables are no longer declared here. They used to be defined in a
+ * single translation unit, behind #ifdef ARDUINO_MAIN in the variant header,
+ * and every other unit saw only these extern declarations. That is why
+ * digitalPinToBitMask() and portOutputRegister() could not be folded without
+ * link-time optimization: the contents of an extern array are unknown, so
+ * __builtin_constant_p() in const_array_or_pgm_() is false and the run-time
+ * pgm_read_byte() path is taken. With -flto the link-time optimizer sees the
+ * definition and folds it, which is the whole reason fast I/O degenerated as
+ * soon as LTO was off.
+ *
+ * They are now defined in the variant header itself, as static, so their
+ * contents are visible in every unit that includes it and the compiler alone
+ * can fold them. Each unit gets its own copy, but a copy nothing references --
+ * which is the case as soon as the accesses fold -- is dropped again by
+ * -fdata-sections and --gc-sections.
+ */
 
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
 //
-// These perform slightly better as macros compared to inline functions
-//
+/* A constant index is folded from this unit's own copy of the table. Any other
+ * index is looked up by a function in wiring_digital.c, which reads that unit's
+ * copy. The run-time lookup must not read the local copy itself: that would be
+ * a reference to it, and every unit doing so would keep a copy of its own --
+ * LTO does not merge static objects. As it is, the local copies are referenced
+ * only by accesses that fold, and so are all dropped again, and the one in
+ * wiring_digital.c is kept only if something looks a pin up at run time.
+ *
+ * wiring_digital.c itself defines PIN_TABLES_HOME and reads its tables
+ * directly, so digitalWrite() and friends do not pay for a call.
+ */
 #define const_array_or_pgm_(FUNC,ARR,IDX) ({size_t idx_ = (IDX); __builtin_constant_p((ARR)[idx_]) ? (ARR)[idx_] : FUNC((ARR)+idx_); })
-#define digitalPinToPort(P)     (((P) < NUM_DIGITAL_PINS) ? const_array_or_pgm_(pgm_read_byte, digital_pin_to_port_PGM, (P)) : NOT_A_PORT)
-#define digitalPinToBitMask(P)  (((P) < NUM_DIGITAL_PINS) ? const_array_or_pgm_(pgm_read_byte, digital_pin_to_bit_mask_PGM, (P)) : NOT_A_PIN)
-#define digitalPinToTimer(P)    (const_array_or_pgm_(pgm_read_byte, digital_pin_to_timer_PGM, (P)))
+#if defined(PIN_TABLES_HOME)
+  #define const_array_or_lookup_(LOOKUP,ARR,IDX) const_array_or_pgm_(pgm_read_byte, ARR, IDX)
+#else
+  #define const_array_or_lookup_(LOOKUP,ARR,IDX) ({size_t idx_ = (IDX); __builtin_constant_p((ARR)[idx_]) ? (ARR)[idx_] : LOOKUP(idx_); })
+#endif
+uint8_t _lookupPinToPort(uint8_t pin);
+uint8_t _lookupPinToBitMask(uint8_t pin);
+uint8_t _lookupPinToTimer(uint8_t pin);
+uint8_t _lookupPortToOutput(uint8_t port);
+uint8_t _lookupPortToInput(uint8_t port);
+uint8_t _lookupPortToMode(uint8_t port);
+#define digitalPinToPort(P)     (((P) < NUM_DIGITAL_PINS) ? const_array_or_lookup_(_lookupPinToPort, digital_pin_to_port_PGM, (P)) : NOT_A_PORT)
+#define digitalPinToBitMask(P)  (((P) < NUM_DIGITAL_PINS) ? const_array_or_lookup_(_lookupPinToBitMask, digital_pin_to_bit_mask_PGM, (P)) : NOT_A_PIN)
+#define digitalPinToTimer(P)    (const_array_or_lookup_(_lookupPinToTimer, digital_pin_to_timer_PGM, (P)))
 #define analogInPinToBit(P)     (P)
-#define portOutputRegister(P)   ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_output_PGM, (P))))
-#define portInputRegister(P)    ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_input_PGM, (P))))
-#define portModeRegister(P)     ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_mode_PGM, (P))))
+#define portOutputRegister(P)   ((volatile uint8_t *)(uint16_t)(const_array_or_lookup_(_lookupPortToOutput, port_to_output_PGM, (P))))
+#define portInputRegister(P)    ((volatile uint8_t *)(uint16_t)(const_array_or_lookup_(_lookupPortToInput, port_to_input_PGM, (P))))
+#define portModeRegister(P)     ((volatile uint8_t *)(uint16_t)(const_array_or_lookup_(_lookupPortToMode, port_to_mode_PGM, (P))))
 #if defined(PUEA)
-  #define portPullupRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_pullup_PGM, (P))))
+  uint8_t _lookupPortToPullup(uint8_t port);
+  #define portPullupRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_lookup_(_lookupPortToPullup, port_to_pullup_PGM, (P))))
 #endif
 
 #define NOT_A_PIN     255

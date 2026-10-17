@@ -338,7 +338,9 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define PIN_HWSERIAL1_RX         PIN_PA4
 
 
-#ifdef ARDUINO_MAIN
+/* The pin tables below are defined here, not behind #ifdef ARDUINO_MAIN.
+ * See the note where Arduino.h used to declare them.
+ */
 
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY841 / ATTinyCore Clockwise
@@ -356,31 +358,31 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  *  Some pins can be remapped, remapped options for peripherals marked with a *. The default for those same options is shown without the *.
  *  Any of the 8 PWM pins can use any of the three timers, TOCC0, 2, 4, and 6 use channel A, and TOCC1, 3, 5, and 7 use channel B. */
 
-const uint8_t PROGMEM port_to_mode_PGM[] = {
+static const uint8_t PROGMEM port_to_mode_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &DDRA,
   (uint8_t)(uint16_t) &DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] = {
+static const uint8_t PROGMEM port_to_output_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PORTA,
   (uint8_t)(uint16_t) &PORTB,
 };
 
-const uint8_t PROGMEM port_to_pullup_PGM[] = {
+static const uint8_t PROGMEM port_to_pullup_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PUEA,
   (uint8_t)(uint16_t) &PUEB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] = {
+static const uint8_t PROGMEM port_to_input_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PINA,
   (uint8_t)(uint16_t) &PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_port_PGM[] __attribute__((unused)) = {
   PA, /* 0 */
   PA,
   PA,
@@ -397,7 +399,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 
 
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] __attribute__((unused)) = {
   _BV(0), /* port A */
   _BV(1),
   _BV(2),
@@ -412,7 +414,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(3),
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_timer_PGM[] __attribute__((unused)) = {
   NOT_ON_TIMER,
   TOCC0 | NOT_ON_TIMER,   /* this is serial 0 TX, lets not use it for pwm */
   TOCC1 | NOT_ON_TIMER,   /* this is serial 0 RX */
@@ -426,6 +428,5 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
 };
-#endif
 
 #endif
