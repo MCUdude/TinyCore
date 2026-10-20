@@ -17,8 +17,9 @@
 #
 # compile-examples is left out for a different reason: its FQBNs name the
 # packager ATTinyCore and board IDs like attinyx5, which this core does not have
-# -- its boards are x5, x4, x41 and so on. It cannot pass here as it stands.
-# Once it can, one line adds it to the list below.
+# -- its boards are x5, x4, x41 and so on. Instead, there is check-core.yml. It
+# compiles every board with every option that can change the binary, and the
+# tag it is given is checked against the version in platform.txt as well.
 
 name: Release
 
@@ -55,10 +56,14 @@ jobs:
     uses: ./.github/workflows/check-library-properties.yml
   library-structure:
     uses: ./.github/workflows/check-library-structure.yml
+  core:
+    uses: ./.github/workflows/check-core.yml
+    with:
+      tag: ${{ github.ref_name }}
 
   publish:
     name: Publish
-    needs: [version, lint, keywords, library-properties, library-structure]
+    needs: [version, lint, keywords, library-properties, library-structure, core]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

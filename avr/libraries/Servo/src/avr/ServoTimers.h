@@ -55,9 +55,9 @@ typedef enum { _timer3, _timer1, _Nbr_16timers } timer16_Sequence_t;
 // not defined in tinyAVR devices.
 ///#else  // everything else
 
-#ifdef __AVR_ATtinyx41__
-#define _useTimer2
-#else
+/* Servo.cpp on this core drives timer 1 unconditionally and never consults
+ * _useTimerX or timer16_Sequence_t. The x41 branch that used to be here was
+ * guarded by a misspelled part macro, so it never applied to anything.
+ */
 #define _useTimer1
 typedef enum { _timer1, _Nbr_16timers } timer16_Sequence_t;
-#endif

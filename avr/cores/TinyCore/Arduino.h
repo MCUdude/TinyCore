@@ -78,19 +78,12 @@ void openDrain(uint8_t pin, uint8_t mode);
 
 
 
-int analogRead(uint8_t pinNumber);
-#ifdef SLEEP_MODE_ADC
-  int analogRead_NR(uint8_t pin);
-  int _analogRead(uint8_t pin, bool use_noise_reduction);
-#else
-  int _analogRead(uint8_t pin);
-#endif
-
-void analogReference(uint8_t mode);
 void analogWrite(uint8_t, int);
 
 void setADCDiffMode(bool bipolar);
-void analogGain(uint8_t gain);
+/* analogGain() is declared further down, once pins_arduino.h has told us which
+ * part this is.
+ */
 
 unsigned long millis(void);
 unsigned long micros(void);
@@ -285,6 +278,47 @@ uint8_t _lookupPortToMode(uint8_t port);
   #define SCL   USI_SCK
 #endif
 
+/* The ADC functions are declared here, below pins_arduino.h, and not further up
+ * with the other core functions: the ATtiny26 calls its register ADCSR, and its
+ * pins_arduino.h is what defines ADCSRA as an alias for it.
+ */
+#if defined(ADCSRA)
+  int analogRead(uint8_t pinNumber);
+  #ifdef SLEEP_MODE_ADC
+    int analogRead_NR(uint8_t pin);
+    int _analogRead(uint8_t pin, bool use_noise_reduction);
+  #else
+    int _analogRead(uint8_t pin);
+  #endif
+  void analogReference(uint8_t mode);
+#else
+  /* This part has no ADC at all, so these cannot work. They are macros rather
+   * than stub functions with a badCall() body on purpose: a stub has external
+   * linkage and is emitted whether or not the sketch ever calls it, so its
+   * diagnostic fires on its own in every build of every sketch. As macros they
+   * say the same thing, but at the line that calls them, and only then.
+   */
+  #define analogRead(...)      (badCall("analogRead() cannot be used on a part without an ADC"),-32768)
+  #define _analogRead(...)     (badCall("analogRead() cannot be used on a part without an ADC"),-32768)
+  #define analogReference(...) badCall("analogReference() cannot be used on a part without an ADC")
+#endif
+
+/* analogGain() only exists on the parts that have a gain selection register of
+ * their own (the 841/441). Everywhere else the gain is part of the channel
+ * constant, so a call is a mistake we can name at compile time. It is a macro
+ * rather than a stub function on purpose: a stub has external linkage and is
+ * emitted even when nobody calls it, so its badCall() survives in any build
+ * that does not optimize it away again -- a warning in every sketch for a
+ * function the sketch never mentioned.
+ */
+#if defined(GSEL0)
+  void analogGain(uint8_t gain);
+#elif defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtinyX61__) || defined(__AVR_ATtinyX7__) || defined(__AVR_ATtiny26__)
+  #define analogGain(gain) badCall("analog gain is set through channel used on this part - see the part-specific documentation.")
+#else
+  #define analogGain(gain) badCall("This part does not have a differential ADC. Classic AVRs do not support non-unity gain on single-ended measurements.")
+#endif
+
 
 /*=============================================================================
  * From what we got in pins_arduino.h as well as defines passed to the compiler from board submenu
@@ -399,8 +433,28 @@ uint8_t _lookupPortToMode(uint8_t port);
  *
  */
 
-static inline __attribute__((always_inline)) void check_constant_pin(uint8_t pin)
-{
+/* Fast I/O needs the pin to be known where the call is compiled if it is to
+ * become a single instruction. Whether it is known depends on what the
+ * optimizer managed to propagate, which is not a property of the program: the
+ * same legal source can satisfy it at -Os -flto and fail at -Og. Refusing to
+ * compile in that case breaks correct programs for reasons their author cannot
+ * see, so the functions below no longer insist on it.
+ *
+ * What they do instead is run their own body with the table lookups done at
+ * run time. That touches exactly the same registers in exactly the same way --
+ * it is only bigger and slower. Calling the ordinary digitalWrite() instead
+ * would have been easier, but it also switches off PWM on the pin, and on the
+ * x41 it touches the pullup registers that digitalWriteFaster() exists to
+ * avoid. A build that behaves differently from the release build is the one
+ * thing worse than a build that fails.
+ *
+ * Define STRICTLY_FAST to get the old behaviour: then a pin the compiler cannot
+ * see through is an error again. Worth having if the single instruction is what
+ * you rely on and you would rather hear about it than lose it quietly.
+ *
+ * check_constant_pin() is only used in that mode.
+ */
+static inline __attribute__((always_inline)) void check_constant_pin(uint8_t pin) {
   if(!__builtin_constant_p(pin))
     badArg("Fast digital pin must be a constant");
 }
@@ -419,20 +473,25 @@ static inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uin
   }
   return 1;
 }
+
 static inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
+#if defined(STRICTLY_FAST)
   check_constant_pin(pin);
+#endif
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
   if (!check_valid_digital_pin(pin)) {
     badArg("Fast I/O functions must be called with a valid pin number. NOT_A_PIN is not a valid pin number for these purposes.");
   }
+#if defined(STRICTLY_FAST)
   if (!__builtin_constant_p(mode)) {
     badArg("pinModeFast requires the mode to be compile time known");
   }
+#endif
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
-  if (port == NOT_A_PIN) return;
+  if (port == NOT_A_PORT) return;   /* folds away for a constant pin */
   volatile uint8_t *reg, *out;
   reg = portModeRegister(port);
   #if defined(PUEA)
@@ -459,19 +518,25 @@ static inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8
     SREG = oldSREG;
   }
 }
+
 static inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mode) {
+#if defined(STRICTLY_FAST)
   check_constant_pin(pin);
+#endif
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
   if (!check_valid_digital_pin(pin)) {
     badArg("Fast I/O functions must be called with a valid pin number. NOT_A_PIN is not a valid pin number for these purposes.");
   }
+#if defined(STRICTLY_FAST)
   if (!__builtin_constant_p(mode)) {
     badArg("openDrainFast requires the mode to be compile time known");
   }
+#endif
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
+  if (port == NOT_A_PORT) return;   /* folds away for a constant pin */
   volatile uint8_t *ddr, *out;
   ddr = portModeRegister(port);
   out = portOutputRegister(port);
@@ -483,8 +548,11 @@ static inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uin
     *ddr |= mask;
   }
 }
+    
 static inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
+#if defined(STRICTLY_FAST)
   check_constant_pin(pin);
+#endif
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
@@ -493,13 +561,15 @@ static inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin)
   }
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
-  //if (port == NOT_A_PORT) return NOT_A_PIN;  // This check is not needed, as we reject non-constant pins but constant pins that are never valid get rejected by check valid digital pin!
+  if (port == NOT_A_PORT) return LOW;   /* folds away for a constant pin */
   return !!(*portInputRegister(port) & mask);
 }
 
 
 static inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
+#if defined(STRICTLY_FAST)
   check_constant_pin(pin);
+#endif
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
@@ -508,6 +578,7 @@ static inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, 
   }
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
+  if (port == NOT_A_PORT) return;   /* folds away for a constant pin */
   volatile uint8_t *out;
   out = portOutputRegister(port);
   #if defined(__AVR_ATtinyX41__)      //Uniquely bad
@@ -564,7 +635,9 @@ static inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, 
     // if someone wanted to avoid using them when doing straight digtial I/O. On all other parts - including other ones with PUEx registers (1634 and 828, which do have the
     // registers at sane addresses) - it is a normal call to digitalWriteFast(), and does manipulate the pullup state. Only on the x41 where the overhead is significant does
     // this have distinct functionality. Crucially, on the x41, you
+#if defined(STRICTLY_FAST)
     check_constant_pin(pin);
+#endif
     if (pin > 127) {
       pin = analogInputToDigitalPin((pin & 127));
     }
@@ -573,6 +646,7 @@ static inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, 
     }
     uint8_t mask = digitalPinToBitMask(pin);
     uint8_t port = digitalPinToPort(pin);
+    if (port == NOT_A_PORT) return;   /* folds away for a constant pin */
     volatile uint8_t *out;
     out = portOutputRegister(port);
     if (val == LOW) {                  // 2 instruction
