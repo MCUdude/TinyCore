@@ -257,7 +257,9 @@ static const uint8_t A11 = ADC_CH(11);
 #define PIN_HWSERIAL1_RX      PIN_PB2
 
 
-#ifdef ARDUINO_MAIN
+/* The pin tables below are defined here, not behind #ifdef ARDUINO_MAIN.
+ * See the note where Arduino.h used to declare them.
+ */
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY1634 ATTinyCore Standard (Clockwise) Pin Mapping
  *
@@ -280,35 +282,35 @@ static const uint8_t A11 = ADC_CH(11);
  *---------------------------------------------------------------------------*/
 
 
-const uint8_t PROGMEM port_to_mode_PGM[] = {
+static const uint8_t PROGMEM port_to_mode_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &DDRA,
   (uint8_t)(uint16_t) &DDRB,
   (uint8_t)(uint16_t) &DDRC
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] = {
+static const uint8_t PROGMEM port_to_output_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PORTA,
   (uint8_t)(uint16_t) &PORTB,
   (uint8_t)(uint16_t) &PORTC
 };
 
-const uint8_t PROGMEM port_to_pullup_PGM[] = {
+static const uint8_t PROGMEM port_to_pullup_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PUEA,
   (uint8_t)(uint16_t) &PUEB,
   (uint8_t)(uint16_t) &PUEC
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] = {
+static const uint8_t PROGMEM port_to_input_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PINA,
   (uint8_t)(uint16_t) &PINB,
   (uint8_t)(uint16_t) &PINC
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_port_PGM[] __attribute__((unused)) = {
   PA, /* 0 */
   PA,
   PA,
@@ -329,7 +331,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PC, /* 17 = RESET */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] __attribute__((unused)) = {
   _BV(0), /* 0 */
   _BV(1),
   _BV(2),
@@ -350,7 +352,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(3), /* 17 = RESET */
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_timer_PGM[] __attribute__((unused)) = {
   NOT_ON_TIMER, /* 0 */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -372,6 +374,5 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
 };
 
 
-#endif
 
 #endif
