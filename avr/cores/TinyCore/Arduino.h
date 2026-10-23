@@ -132,32 +132,59 @@ void loop(void);
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
 
-extern const uint8_t PROGMEM port_to_mode_PGM[];
-extern const uint8_t PROGMEM port_to_input_PGM[];
-extern const uint8_t PROGMEM port_to_output_PGM[];
-#if defined PUEA
-  extern const uint8_t PROGMEM port_to_pullup_PGM[];
-#endif
-
-extern const uint8_t PROGMEM digital_pin_to_port_PGM[];
-extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
-extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
+/* The pin tables are no longer declared here. They used to be defined in a
+ * single translation unit, behind #ifdef ARDUINO_MAIN in the variant header,
+ * and every other unit saw only these extern declarations. That is why
+ * digitalPinToBitMask() and portOutputRegister() could not be folded without
+ * link-time optimization: the contents of an extern array are unknown, so
+ * __builtin_constant_p() in const_array_or_pgm_() is false and the run-time
+ * pgm_read_byte() path is taken. With -flto the link-time optimizer sees the
+ * definition and folds it, which is the whole reason fast I/O degenerated as
+ * soon as LTO was off.
+ *
+ * They are now defined in the variant header itself, as static, so their
+ * contents are visible in every unit that includes it and the compiler alone
+ * can fold them. Each unit gets its own copy, but a copy nothing references --
+ * which is the case as soon as the accesses fold -- is dropped again by
+ * -fdata-sections and --gc-sections.
+ */
 
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
 //
-// These perform slightly better as macros compared to inline functions
-//
+/* A constant index is folded from this unit's own copy of the table. Any other
+ * index is looked up by a function in wiring_digital.c, which reads that unit's
+ * copy. The run-time lookup must not read the local copy itself: that would be
+ * a reference to it, and every unit doing so would keep a copy of its own --
+ * LTO does not merge static objects. As it is, the local copies are referenced
+ * only by accesses that fold, and so are all dropped again, and the one in
+ * wiring_digital.c is kept only if something looks a pin up at run time.
+ *
+ * wiring_digital.c itself defines PIN_TABLES_HOME and reads its tables
+ * directly, so digitalWrite() and friends do not pay for a call.
+ */
 #define const_array_or_pgm_(FUNC,ARR,IDX) ({size_t idx_ = (IDX); __builtin_constant_p((ARR)[idx_]) ? (ARR)[idx_] : FUNC((ARR)+idx_); })
-#define digitalPinToPort(P)     (((P) < NUM_DIGITAL_PINS) ? const_array_or_pgm_(pgm_read_byte, digital_pin_to_port_PGM, (P)) : NOT_A_PORT)
-#define digitalPinToBitMask(P)  (((P) < NUM_DIGITAL_PINS) ? const_array_or_pgm_(pgm_read_byte, digital_pin_to_bit_mask_PGM, (P)) : NOT_A_PIN)
-#define digitalPinToTimer(P)    (const_array_or_pgm_(pgm_read_byte, digital_pin_to_timer_PGM, (P)))
+#if defined(PIN_TABLES_HOME)
+  #define const_array_or_lookup_(LOOKUP,ARR,IDX) const_array_or_pgm_(pgm_read_byte, ARR, IDX)
+#else
+  #define const_array_or_lookup_(LOOKUP,ARR,IDX) ({size_t idx_ = (IDX); __builtin_constant_p((ARR)[idx_]) ? (ARR)[idx_] : LOOKUP(idx_); })
+#endif
+uint8_t _lookupPinToPort(uint8_t pin);
+uint8_t _lookupPinToBitMask(uint8_t pin);
+uint8_t _lookupPinToTimer(uint8_t pin);
+uint8_t _lookupPortToOutput(uint8_t port);
+uint8_t _lookupPortToInput(uint8_t port);
+uint8_t _lookupPortToMode(uint8_t port);
+#define digitalPinToPort(P)     (((P) < NUM_DIGITAL_PINS) ? const_array_or_lookup_(_lookupPinToPort, digital_pin_to_port_PGM, (P)) : NOT_A_PORT)
+#define digitalPinToBitMask(P)  (((P) < NUM_DIGITAL_PINS) ? const_array_or_lookup_(_lookupPinToBitMask, digital_pin_to_bit_mask_PGM, (P)) : NOT_A_PIN)
+#define digitalPinToTimer(P)    (const_array_or_lookup_(_lookupPinToTimer, digital_pin_to_timer_PGM, (P)))
 #define analogInPinToBit(P)     (P)
-#define portOutputRegister(P)   ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_output_PGM, (P))))
-#define portInputRegister(P)    ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_input_PGM, (P))))
-#define portModeRegister(P)     ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_mode_PGM, (P))))
+#define portOutputRegister(P)   ((volatile uint8_t *)(uint16_t)(const_array_or_lookup_(_lookupPortToOutput, port_to_output_PGM, (P))))
+#define portInputRegister(P)    ((volatile uint8_t *)(uint16_t)(const_array_or_lookup_(_lookupPortToInput, port_to_input_PGM, (P))))
+#define portModeRegister(P)     ((volatile uint8_t *)(uint16_t)(const_array_or_lookup_(_lookupPortToMode, port_to_mode_PGM, (P))))
 #if defined(PUEA)
-  #define portPullupRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_pullup_PGM, (P))))
+  uint8_t _lookupPortToPullup(uint8_t port);
+  #define portPullupRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_lookup_(_lookupPortToPullup, port_to_pullup_PGM, (P))))
 #endif
 
 #define NOT_A_PIN     255
@@ -406,13 +433,34 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
  *
  */
 
-inline __attribute__((always_inline)) void check_constant_pin(uint8_t pin)
+/* Fast I/O needs the pin to be known where the call is compiled if it is to
+ * become a single instruction. Whether it is known depends on what the
+ * optimizer managed to propagate, which is not a property of the program: the
+ * same legal source can satisfy it at -Os -flto and fail at -Og. Refusing to
+ * compile in that case breaks correct programs for reasons their author cannot
+ * see, so the functions below no longer insist on it.
+ *
+ * What they do instead is run their own body with the table lookups done at
+ * run time. That touches exactly the same registers in exactly the same way --
+ * it is only bigger and slower. Calling the ordinary digitalWrite() instead
+ * would have been easier, but it also switches off PWM on the pin, and on the
+ * x41 it touches the pullup registers that digitalWriteFaster() exists to
+ * avoid. A build that behaves differently from the release build is the one
+ * thing worse than a build that fails.
+ *
+ * Define STRICTLY_FAST to get the old behaviour: then a pin the compiler cannot
+ * see through is an error again. Worth having if the single instruction is what
+ * you rely on and you would rather hear about it than lose it quietly.
+ *
+ * check_constant_pin() is only used in that mode.
+ */
+static inline __attribute__((always_inline)) void check_constant_pin(uint8_t pin)
 {
   if(!__builtin_constant_p(pin))
     badArg("Fast digital pin must be a constant");
 }
 
-inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uint8_t pin) {
+static inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uint8_t pin) {
   if(__builtin_constant_p(pin)) {
     if (pin >= NUM_DIGITAL_PINS && pin != NOT_A_PIN)
     // Exception made for NOT_A_PIN - code exists which relies on being able to pass this and have nothing happen.
@@ -426,20 +474,24 @@ inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uint8_t pi
   }
   return 1;
 }
-inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
+static inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
+#if defined(STRICTLY_FAST)
   check_constant_pin(pin);
+#endif
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
   if (!check_valid_digital_pin(pin)) {
     badArg("Fast I/O functions must be called with a valid pin number. NOT_A_PIN is not a valid pin number for these purposes.");
   }
+#if defined(STRICTLY_FAST)
   if (!__builtin_constant_p(mode)) {
     badArg("pinModeFast requires the mode to be compile time known");
   }
+#endif
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
-  if (port == NOT_A_PIN) return;
+  if (port == NOT_A_PORT) return;   /* folds away for a constant pin */
   volatile uint8_t *reg, *out;
   reg = portModeRegister(port);
   #if defined(PUEA)
@@ -466,19 +518,24 @@ inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode
     SREG = oldSREG;
   }
 }
-inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mode) {
+static inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mode) {
+#if defined(STRICTLY_FAST)
   check_constant_pin(pin);
+#endif
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
   if (!check_valid_digital_pin(pin)) {
     badArg("Fast I/O functions must be called with a valid pin number. NOT_A_PIN is not a valid pin number for these purposes.");
   }
+#if defined(STRICTLY_FAST)
   if (!__builtin_constant_p(mode)) {
     badArg("openDrainFast requires the mode to be compile time known");
   }
+#endif
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
+  if (port == NOT_A_PORT) return;   /* folds away for a constant pin */
   volatile uint8_t *ddr, *out;
   ddr = portModeRegister(port);
   out = portOutputRegister(port);
@@ -490,8 +547,10 @@ inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mo
     *ddr |= mask;
   }
 }
-inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
+static inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
+#if defined(STRICTLY_FAST)
   check_constant_pin(pin);
+#endif
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
@@ -500,13 +559,15 @@ inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
   }
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
-  //if (port == NOT_A_PORT) return NOT_A_PIN;  // This check is not needed, as we reject non-constant pins but constant pins that are never valid get rejected by check valid digital pin!
+  if (port == NOT_A_PORT) return LOW;   /* folds away for a constant pin */
   return !!(*portInputRegister(port) & mask);
 }
 
 
-inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
+static inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
+#if defined(STRICTLY_FAST)
   check_constant_pin(pin);
+#endif
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
@@ -515,6 +576,7 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
   }
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
+  if (port == NOT_A_PORT) return;   /* folds away for a constant pin */
   volatile uint8_t *out;
   out = portOutputRegister(port);
   #if defined(__AVR_ATtinyX41__)      //Uniquely bad
@@ -566,12 +628,14 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
 
 
 #if defined(__AVR_ATtinyX41__)
-  inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
+  static inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
     // "Pullup enable? Never heard if it!" option for x41 only, because access to the PUEx registers is slow and non-atomic on those parts, and it would not be surprising
     // if someone wanted to avoid using them when doing straight digtial I/O. On all other parts - including other ones with PUEx registers (1634 and 828, which do have the
     // registers at sane addresses) - it is a normal call to digitalWriteFast(), and does manipulate the pullup state. Only on the x41 where the overhead is significant does
     // this have distinct functionality. Crucially, on the x41, you
+#if defined(STRICTLY_FAST)
     check_constant_pin(pin);
+#endif
     if (pin > 127) {
       pin = analogInputToDigitalPin((pin & 127));
     }
@@ -580,6 +644,7 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
     }
     uint8_t mask = digitalPinToBitMask(pin);
     uint8_t port = digitalPinToPort(pin);
+    if (port == NOT_A_PORT) return;   /* folds away for a constant pin */
     volatile uint8_t *out;
     out = portOutputRegister(port);
     if (val == LOW) {                  // 2 instruction
@@ -589,7 +654,7 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
     }
   }
 #else // silently fall back to standard implementation.
-  inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
+  static inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
     digitalWriteFast(pin,val);
   }
 #endif

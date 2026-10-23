@@ -286,7 +286,9 @@ static const uint8_t A7 = ADC_CH(7);
   #define USI_START_COND_INT  USISIF
 #endif
 
-#ifdef ARDUINO_MAIN
+/* The pin tables below are defined here, not behind #ifdef ARDUINO_MAIN.
+ * See the note where Arduino.h used to declare them.
+ */
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY84/44/24  ATTinyCore Standard (Clockwise) Pin Mapping
  *
@@ -303,25 +305,25 @@ static const uint8_t A7 = ADC_CH(7);
  * x indicates XTAL pin
  *---------------------------------------------------------------------------*/
 
-const uint8_t PROGMEM port_to_mode_PGM[] = {
+static const uint8_t PROGMEM port_to_mode_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &DDRA,
   (uint8_t)(uint16_t) &DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] = {
+static const uint8_t PROGMEM port_to_output_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PORTA,
   (uint8_t)(uint16_t) &PORTB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] = {
+static const uint8_t PROGMEM port_to_input_PGM[] __attribute__((unused)) = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PINA,
   (uint8_t)(uint16_t) &PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_port_PGM[] __attribute__((unused)) = {
   PA, /* 0 */
   PA,
   PA,
@@ -336,7 +338,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PB, /* 11 */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] __attribute__((unused)) = {
   _BV(0), /* port A */
   _BV(1),
   _BV(2),
@@ -351,7 +353,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(3),
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+static const uint8_t PROGMEM digital_pin_to_timer_PGM[] __attribute__((unused)) = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -366,6 +368,5 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
 };
 
-#endif
 
 #endif
