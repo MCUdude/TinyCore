@@ -32,10 +32,10 @@ static void __empty() {
 void yield(void) __attribute__ ((weak, alias("__empty")));
 
 void delay(unsigned int count) {
-  do {
+  while (count--) {
     yield();
     _delay_loop_2((uint16_t)(F_CPU / 1000 / 4));
-  } while (--count);
+  }
 }
 
 
