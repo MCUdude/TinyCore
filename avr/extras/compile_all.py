@@ -4,8 +4,16 @@ Compile a sketch for every board of the core, in every combination its menus
 offer. A board entry that is wrong in boards.txt or platform.txt usually shows
 up here and nowhere else, because nobody builds for every combination by hand.
 
-    python3 avr/extras/compile_all.py --fqbn-prefix TinyCore:avr
-    python3 avr/extras/compile_all.py --fqbn-prefix TinyCore:avr --menus clock
+    python3 extras/compile_all.py --fqbn-prefix XMiniCore:avr --menus clock,LTO
+    python3 extras/compile_all.py --root megaavr --fqbn-prefix megaTinyCore:megaavr \
+            --known-failures extras/compile_all_known_failures.txt
+
+Where the menus of a core are not independent of each other, some combinations
+are refused by the core on purpose (an #error for a timer the chip does not
+have, say). Those go into a file named with --known-failures, one per line,
+written as board:menu=option,... without the vendor and architecture, with the
+reason after a '#'. They are then reported but do not count as failures; only a
+combination that is not on the list does.
 
 Needs arduino-cli with the core installed. Standard library apart from that.
 """
@@ -197,12 +205,29 @@ def left_to_go(done_so_far: int, total: int, spent: float) -> str:
     return f", about {remaining / 60:.0f} min left" if remaining > 90 else ""
 
 
-def build_them_all(sketch: str, every: list, timeout: int) -> tuple:
+def without_prefix(fqbn: str) -> str:
+    """board:options of an FQBN, which is what the list of known failures holds."""
+    return fqbn.split(":", 2)[2]
+
+
+def read_known_failures(path: str) -> dict:
+    """board:options -> reason, from a file of lines 'board:options  # reason'."""
+    known = {}
+    with open(path, encoding="utf-8") as listing:
+        for line in listing:
+            entry, _, reason = line.partition("#")
+            if entry.strip():
+                known[entry.strip()] = reason.strip()
+    return known
+
+
+def build_them_all(sketch: str, every: list, timeout: int, known: dict) -> tuple:
     """Build the lot, reporting progress as it goes. Returns failures and seconds."""
     print(f"{len(every)} combination(s) to build", flush=True)
     failed, started = [], time.monotonic()
     for number, fqbn in enumerate(every, start=1):
-        if not compile_one(sketch, fqbn, number, len(every), timeout):
+        if not compile_one(sketch, fqbn, number, len(every), timeout,
+                           known.get(without_prefix(fqbn))):
             failed.append(fqbn)
         spent = time.monotonic() - started
         if number % 10 == 0 and number != len(every):
@@ -246,8 +271,8 @@ def kill_the_lot(proc: subprocess.Popen) -> None:
         pass
 
 
-def compile_one(sketch: str, fqbn: str, number: int, total: int,
-                timeout: int) -> bool:
+def compile_one(sketch: str, fqbn: str, number: int, total: int,  # pylint: disable=too-many-arguments,too-many-positional-arguments
+                timeout: int, expected: str | None = None) -> bool:
     """
     Build one combination, saying how it went and how far along we are.
 
@@ -280,6 +305,10 @@ def compile_one(sketch: str, fqbn: str, number: int, total: int,
               "    still going after the time allowed, so it is not slow but stuck",
               flush=True)
         show_tail(logfile, "before it was stopped")
+        return False
+    if code != 0 and expected is not None:
+        print(f"[{number:>3}/{total}] known  {took:5.1f} s  {fqbn}\n"
+              f"    refused as expected: {expected}", flush=True)
         return False
     print(f"[{number:>3}/{total}] {'ok    ' if code == 0 else 'FAILED'} "
           f"{took:5.1f} s  {fqbn}", flush=True)
@@ -314,6 +343,10 @@ def main() -> int:
                         help="how much to build: every combination, every option "
                              "at least once, or just the default one. 'auto' takes "
                              "the full product while it stays small")
+    parser.add_argument("--known-failures", metavar="FILE",
+                        help="combinations the core refuses on purpose, one per "
+                             "line as board:menu=option,... with the reason after "
+                             "a '#'. They are reported but not counted as failures")
     args = parser.parse_args()
 
     if shutil.which("arduino-cli") is None:
@@ -339,10 +372,28 @@ def main() -> int:
         if args.max_builds and len(every) > args.max_builds:
             print(f"{len(every)} combinations, building the first {args.max_builds}")
             every = every[:args.max_builds]
-        failed, spent = build_them_all(sketch, every, args.timeout)
+        known = read_known_failures(args.known_failures) if args.known_failures else {}
+        failed, spent = build_them_all(sketch, every, args.timeout, known)
 
-    print(f"{len(every)} combination(s) in {spent / 60:.1f} min, {len(failed)} failed")
-    return 1 if failed else 0
+    return summary(every, failed, known, spent)
+
+
+def summary(every: list, failed: list, known: dict, spent: float) -> int:
+    """Say how it went. Only failures that are not on the known list count."""
+    new = [f for f in failed if without_prefix(f) not in known]
+    built = {without_prefix(f) for f in every}
+    gone_wrong = {without_prefix(f) for f in failed}
+    now_fine = sorted(k for k in known if k in built and k not in gone_wrong)
+    not_built = sorted(k for k in known if k not in built)
+    print(f"{len(every)} combination(s) in {spent / 60:.1f} min, {len(failed)} failed"
+          + (f", {len(failed) - len(new)} of them known" if known else ""))
+    for entry in now_fine:
+        print(f"on the known list but builds now, so it can come off: {entry}")
+    for entry in not_built:
+        print(f"on the known list but not built this time (menus changed?): {entry}")
+    for fqbn in new:
+        print(f"new failure: {fqbn}")
+    return 1 if new else 0
 
 
 if __name__ == "__main__":

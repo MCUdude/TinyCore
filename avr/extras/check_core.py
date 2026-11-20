@@ -2,8 +2,8 @@
 """
 Check a core for the kinds of mistake that only show up when someone else uses it.
 
-    python3 avr/extras/check_core.py              # check the core this file belongs to
-    python3 avr/extras/check_core.py --tag v0.9.0 # and that it is ready to be released
+    python3 extras/check_core.py              # check the core this file belongs to
+    python3 extras/check_core.py --tag v1.3.1 # and that it is ready to be released
 
 Every check is about consistency inside the core, so it needs nothing but the
 files themselves and the standard library. Errors make it exit non-zero;
@@ -17,13 +17,14 @@ import os
 import re
 import sys
 import tempfile
+from typing import Iterator
 
 PROBLEMS: list = []
 WARNINGS: list = []
 
 
 @contextlib.contextmanager
-def working_directory(given: str):
+def working_directory(given: str) -> Iterator[str]:
     """The directory to work in: the one that was asked for, or a temporary one."""
     if given:
         os.makedirs(given, exist_ok=True)
@@ -57,7 +58,7 @@ def properties(path: str) -> dict:
     Read an Arduino properties file. Keys repeat the board id, values may contain
     anything, comments start with # at the beginning of a line.
     """
-    found = {}
+    found: dict = {}
     if not os.path.exists(path):
         problem(f"{os.path.basename(path)} is missing")
         return found
@@ -143,7 +144,7 @@ def check_menus(boards: dict) -> None:
     """
     declared = {key[len("menu."):] for key in boards
                 if key.startswith("menu.") and key.count(".") == 1}
-    used = {}
+    used: dict = {}
     for key in boards:
         parts = key.split(".")
         if len(parts) >= 4 and parts[1] == "menu":
@@ -161,6 +162,31 @@ def check_menus(boards: dict) -> None:
                       if k.endswith(ending) and k[:-len(ending)] in ids]
             if not labels:
                 problem(f"option '{option}' of menu '{menu}' has no label on any board")
+
+
+def check_menu_clashes(boards: dict) -> None:
+    """
+    Two menus of one board must not set the same property. The old Java IDE
+    applied the menus in the order they are declared, so a later menu could
+    override what an earlier one set as a default; arduino-cli, and with it
+    IDE 2, applies them in no fixed order, so which value wins changes from one
+    build to the next. The way to keep a default that depends on another menu
+    is a property of its own, e.g. chip sets build.millisdefault and the
+    default option of millis sets build.millistimer={build.millisdefault}.
+    """
+    ids = set(board_ids(boards))
+    setters: dict = {}
+    for key in boards:
+        parts = key.split(".", 4)
+        if len(parts) == 5 and parts[1] == "menu" and parts[0] in ids:
+            setters.setdefault((parts[0], parts[4]), set()).add(parts[2])
+    clashes: dict = {}
+    for (board, prop), menus in setters.items():
+        if len(menus) > 1:
+            clashes.setdefault((prop, tuple(sorted(menus))), []).append(board)
+    for (prop, menus), clashing in sorted(clashes.items()):
+        problem(f"'{prop}' is set by menus {' and '.join(menus)} on "
+                f"{', '.join(sorted(clashing))}: which one wins is chance in IDE 2")
 
 
 def check_lto(boards: dict, platform: dict) -> None:
@@ -189,22 +215,29 @@ def check_hook_scripts(root: str, platform: dict) -> None:
                 problem(f"{key} calls '{relative}', which does not exist")
 
 
+def up_to_repository(root: str) -> Iterator[str]:
+    """
+    The core's folder and those above it, up to the repository itself. The core
+    may sit in a subdirectory of its repository (avr/, megaavr/), and files such
+    as .gitattributes or the changelog then belong to the repository.
+    """
+    folder = os.path.abspath(root)
+    while True:
+        yield folder
+        parent = os.path.dirname(folder)
+        if parent == folder or os.path.exists(os.path.join(folder, ".git")):
+            return
+        folder = parent
+
+
 def check_line_endings(root: str) -> None:
     """Windows batch files need CRLF, and git only keeps it with a rule for it."""
     rule = ""
-    folder = os.path.abspath(root)
-    while True:
-        # The core may sit in a subdirectory of its repository, and the rule
-        # then belongs to the repository rather than to the core, so look
-        # upwards until the repository itself is reached.
+    for folder in up_to_repository(root):
         attributes = os.path.join(folder, ".gitattributes")
         if os.path.exists(attributes):
             with open(attributes, encoding="utf-8", errors="replace") as src:
                 rule += src.read()
-        parent = os.path.dirname(folder)
-        if parent == folder or os.path.exists(os.path.join(folder, ".git")):
-            break
-        folder = parent
     if ".bat" not in rule:
         for folder, _, files in os.walk(root):
             if ".git" in folder:
@@ -221,23 +254,30 @@ def check_release(root: str, platform: dict, tag: str) -> None:
     A pre-release tag such as v1.3.2-rc1 is checked against 1.3.2: the point of
     trying one out is not having to touch the version number for every attempt.
 
-    A CHANGELOG.md is not required: not every core keeps one, and the script is
-    meant to be usable in those too. Where there is one, it has to mention the
-    version; where there is none, that is worth saying but not worth stopping a
-    release for.
+    A version that is itself a pre-release and released as such (v2.7.0-pre5
+    with version=2.7.0-pre5) is compared by its base version as well.
+
+    A changelog is not required: not every core keeps one, and the script is
+    meant to be usable in those too. It is looked for from the core's folder up
+    to the repository, as CHANGELOG.md in any capitalisation. Where there is one,
+    it has to have a heading for the version, which may be followed by a remark
+    in brackets; where there is none, that is worth saying but not worth
+    stopping a release for.
     """
     version = base_version(tag)
     stated = platform.get("version")
-    if stated != version:
+    if base_version(stated or "") != version:
         problem(f"platform.txt says version={stated}, but the tag says {version}")
-    changelog = os.path.join(root, "CHANGELOG.md")
-    if not os.path.exists(changelog):
+    found = [os.path.join(folder, name) for folder in up_to_repository(root)
+             for name in sorted(os.listdir(folder)) if name.lower() == "changelog.md"]
+    if not found:
         warn("there is no CHANGELOG.md, so nothing was checked against it")
         return
-    with open(changelog, encoding="utf-8", errors="replace") as src:
+    with open(found[0], encoding="utf-8", errors="replace") as src:
         text = src.read()
-    if not re.search(rf"^#+\s*v?{re.escape(version)}\s*$", text, re.MULTILINE):
-        problem(f"CHANGELOG.md has no entry for {version}")
+    heading = rf"^#+\s*v?{re.escape(version)}(\s*|\s+\(.*)$"
+    if not re.search(heading, text, re.MULTILINE):
+        problem(f"{os.path.basename(found[0])} has no entry for {version}")
 
 
 def main() -> int:
@@ -257,6 +297,7 @@ def main() -> int:
     check_orphans(boards)
     check_menu_coverage(boards)
     check_menus(boards)
+    check_menu_clashes(boards)
     check_lto(boards, platform)
     check_hook_scripts(root, platform)
     check_line_endings(root)
